@@ -1,0 +1,55 @@
+-- Person table
+CREATE TABLE Person (
+                        id INT PRIMARY KEY AUTO_INCREMENT,
+                        name VARCHAR(255) NOT NULL,
+                        password VARCHAR(255) NOT NULL,
+                        address VARCHAR(255),
+                        phoneNo BIGINT
+);
+
+-- Borrower table
+CREATE TABLE Borrower (
+                          person_id INT PRIMARY KEY,
+                          FOREIGN KEY (person_id) REFERENCES Person(id)
+);
+
+-- Staff table
+CREATE TABLE Librarian (
+                       salary DOUBLE,
+                       person_id INT PRIMARY KEY,
+                       officeNo INT,
+                       FOREIGN KEY (person_id) REFERENCES Person(id)
+);
+
+-- Book table
+CREATE TABLE Book (
+                      bookID INT PRIMARY KEY AUTO_INCREMENT,
+                      title VARCHAR(255) NOT NULL,
+                      author VARCHAR(255),
+                      subject VARCHAR(255),
+                      isIssued BOOLEAN
+);
+
+-- HoldRequest table
+CREATE TABLE HoldRequest (
+                             requestID INT PRIMARY KEY AUTO_INCREMENT,
+                             requestDate DATE,
+                             borrower_id INT,
+                             bookID INT,
+                             FOREIGN KEY (borrower_id) REFERENCES Borrower(person_id),
+                             FOREIGN KEY (bookID) REFERENCES Book(bookID)
+);
+
+-- Loan table
+CREATE TABLE Loan (
+                      loanID INT PRIMARY KEY AUTO_INCREMENT,
+                      issuedDate DATE,
+                      dateReturned DATE,
+                      finePaid BOOLEAN,
+                      borrower_id INT,
+                      bookID INT,
+                      librarian_id INT,
+                      FOREIGN KEY (borrower_id) REFERENCES Borrower(person_id),
+                      FOREIGN KEY (bookID) REFERENCES Book(bookID),
+                      FOREIGN KEY (librarian_id) REFERENCES Librarian(person_id)
+);

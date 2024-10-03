@@ -1,9 +1,16 @@
 package LMS;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import javafx.stage.Window;
+
+import java.io.IOException;
 
 public class MainFXML {
 
@@ -63,11 +70,32 @@ public class MainFXML {
 
     @FXML
     private void handleCreateAccount() {
-        showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(), "Create new Account", "Function is not available! Try later.");
+//        showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(), "Create new Account", "Function is not available! Try later.");
+        handleChangeScene();
     }
 
     @FXML
     private void handleForgotPassword() {
         showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(), "Forgot Password", "Function is not available! Try later.");
     }
+
+    @FXML
+    public void handleChangeScene() {
+        FXMLLoader createAccountLoader = new FXMLLoader(getClass().getResource("/LMS/CreateAccount.fxml"));
+
+        Stage stage = (Stage) gridPane.getScene().getWindow(); // Use gridPane to get the current stage
+
+        Scene createAccountScene;
+        try {
+            createAccountScene = new Scene(createAccountLoader.load(), 800, 500);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setScene(createAccountScene);
+
+        stage.setTitle("Create New Account");
+
+        stage.show();
+    }
+
 }

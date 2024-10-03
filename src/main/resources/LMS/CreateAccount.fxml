@@ -11,12 +11,11 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LMS.CreateAccount">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LMS.CreateAccountFXML">
    <children>
       <GridPane fx:id="gridPane" alignment="CENTER" hgap="10.0" layoutX="10.0" layoutY="10.0" prefHeight="500.0" prefWidth="800.0" vgap="10">
          <padding>
-            <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+            <Insets bottom="20.0" left="40.0" right="40.0" top="20.0" />
          </padding>
          <columnConstraints>
             <ColumnConstraints />
@@ -24,7 +23,11 @@
          </columnConstraints>
          <rowConstraints>
             <RowConstraints />
-            <RowConstraints />
+            <RowConstraints prefHeight="50.0" />
+            <RowConstraints prefHeight="50.0" />
+            <RowConstraints prefHeight="50.0" />
+            <RowConstraints minHeight="10.0" prefHeight="50.0" />
+            <RowConstraints prefHeight="50.0" />
             <RowConstraints />
             <RowConstraints />
             <RowConstraints />
@@ -32,32 +35,43 @@
             <RowConstraints />
             <RowConstraints />
          </rowConstraints>
-         <children>
-            <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Register" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
-            <Label text="Full Name:" GridPane.rowIndex="1">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <TextField fx:id="nameField" prefHeight="50.0" prefWidth="510.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label text="Email ID:" GridPane.rowIndex="2">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <TextField fx:id="emailField" prefHeight="50.0" prefWidth="510.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Label text="Password:" GridPane.rowIndex="3">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <PasswordField fx:id="passwordField" prefHeight="50.0" prefWidth="510.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Button fx:id="submitButton" onAction="#handleSubmit" prefHeight="40.0" prefWidth="70.0" text="Submit" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="4">
-               <font>
-                  <Font size="13.0" />
-               </font>
-            </Button>
-         </children>
+         <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Register" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
+         <Label text="Full Name:" GridPane.rowIndex="1">
+            <font>
+               <Font size="14.0" />
+            </font>
+         </Label>
+         <TextField fx:id="nameField" prefHeight="40.0" prefWidth="510.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+         <Label text="Email ID:" GridPane.rowIndex="2">
+            <font>
+               <Font size="14.0" />
+            </font>
+         </Label>
+         <TextField fx:id="emailField" prefHeight="40.0" prefWidth="510.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+         <Label text="Password:" GridPane.rowIndex="5">
+            <font>
+               <Font size="14.0" />
+            </font>
+         </Label>
+         <PasswordField fx:id="passwordField" prefHeight="40.0" prefWidth="510.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+         <Button fx:id="submitButton" onAction="#handleSubmit" prefHeight="40.0" prefWidth="70.0" text="Submit" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="6">
+            <font>
+               <Font size="13.0" />
+            </font>
+         </Button>
+         <TextField fx:id="phoneNumberField" prefHeight="40.0" prefWidth="510.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+         <Label text="Phone number" GridPane.rowIndex="3">
+            <font>
+               <Font size="14.0" />
+            </font>
+         </Label>
+         <Label text="Address" GridPane.rowIndex="4">
+            <font>
+               <Font size="14.0" />
+            </font>
+         </Label>
+         <TextField fx:id="addressField" prefHeight="40.0" prefWidth="510.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+         <Label fx:id="backLoginLabel" text="&lt;&lt; Back to login" textFill="#1a00ff" underline="true" GridPane.rowIndex="7" />
       </GridPane>
    </children>
 </AnchorPane>

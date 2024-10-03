@@ -15,9 +15,6 @@ import java.io.IOException;
 public class MainFXML {
 
     @FXML
-    private TextField nameField;
-
-    @FXML
     private TextField emailField;
 
     @FXML
@@ -38,6 +35,7 @@ public class MainFXML {
     @FXML
     public void initialize() {
         submitButton.setOnAction(event -> handleSubmit());
+
         createAccountLabel.setOnMouseClicked(event -> handleCreateAccount());
 
         forgotPasswordLabel.setOnMouseClicked(event -> handleForgotPassword());
@@ -45,10 +43,6 @@ public class MainFXML {
 
     @FXML
     private void handleSubmit() {
-        if (nameField.getText().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter your name");
-            return;
-        }
         if (emailField.getText().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter your email id");
             return;
@@ -57,8 +51,11 @@ public class MainFXML {
             showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter a password");
             return;
         }
-
-        showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(), "Registration Successful!", "Welcome " + nameField.getText());
+        if (!emailField.getText().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter a valid email address");
+            return;
+        }
+        showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(), "Registration Successful!", "Welcome ");
     }
 
     @FXML

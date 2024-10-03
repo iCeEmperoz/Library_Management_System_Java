@@ -28,15 +28,6 @@ public class Librarian extends Person {
         return salary;
     }
 
-    public static boolean addLibrarian(Librarian lib) {
-        //One Library can have only one Librarian
-        if (librarian == null) {
-            librarian = lib;
-            persons.add(librarian);
-            return true;
-        } else
-            System.out.println("\nSorry, the library already has one librarian. New Librarian can't be created.");
-        return false;
-    }
+    // addLibrarian here
 
 }

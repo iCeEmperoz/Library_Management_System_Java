@@ -1,6 +1,7 @@
 package LMS;
 
 import java.io.*;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class Book {
@@ -9,16 +10,14 @@ public class Book {
     private String subject;
     private String author;
     private boolean isIssued;
-
+    private HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
     static int currentIdNumber = 0;
 
     public Book(int id,String t, String s, String a, boolean issued) {
         currentIdNumber++;
-        if(id==-1)
-        {
+        if(id==-1) {
             bookID = currentIdNumber;
-        }
-        else
+        } else
             bookID=id;
 
         title = t;
@@ -26,6 +25,23 @@ public class Book {
         author = a;
         isIssued = issued;
 
+    }
+
+    public void printHoldRequests() {
+        if (!holdRequestsOperations.holdRequests.isEmpty()) {
+            System.out.println("\nHold Requests are: ");
+
+            System.out.println("---------------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("No.\t\tBook's Title\t\t\tBorrower's Name\t\t\tRequest Date");
+            System.out.println("---------------------------------------------------------------------------------------------------------------------------------------");
+
+            for (int i = 0; i < holdRequestsOperations.holdRequests.size(); i++) {
+                System.out.print(i + "-" + "\t\t");
+                holdRequestsOperations.holdRequests.get(i).print();
+            }
+        } else {
+            System.out.println("\nNo hold requests available");
+        }
     }
 
     // Currently printing out at command line
@@ -43,8 +59,7 @@ public class Book {
         System.out.println("\nUpdate Author? (y/n)");
         input = scanner.next();
 
-        if(input.equals("y"))
-        {
+        if(input.equals("y")) {
             System.out.println("\nEnter new Author: ");
             author = reader.readLine();
         }
@@ -52,8 +67,7 @@ public class Book {
         System.out.println("\nUpdate Subject? (y/n)");
         input = scanner.next();
 
-        if(input.equals("y"))
-        {
+        if(input.equals("y")) {
             System.out.println("\nEnter new Subject: ");
             subject = reader.readLine();
         }
@@ -61,8 +75,7 @@ public class Book {
         System.out.println("\nUpdate Title? (y/n)");
         input = scanner.next();
 
-        if(input.equals("y"))
-        {
+        if(input.equals("y")) {
             System.out.println("\nEnter new Title: ");
             title = reader.readLine();
         }
@@ -73,37 +86,35 @@ public class Book {
 
     /*------------Getter FUNCs.---------*/
 
-    public String getTitle()
-    {
+    public String getTitle() {
         return title;
     }
 
-    public String getSubject()
-    {
+    public String getSubject() {
         return subject;
     }
 
-    public String getAuthor()
-    {
+    public String getAuthor() {
         return author;
     }
 
-    public boolean getIssuedStatus()
-    {
+    public boolean getIssuedStatus() {
         return isIssued;
     }
 
-    public void setIssuedStatus(boolean s)
-    {
+    public void setIssuedStatus(boolean s) {
         isIssued = s;
     }
 
-    public int getID()
-    {
+    public int getID() {
         return bookID;
     }
 
+    public ArrayList<HoldRequest> getHoldRequests() {
+        return holdRequestsOperations.holdRequests;
+    }
     /*-----------------------------------*/
+
 
     /*------------Setter FUNCs.---------*/
 
@@ -114,4 +125,140 @@ public class Book {
 
     /*-----------------------------------*/
 
+    public void placeBookOnHold(Borrower borrower) {
+        HoldRequest holdRequest = new HoldRequest(borrower, this, new Date());
+
+        holdRequestsOperations.addHoldRequest(holdRequest);
+        borrower.addHoldRequest(holdRequest);
+
+        System.out.println("\nThe book " + title + " has been successfully placed on hold by borrower " + borrower.getName() + ".\n");
+    }
+
+    public void makeHoldRequest(Borrower borrower) {
+        boolean makeRequest = true;
+
+        //If that borrower has already borrowed that particular book. Then he isn't allowed to make request for that book. He will have to renew the issued book in order to extend the return deadline.
+        for(int i=0; i < borrower.getBorrowedBooks().size(); i++) {
+            if(borrower.getBorrowedBooks().get(i).getBook()==this) {
+                System.out.println("\n" + "You have already borrowed " + title);
+                return;
+            }
+        }
+
+
+        //If that borrower has already requested for that particular book. Then he isn't allowed to make the same request again.
+        for (int i = 0; i < holdRequestsOperations.holdRequests.size(); i++) {
+            if ((holdRequestsOperations.holdRequests.get(i).getBorrower() == borrower)) {
+                makeRequest = false;
+                break;
+            }
+        }
+
+        if (makeRequest) {
+            placeBookOnHold(borrower);
+        } else
+            System.out.println("\nYou already have one hold request for this book.\n");
+
+    }
+
+    // Getting Info of a Hold Request
+    public void serviceHoldRequest(HoldRequest holdRequest)
+    {
+        holdRequestsOperations.removeHoldRequest();
+        holdRequest.getBorrower().removeHoldRequest(holdRequest);
+    }
+
+    // Issuing a Book
+    public void issueBook(Borrower borrower, Librarian librarian)
+    {
+        //First deleting the expired hold requests
+        Date today = new Date();
+
+        ArrayList<HoldRequest> hRequests = holdRequestsOperations.holdRequests;
+
+        for (int i = 0; i < hRequests.size(); i++) {
+            HoldRequest holdRequest = hRequests.get(i);
+
+            //Remove that hold request which has expired
+            long days = ChronoUnit.DAYS.between(today.toInstant(), holdRequest.getRequestDate().toInstant());
+            days = 0-days;
+
+            if(days > Library.getInstance().getHoldRequestExpiry()) {
+                holdRequestsOperations.removeHoldRequest();
+                holdRequest.getBorrower().removeHoldRequest(holdRequest);
+            }
+        }
+
+        if (isIssued) {
+            System.out.println("\nThe book " + title + " is already issued.");
+            System.out.println("Would you like to place the book on hold? (y/n)");
+
+            Scanner sc = new Scanner(System.in);
+            String choice = sc.next();
+
+            if (choice.equals("y")) {
+                makeHoldRequest(borrower);
+            }
+        } else {
+            if (!holdRequestsOperations.holdRequests.isEmpty()) {
+                boolean hasRequest = false;
+
+                for (int i = 0; i < holdRequestsOperations.holdRequests.size() && !hasRequest; i++) {
+                    if (holdRequestsOperations.holdRequests.get(i).getBorrower() == borrower)
+                        hasRequest = true;
+
+                }
+
+                if (hasRequest) {
+                    //If this particular borrower has the earliest request for this book
+                    if (holdRequestsOperations.holdRequests.get(0).getBorrower() == borrower)
+                        serviceHoldRequest(holdRequestsOperations.holdRequests.get(0));
+
+                    else {
+                        System.out.println("\nSorry some other users have requested for this book earlier than you. So you have to wait until their hold requests are processed.");
+                        return;
+                    }
+                } else {
+                    System.out.println("\nSome users have already placed this book on request and you haven't, so the book can't be issued to you.");
+
+                    System.out.println("Would you like to place the book on hold? (y/n)");
+
+                    Scanner sc = new Scanner(System.in);
+                    String choice = sc.next();
+
+                    if (choice.equals("y")) {
+                        makeHoldRequest(borrower);
+                    }
+
+                    return;
+                }
+            }
+
+            //If there are no hold requests for this book, then simply issue the book.
+            setIssuedStatus(true);
+
+            Loan iHistory = new Loan(borrower,this, librarian,null,new Date(),null,false);
+
+            Library.getInstance().addLoan(iHistory);
+            borrower.addBorrowedBook(iHistory);
+
+            System.out.println("\nThe book " + title + " is successfully issued to " + borrower.getName() + ".");
+            System.out.println("\nIssued by: " + librarian.getName());
+        }
+    }
+
+    // Returning a Book
+    public void returnBook(Borrower borrower, Loan loan, Librarian librarian)
+    {
+        loan.getBook().setIssuedStatus(false);
+        loan.setReturnedDate(new Date());
+        loan.setReceiver(librarian);
+
+        borrower.removeBorrowedBook(loan);
+
+        loan.payFine();
+
+        System.out.println("\nThe book " + loan.getBook().getTitle() + " is successfully returned by " + borrower.getName() + ".");
+        System.out.println("\nReceived by: " + librarian.getName());
+    }
 }

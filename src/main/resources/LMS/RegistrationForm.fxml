@@ -18,7 +18,7 @@
    <children>
       <ImageView fitHeight="500.0" fitWidth="800.0" pickOnBounds="true">
          <image>
-            <Image url="@../image/library.jpg" />
+            <Image url="@../images/library.jpg" />
          </image>
       </ImageView>
       <GridPane fx:id="gridPane" alignment="CENTER" hgap="10.0" layoutX="5.0" layoutY="5.0" prefHeight="500.0" prefWidth="800.0" vgap="10">

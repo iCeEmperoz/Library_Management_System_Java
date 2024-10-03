@@ -70,13 +70,13 @@ public class MainFXML {
 
     @FXML
     private void handleCreateAccount() {
-//        showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(), "Create new Account", "Function is not available! Try later.");
         handleChangeScene();
     }
 
     @FXML
     private void handleForgotPassword() {
-        showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(), "Forgot Password", "Function is not available! Try later.");
+        showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(), "Forgot Password",
+                "Function is unavailable now!\nPlease contact this email for support: 23020086@vnu.edu.vn");
     }
 
     @FXML

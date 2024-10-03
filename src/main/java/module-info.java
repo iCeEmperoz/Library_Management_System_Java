@@ -1,4 +1,4 @@
-module LMS {
+module group1.library_management_system_java {
   requires javafx.controls;
   requires javafx.fxml;
   requires javafx.web;
@@ -10,6 +10,10 @@ module LMS {
   requires org.kordamp.bootstrapfx.core;
   requires eu.hansolo.tilesfx;
   requires com.almasb.fxgl.all;
+    requires javafx.graphics;
+    requires java.sql;
+  requires java.desktop;
+  requires com.h2database;
 
   opens LMS to javafx.fxml;
   exports LMS;

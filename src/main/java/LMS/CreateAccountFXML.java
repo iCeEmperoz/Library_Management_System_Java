@@ -1,9 +1,14 @@
 package LMS;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import javafx.stage.Window;
+
+import java.io.IOException;
 
 public class CreateAccountFXML {
 
@@ -76,7 +81,25 @@ public class CreateAccountFXML {
 
     @FXML
     private void handleBackLogin() {
-        showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(), "", "Loading ...");
+        handleChangeScene();
     }
 
+    @FXML
+    public void handleChangeScene() {
+        FXMLLoader createAccountLoader = new FXMLLoader(getClass().getResource("/LMS/RegistrationForm.fxml"));
+
+        Stage stage = (Stage) gridPane.getScene().getWindow(); // Use gridPane to get the current stage
+
+        Scene createAccountScene;
+        try {
+            createAccountScene = new Scene(createAccountLoader.load(), 800, 500);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setScene(createAccountScene);
+
+        stage.setTitle("Login");
+
+        stage.show();
+    }
 }

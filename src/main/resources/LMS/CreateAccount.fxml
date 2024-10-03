@@ -48,6 +48,18 @@
             </font>
          </Label>
          <TextField fx:id="emailField" prefHeight="40.0" prefWidth="510.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+         <Label text="Phone number" GridPane.rowIndex="3">
+            <font>
+               <Font size="14.0" />
+            </font>
+         </Label>
+         <TextField fx:id="phoneNumberField" prefHeight="40.0" prefWidth="510.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+         <Label text="Address" GridPane.rowIndex="4">
+            <font>
+               <Font size="14.0" />
+            </font>
+         </Label>
+         <TextField fx:id="addressField" prefHeight="40.0" prefWidth="510.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
          <Label text="Password:" GridPane.rowIndex="5">
             <font>
                <Font size="14.0" />
@@ -59,18 +71,6 @@
                <Font size="13.0" />
             </font>
          </Button>
-         <TextField fx:id="phoneNumberField" prefHeight="40.0" prefWidth="510.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-         <Label text="Phone number" GridPane.rowIndex="3">
-            <font>
-               <Font size="14.0" />
-            </font>
-         </Label>
-         <Label text="Address" GridPane.rowIndex="4">
-            <font>
-               <Font size="14.0" />
-            </font>
-         </Label>
-         <TextField fx:id="addressField" prefHeight="40.0" prefWidth="510.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
          <Label fx:id="backLoginLabel" text="&lt;&lt; Back to login" textFill="#1a00ff" underline="true" GridPane.rowIndex="7" />
       </GridPane>
    </children>

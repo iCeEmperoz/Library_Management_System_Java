@@ -1,18 +1,11 @@
 package LMS;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 import javafx.stage.Window;
 
-import java.io.IOException;
-
-public class MainFXML {
+public class CreateAccountFXML {
 
     @FXML
     private TextField nameField;
@@ -21,16 +14,19 @@ public class MainFXML {
     private TextField emailField;
 
     @FXML
+    private TextField phoneNumberField;
+
+    @FXML
+    private TextField addressField;
+
+    @FXML
     private PasswordField passwordField;
 
     @FXML
     private Button submitButton;
 
     @FXML
-    private Label createAccountLabel;
-
-    @FXML
-    private Label forgotPasswordLabel;
+    private Label backLoginLabel;
 
     @FXML
     private GridPane gridPane;
@@ -38,9 +34,7 @@ public class MainFXML {
     @FXML
     public void initialize() {
         submitButton.setOnAction(event -> handleSubmit());
-        createAccountLabel.setOnMouseClicked(event -> handleCreateAccount());
-
-        forgotPasswordLabel.setOnMouseClicked(event -> handleForgotPassword());
+        backLoginLabel.setOnMouseClicked(event -> handleBackLogin());
     }
 
     @FXML
@@ -53,10 +47,19 @@ public class MainFXML {
             showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter your email id");
             return;
         }
+        if (phoneNumberField.getText().isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter your phone number");
+            return;
+        }
+        if (addressField.getText().isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter your address");
+            return;
+        }
         if (passwordField.getText().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter a password");
             return;
         }
+
 
         showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(), "Registration Successful!", "Welcome " + nameField.getText());
     }
@@ -72,33 +75,8 @@ public class MainFXML {
     }
 
     @FXML
-    private void handleCreateAccount() {
-//        showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(), "Create new Account", "Function is not available! Try later.");
-        handleChangeScene();
-    }
-
-    @FXML
-    private void handleForgotPassword() {
-        showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(), "Forgot Password", "Function is not available! Try later.");
-    }
-
-    @FXML
-    public void handleChangeScene() {
-        FXMLLoader createAccountLoader = new FXMLLoader(getClass().getResource("/LMS/CreateAccount.fxml"));
-
-        Stage stage = (Stage) gridPane.getScene().getWindow(); // Use gridPane to get the current stage
-
-        Scene createAccountScene;
-        try {
-            createAccountScene = new Scene(createAccountLoader.load(), 800, 500);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        stage.setScene(createAccountScene);
-
-        stage.setTitle("Create New Account");
-
-        stage.show();
+    private void handleBackLogin() {
+        showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(), "", "Loading ...");
     }
 
 }

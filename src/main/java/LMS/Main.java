@@ -14,11 +14,12 @@ public class Main extends Application {
 
         primaryStage.getIcons().add(icon);
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/LMS/RegistrationForm.fxml"));
+        FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/LMS/RegistrationForm.fxml"));
 
-        Scene scene = new Scene(fxmlLoader.load(), 800, 500);
-        primaryStage.setTitle("Hello!");
-        primaryStage.setScene(scene);
+        Scene loginScene = new Scene(loginLoader.load(), 800, 500);
+
+        primaryStage.setTitle("Login");
+        primaryStage.setScene(loginScene);
         primaryStage.show();
     }
 

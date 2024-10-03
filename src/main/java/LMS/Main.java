@@ -7,18 +7,18 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-//        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("RegistrationForm.fxml"));
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/LMS/RegistrationForm.fxml"));
+  @Override
+  public void start(Stage primaryStage) throws Exception {
+    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
+        "/group1/RegistrationForm.fxml"));
 
-        Scene scene = new Scene(fxmlLoader.load(), 800, 500);
-        primaryStage.setTitle("Hello!");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
+    Scene scene = new Scene(fxmlLoader.load(), 800, 500);
+    primaryStage.setTitle("Library!");
+    primaryStage.setScene(scene);
+    primaryStage.show();
+  }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+  public static void main(String[] args) {
+    launch(args);
+  }
 }

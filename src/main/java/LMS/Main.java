@@ -3,13 +3,17 @@ package LMS;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-//        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("RegistrationForm.fxml"));
+        Image icon = new Image(getClass().getResource("/images/icon.png").toString());
+
+        primaryStage.getIcons().add(icon);
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/LMS/RegistrationForm.fxml"));
 
         Scene scene = new Scene(fxmlLoader.load(), 800, 500);

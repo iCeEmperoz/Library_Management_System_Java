@@ -1,8 +1,6 @@
 package LMS;
 
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.Scanner;
 
 public class Loan {
     private Borrower borrower;
@@ -16,12 +14,12 @@ public class Loan {
 
     private boolean finePaid;
 
-    public Loan(Borrower borrower, Book book, Librarian librarrian, Date iDate, Date rDate, boolean fPaid)  // Para cons.
+    public Loan(Borrower borrower, Book book, Librarian iLibrarrian, Librarian rLibrarrian, Date iDate, Date rDate, boolean fPaid)  // Para cons.
     {
         this.borrower = borrower;
         this.book = book;
-        this.issuer = librarrian;
-        this.receiver = librarrian;
+        this.issuer = iLibrarrian;
+        this.receiver = rLibrarrian;
         this.issuedDate = iDate;
         this.dateReturned = rDate;
 
@@ -33,6 +31,16 @@ public class Loan {
     public Book getBook()       //Returns the book
     {
         return book;
+    }
+
+    public Librarian getIssuer()     //Returns the Staff Member who issued the book
+    {
+        return issuer;
+    }
+
+    public Librarian getReceiver()  //Returns the Staff Member to whom book is returned
+    {
+        return receiver;
     }
 
     public Date getIssuedDate()     //Returns the date on which this particular book was issued

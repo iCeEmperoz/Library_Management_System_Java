@@ -1,4 +1,4 @@
-module group1.library_management_system_java {
+module group {
   requires javafx.controls;
   requires javafx.fxml;
   requires javafx.web;

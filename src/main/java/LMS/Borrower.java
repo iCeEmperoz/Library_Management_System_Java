@@ -146,7 +146,7 @@ public class Borrower extends Person {
    *
    * @throws IOException if an I/O error occurs.
    */
-  public void updateBorrowedBooksInfo() throws IOException {
+  public void updateBorrowerInfo() throws IOException {
     String choice;
 
     Scanner sc = new Scanner(System.in);

@@ -110,7 +110,7 @@ public abstract class Person {
      *
      * @return The ID of the person
      */
-    public int getId() {
+    public int getID() {
         return id;
     }
 
@@ -158,5 +158,18 @@ public abstract class Person {
      */
     public static void setIDCount(int num) {
         currentIdNumber = num;
+    }
+
+    /**
+     * This method returns the value of the 'password' field.
+     * Note: It's not recommended to use this method to directly expose passwords
+     * as it may lead to sensitive information leakage. Consider implementing
+     * security measures such as password encryption or limiting its use to
+     * internal systems.
+     *
+     * @return password (the password of the object)
+     */
+    public String getPassword() {
+        return password;
     }
 }

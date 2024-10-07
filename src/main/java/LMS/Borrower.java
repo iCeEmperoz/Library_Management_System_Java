@@ -29,6 +29,7 @@ public class Borrower extends Person {
     super(idNumber, name, address, email, phoneNum);
     borrowedBooks = new ArrayList<>();
     onHoldBooks = new ArrayList<>();
+    super.setBorrower();
   }
 
   /**

@@ -14,6 +14,7 @@ public class Librarian extends Person {
         } else {
             officeNo = officeNumber;
         }
+        super.setLibrarian();
     }
 
     @Override

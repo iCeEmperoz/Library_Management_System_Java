@@ -9,8 +9,8 @@ public abstract class Person {
     protected int id;           // ID of every person related to library
     protected String name;      // Name of the person
     protected String password;  // Password, defaulted to person's ID
-    protected String address;   // Address of the person
     protected String email;     // Email address of the person
+    protected String address;   // Address of the person
     protected int phoneNo;      // Phone number of the person
     protected boolean isLibrarian = false;
     protected boolean isBorrower = false;
@@ -21,12 +21,12 @@ public abstract class Person {
      * Constructor to initialize a Person object.
      *
      * @param idNumber ID for the person, if -1 is passed, an ID will be auto-generated
-     * @param name     Name of the person
      * @param address  Address of the person
+     * @param name     Name of the person
      * @param email    Email address of the person
      * @param phoneNum Phone number of the person
      */
-    public Person(int idNumber, String name, String address, String email, int phoneNum) {
+    public Person(int idNumber, String name, String email, String address, int phoneNum) {
         currentIdNumber++;
 
         if (idNumber == -1) {
@@ -37,8 +37,8 @@ public abstract class Person {
 
         password = Integer.toString(id);
         this.name = name;
-        this.address = address;
         this.email = email;
+        this.address = address;
         phoneNo = phoneNum;
     }
 
@@ -171,5 +171,9 @@ public abstract class Person {
      */
     public String getPassword() {
         return password;
+    }
+
+    public Boolean getRole() {
+        return isLibrarian;
     }
 }

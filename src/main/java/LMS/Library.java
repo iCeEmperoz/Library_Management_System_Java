@@ -3,19 +3,22 @@ package LMS;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Scanner;
 
 public class Library {
 
-    private String name;                                // name of library
-    public static Librarian librarian;                        // object of Librarian (only one)
-    public static ArrayList<Person> persons;                 // all clerks and borrowers
-    private ArrayList<Book> booksInLibrary;            // all books in library are here!
+    private String name;
+    public static ArrayList<Librarian> librarians;
+    public static ArrayList<Person> persons;
+    private ArrayList<Book> booksInLibrary;
 
-    private ArrayList<Loan> loans;                     // history of all books which have been issued
+    private ArrayList<Loan> loans;
 
     public int book_return_deadline;                   //return deadline after which fine will be generated each day
     public double per_day_fine;
@@ -23,6 +26,10 @@ public class Library {
     public int hold_request_expiry;                    //number of days after which a hold request will expire
     //Created object of the hold request operations
     private HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
+
+    private static final String JDBC_URL = "jdbc:h2:~/src/main/resources/LibraryDB.mv.db"; // File-based H2 database
+    private static final String USER = "sa";
+    private static final String PASSWORD = "";
 
     /*----Following Singleton Design Pattern (Lazy Instantiation)------------*/
     private static Library obj;
@@ -39,7 +46,7 @@ public class Library {
     private Library()   // default cons.
     {
         name = null;
-        librarian = null;
+        librarians = new ArrayList();
         persons = new ArrayList();
 
         booksInLibrary = new ArrayList();
@@ -78,8 +85,8 @@ public class Library {
         return persons;
     }
 
-    public Librarian getLibrarian() {
-        return librarian;
+    public ArrayList<Librarian> getLibrarians() {
+        return librarians;
     }
 
     public String getLibraryName() {
@@ -98,6 +105,9 @@ public class Library {
         persons.add(borrower);
     }
 
+    public static void addLibrarian(Librarian librarian) {
+        librarians.add(librarian);
+    }
 
     public void addLoan(Loan loan) {
         loans.add(loan);
@@ -365,9 +375,8 @@ public class Library {
         }
     }
 
-    public void createBook(String title, String subject, String author)
-    {
-        Book b = new Book(-1,title,subject,author,false);
+    public void createBook(String title, String subject, String author) {
+        Book b = new Book(-1, title, subject, author, false);
 
         addBookinLibrary(b);
 
@@ -375,41 +384,21 @@ public class Library {
     }
 
     // Called when want an access to Portal
-    public Person login()
-    {
+    public Person login() {
         Scanner input = new Scanner(System.in);
 
-        int id = 0;
+        String email = "";
         String password = "";
 
-        System.out.println("\nEnter ID: ");
-
-        try{
-            id = input.nextInt();
-        }
-        catch (java.util.InputMismatchException e)
-        {
-            System.out.println("\nInvalid Input");
-        }
-
+        System.out.println("\nEnter Email: ");
+        email = input.next();
         System.out.println("Enter Password: ");
         password = input.next();
 
-        for (int i = 0; i < persons.size(); i++)
-        {
-            if (persons.get(i).getID() == id && persons.get(i).getPassword().equals(password))
-            {
+        for (int i = 0; i < persons.size(); i++) {
+            if (persons.get(i).getEmail().equals(email) && persons.get(i).getPassword().equals(password)) {
                 System.out.println("\nLogin Successful");
                 return persons.get(i);
-            }
-        }
-
-        if(librarian!=null)
-        {
-            if (librarian.getID() == id && librarian.getPassword().equals(password))
-            {
-                System.out.println("\nLogin Successful");
-                return librarian;
             }
         }
 
@@ -418,30 +407,24 @@ public class Library {
     }
 
     // History when a Book was Issued and was Returned!
-    public void viewHistory()
-    {
-        if (!loans.isEmpty())
-        {
+    public void viewHistory() {
+        if (!loans.isEmpty()) {
             System.out.println("\nIssued Books are: ");
 
             System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------");
             System.out.println("No.\tBook's Title\tBorrower's Name\t  Issuer's Name\t\tIssued Date\t\t\tReceiver's Name\t\tReturned Date\t\tFine Paid");
             System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------");
 
-            for (int i = 0; i < loans.size(); i++)
-            {
-                if(loans.get(i).getIssuer()!=null)
+            for (int i = 0; i < loans.size(); i++) {
+                if (loans.get(i).getIssuer() != null)
                     System.out.print(i + "-" + "\t" + loans.get(i).getBook().getTitle() + "\t\t\t" + loans.get(i).getBorrower().getName() + "\t\t" + loans.get(i).getIssuer().getName() + "\t    " + loans.get(i).getIssuedDate());
 
-                if (loans.get(i).getReceiver() != null)
-                {
-                    System.out.print("\t" + loans.get(i).getReceiver().getName() + "\t\t" + loans.get(i).getReturnDate() +"\t   " + loans.get(i).getFineStatus() + "\n");
-                }
-                else
+                if (loans.get(i).getReceiver() != null) {
+                    System.out.print("\t" + loans.get(i).getReceiver().getName() + "\t\t" + loans.get(i).getReturnDate() + "\t   " + loans.get(i).getFineStatus() + "\n");
+                } else
                     System.out.print("\t\t" + "--" + "\t\t\t" + "--" + "\t\t" + "--" + "\n");
             }
-        }
-        else
+        } else
             System.out.println("\nNo issued books.");
     }
 
@@ -449,5 +432,457 @@ public class Library {
     /*--------------------------------IN- COLLABORATION WITH DATA BASE------------------------------------------*/
 
     // Making Connection With Database
-    //...
+    public Connection makeConnection() {
+        try {
+            return DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+        } catch (SQLException exception) {
+            System.out.println(exception.getMessage());
+            return null;
+        }
+    }
+
+    public void populateLibrary(Connection connection) throws SQLException, IOException {
+        Library library = this;
+        Statement stmt = connection.createStatement();
+
+        /* --- Populating Book ----*/
+        String SQL = "SELECT * FROM BOOK";
+        ResultSet resultSet = stmt.executeQuery(SQL);
+
+        if (!resultSet.next()) {
+            System.out.println("\nNo Books Found in Library");
+        } else {
+            int maxID = 0;
+
+            do {
+                if (resultSet.getString("TITLE") != null && resultSet.getString("AUTHOR") != null && resultSet.getString("SUBJECT") != null && resultSet.getInt("ID") != 0) {
+                    String title = resultSet.getString("TITLE");
+                    String author = resultSet.getString("AUTHOR");
+                    String subject = resultSet.getString("SUBJECT");
+                    int id = resultSet.getInt("ID");
+                    boolean issue = resultSet.getBoolean("IS_ISSUED");
+                    Book b = new Book(id, title, subject, author, issue);
+                    addBookinLibrary(b);
+
+                    if (maxID < id)
+                        maxID = id;
+                }
+            } while (resultSet.next());
+
+            // setting Book Count
+            Book.setIDCount(maxID);
+        }
+
+        SQL = "SELECT ID, NAME, PASSWORD, EMAIL, ADDRESS, PHONE_NO, SALARY,OFFICE_NO FROM PERSON INNER JOIN LIBRARIAN ON ID=L_ID INNER JOIN STAFF ON S_ID=L_ID";
+
+        resultSet = stmt.executeQuery(SQL);
+        if (!resultSet.next()) {
+            System.out.println("No Librarian Found in Library");
+        } else {
+            do {
+                int id = resultSet.getInt("ID");
+                String name = resultSet.getString("NAME");
+                String email = resultSet.getString("EMAIL");
+                String address = resultSet.getString("ADDRESS");
+                int phoneNumber = resultSet.getInt("PHONE_NO");
+                double salary = resultSet.getDouble("SALARY");
+                int officeNumer = resultSet.getInt("OFFICE_NO");
+                Librarian librarian = new Librarian(id, name, email, address, phoneNumber, salary, officeNumer);
+
+                Library.addLibrarian(librarian);
+
+            } while (resultSet.next());
+
+        }
+
+        /*---Populating Borrowers (partially)!!!!!!--------*/
+
+        SQL = "SELECT ID, NAME, PASSWORD, EMAIL, ADDRESS, PHONE_NO FROM PERSON INNER JOIN BORROWER ON ID=B_ID";
+
+        resultSet = stmt.executeQuery(SQL);
+
+        if (!resultSet.next()) {
+            System.out.println("No Borrower Found in Library");
+        } else {
+            do {
+                int id = resultSet.getInt("ID");
+                String name = resultSet.getString("NAME");
+                String email = resultSet.getString("EMAIL");
+                String address = resultSet.getString("ADDRESS");
+                int phoneNumber = resultSet.getInt("PHONE_NO");
+
+                Borrower borrower = new Borrower(id, name, email, address, phoneNumber);
+                addBorrower(borrower);
+
+            } while (resultSet.next());
+
+        }
+
+        /*----Populating Loan----*/
+
+        SQL = "SELECT * FROM LOAN";
+
+        resultSet = stmt.executeQuery(SQL);
+        if (!resultSet.next()) {
+            System.out.println("No Books Issued Yet!");
+        } else {
+            do {
+                int borrowerId = resultSet.getInt("BORROWER");
+                int bookId = resultSet.getInt("BOOK");
+                int issuerId = resultSet.getInt("ISSUER");
+                Integer rid = (Integer) resultSet.getObject("RECEIVER");
+                int rd = 0;
+                java.util.Date rdate;
+
+                java.util.Date idate = new java.util.Date(resultSet.getTimestamp("ISS_DATE").getTime());
+
+                if (rid != null)    // if there is a receiver
+                {
+                    rdate = new java.util.Date(resultSet.getTimestamp("RET_DATE").getTime());
+                    rd = (int) rid;
+                } else {
+                    rdate = null;
+                }
+
+                boolean fineStatus = resultSet.getBoolean("FINE_PAID");
+
+                boolean set = true;
+
+                Borrower bb = null;
+
+
+                for (int i = 0; i < getPersons().size() && set; i++) {
+                    if (getPersons().get(i).getID() == borrowerId) {
+                        set = false;
+                        bb = (Borrower) (getPersons().get(i));
+                    }
+                }
+
+                set = true;
+                Librarian s[] = new Librarian[2];
+
+                for (int k = 0; k < librarians.size() && set; k++) {
+                    if (getLibrarians().get(k).getID() == issuerId) {
+                        set = false;
+                        s[0] = librarians.get(k);
+                    }
+                }
+
+                set = true;
+                // If not returned yet...
+                if (rid == null) {
+                    s[1] = null;  // no reciever
+                    rdate = null;
+                } else {
+                    for (int k = 0; k < librarians.size() && set; k++) {
+                        if (librarians.get(k).getID() == rd) {
+                            set = false;
+                            s[1] = librarians.get(k);
+                        }
+                    }
+                }
+
+                set = true;
+
+                ArrayList<Book> books = getBooks();
+
+                for (int k = 0; k < books.size() && set; k++) {
+                    if (books.get(k).getID() == bookId) {
+                        set = false;
+                        Loan l = new Loan(bb, books.get(k), s[0], s[1], idate, rdate, fineStatus);
+                        loans.add(l);
+                    }
+                }
+
+            } while (resultSet.next());
+        }
+
+        /*----Populationg Hold Books----*/
+
+        SQL = "SELECT * FROM ON_HOLD_BOOK";
+
+        resultSet = stmt.executeQuery(SQL);
+        if (!resultSet.next()) {
+            System.out.println("No Books on Hold Yet!");
+        } else {
+            do {
+                int borrowerId = resultSet.getInt("BORROWER");
+                int bookId = resultSet.getInt("BOOK");
+                java.util.Date off = new Date(resultSet.getDate("REQ_DATE").getTime());
+
+                boolean set = true;
+                Borrower bb = null;
+
+                ArrayList<Person> persons = library.getPersons();
+
+                for (int i = 0; i < persons.size() && set; i++) {
+                    if (persons.get(i).getID() == borrowerId) {
+                        set = false;
+                        bb = (Borrower) (persons.get(i));
+                    }
+                }
+
+                set = true;
+
+                ArrayList<Book> books = library.getBooks();
+
+                for (int i = 0; i < books.size() && set; i++) {
+                    if (books.get(i).getID() == bookId) {
+                        set = false;
+                        HoldRequest hbook = new HoldRequest(bb, books.get(i), off);
+                        holdRequestsOperations.addHoldRequest(hbook);
+                        bb.addHoldRequest(hbook);
+                    }
+                }
+            } while (resultSet.next());
+        }
+
+        /* --- Populating Borrower's Remaining Info----*/
+
+        // Borrowed Books
+        SQL = "SELECT ID, BOOK FROM PERSON INNER JOIN BORROWER ON ID=B_ID INNER JOIN BORROWED_BOOK ON B_ID=BORROWER ";
+
+        resultSet = stmt.executeQuery(SQL);
+
+        if (!resultSet.next()) {
+            System.out.println("No Borrower has borrowed yet from Library");
+        } else {
+
+            do {
+                int id = resultSet.getInt("ID");      // borrower
+                int bid = resultSet.getInt("BOOK");   // book
+
+                Borrower bb = null;
+                boolean set = true;
+                boolean okay = true;
+
+                for (int i = 0; i < library.getPersons().size() && set; i++) {
+                    if (library.getPersons().get(i).getClass().getSimpleName().equals("Borrower")) {
+                        if (library.getPersons().get(i).getID() == id) {
+                            set = false;
+                            bb = (Borrower) (library.getPersons().get(i));
+                        }
+                    }
+                }
+
+                set = true;
+
+                ArrayList<Loan> books = loans;
+
+                for (int i = 0; i < books.size() && set; i++) {
+                    if (books.get(i).getBook().getID() == bid && books.get(i).getReceiver() == null) {
+                        set = false;
+                        Loan bBook = new Loan(bb, books.get(i).getBook(), books.get(i).getIssuer(), null, books.get(i).getIssuedDate(), null, books.get(i).getFineStatus());
+                        bb.addBorrowedBook(bBook);
+                    }
+                }
+
+            } while (resultSet.next());
+        }
+
+        ArrayList<Person> persons = library.getPersons();
+
+        /* Setting Person ID Count */
+        int max = 0;
+
+        for (int i = 0; i < persons.size(); i++) {
+            if (max < persons.get(i).getID())
+                max = persons.get(i).getID();
+        }
+
+        Person.setIDCount(max);
+    }
+
+    // Filling Changes back to Database
+    public void fillItBack(Connection connection) throws SQLException, SQLIntegrityConstraintViolationException {
+        /*-----------Loan Table Cleared------------*/
+
+        String template = "DELETE FROM LIBRARY.LOAN";
+        PreparedStatement stmts = connection.prepareStatement(template);
+
+        stmts.executeUpdate();
+
+        /*-----------Borrowed Books Table Cleared------------*/
+
+        template = "DELETE FROM LIBRARY.BORROWED_BOOK";
+        stmts = connection.prepareStatement(template);
+
+        stmts.executeUpdate();
+
+        /*-----------OnHoldBooks Table Cleared------------*/
+
+        template = "DELETE FROM LIBRARY.ON_HOLD_BOOK";
+        stmts = connection.prepareStatement(template);
+
+        stmts.executeUpdate();
+
+        /*-----------Books Table Cleared------------*/
+
+        template = "DELETE FROM LIBRARY.BOOK";
+        stmts = connection.prepareStatement(template);
+
+        stmts.executeUpdate();
+
+        /*-----------Librarian Table Cleared------------*/
+
+        template = "DELETE FROM LIBRARY.LIBRARIAN";
+        stmts = connection.prepareStatement(template);
+
+        stmts.executeUpdate();
+
+        /*-----------Borrower Table Cleared------------*/
+
+        template = "DELETE FROM LIBRARY.BORROWER";
+        stmts = connection.prepareStatement(template);
+
+        stmts.executeUpdate();
+
+        /*-----------Person Table Cleared------------*/
+
+        template = "DELETE FROM LIBRARY.PERSON";
+        stmts = connection.prepareStatement(template);
+
+        stmts.executeUpdate();
+
+        Library library = this;
+
+        /* Filling Person's Table*/
+        for (int i = 0; i < library.getPersons().size(); i++) {
+            template = "INSERT INTO LIBRARY.PERSON (ID, NAME, PASSWORD, EMAIL, ADDRESS, PHONE_NO) values (?, ?, ?, ?, ?, ?)";
+
+            PreparedStatement stmt = connection.prepareStatement(template);
+
+            stmt.setInt((int) 1, library.getPersons().get(i).getID());
+            stmt.setString((int) 2, library.getPersons().get(i).getName());
+            stmt.setString((int) 3, library.getPersons().get(i).getEmail());
+            stmt.setString((int) 4, library.getPersons().get(i).getPassword());
+            stmt.setString((int) 5, library.getPersons().get(i).getAddress());
+            stmt.setInt((int) 6, library.getPersons().get(i).getPhoneNo());
+
+            stmt.executeUpdate();
+        }
+
+        /* Filling Librarian Table*/
+        for (int i = 0; i < library.getPersons().size(); i++) {
+            if (library.getPersons().get(i).getRole()) {
+                template = "INSERT INTO LIBRARY.LIBRARIAN (SALARY, PERSON_ID, OFFICE_NO) values (?,?,?)";
+                PreparedStatement stmt = connection.prepareStatement(template);
+
+                stmt.setDouble((int) 1, ((Librarian) (library.getPersons().get(i))).getSalary());
+                stmt.setInt((int) 2, library.getPersons().get(i).getID());
+                stmt.setInt((int) 3, ((Librarian) (library.getPersons().get(i))).getOfficeNo());
+
+                stmt.executeUpdate();
+            }
+
+        }
+
+        /* Filling Borrower's Table*/
+        for (int i = 0; i < library.getPersons().size(); i++) {
+            if (!library.getPersons().get(i).getRole()) {
+                template = "INSERT INTO LIBRARY.BORROWER(PERSON_ID) values (?)";
+                PreparedStatement stmt = connection.prepareStatement(template);
+
+                stmt.setInt((int) 1, library.getPersons().get(i).getID());
+
+                stmt.executeUpdate();
+            }
+        }
+
+        ArrayList<Book> books = library.getBooks();
+
+        /*Filling Book's Table*/
+        for (int i = 0; i < books.size(); i++) {
+            template = "INSERT INTO LIBRARY.BOOK (BOOK_ID, TITLE, AUTHOR, SUBJECT,IS_ISSUED) values (?,?,?,?,?)";
+            PreparedStatement stmt = connection.prepareStatement(template);
+
+            stmt.setInt((int) 1, books.get(i).getID());
+            stmt.setString((int) 2, books.get(i).getTitle());
+            stmt.setString((int) 3, books.get(i).getAuthor());
+            stmt.setString((int) 4, books.get(i).getSubject());
+            stmt.setBoolean((int) 5, books.get(i).getIssuedStatus());
+            stmt.executeUpdate();
+
+        }
+
+        /* Filling Loan Book's Table*/
+        for (int i = 0; i < loans.size(); i++) {
+            template = "INSERT INTO LIBRARY.LOAN(LOAN_ID, BORROWER_ID, BOOK_ID, I_LIBRARIAN_ID, ISSUED_DATE, R_LIBRARIAN_ID, RETURNED_DATE, FINE_PAID) values (?,?,?,?,?,?,?,?)";
+            PreparedStatement stmt = connection.prepareStatement(template);
+
+            stmt.setInt((int) 1, i + 1);
+            stmt.setInt((int) 2, loans.get(i).getBorrower().getID());
+            stmt.setInt((int) 3, loans.get(i).getBook().getID());
+            stmt.setInt((int) 4, loans.get(i).getIssuer().getID());
+            stmt.setTimestamp((int) 5, new java.sql.Timestamp(loans.get(i).getIssuedDate().getTime()));
+            stmt.setBoolean((int) 8, loans.get(i).getFineStatus());
+            if (loans.get(i).getReceiver() == null) {
+                stmt.setNull((int) 6, Types.INTEGER);
+                stmt.setDate((int) 7, null);
+            } else {
+                stmt.setInt((int) 6, loans.get(i).getReceiver().getID());
+                stmt.setTimestamp((int) 7, new java.sql.Timestamp(loans.get(i).getReturnDate().getTime()));
+            }
+
+            stmt.executeUpdate();
+
+        }
+
+        /* Filling On_Hold_ Table*/
+
+        int x = 1;
+        for (int i = 0; i < library.getBooks().size(); i++) {
+            for (int j = 0; j < library.getBooks().get(i).getHoldRequests().size(); j++) {
+                template = "INSERT INTO LIBRARY.ON_HOLD_BOOK(REQ_ID,BOOK,BORROWER,REQ_DATE) values (?,?,?,?)";
+                PreparedStatement stmt = connection.prepareStatement(template);
+
+                stmt.setInt((int) 1, x);
+                stmt.setInt((int) 3, library.getBooks().get(i).getHoldRequests().get(j).getBorrower().getID());
+                stmt.setInt((int) 2, library.getBooks().get(i).getHoldRequests().get(j).getBook().getID());
+                stmt.setDate((int) 4, new java.sql.Date(library.getBooks().get(i).getHoldRequests().get(j).getRequestDate().getTime()));
+
+                stmt.executeUpdate();
+                x++;
+
+            }
+        }
+
+        for(int i=0;i<library.getBooks().size();i++)
+        {
+            for(int j=0;j<library.getBooks().get(i).getHoldRequests().size();j++)
+            {
+            template = "INSERT INTO LIBRARY.ON_HOLD_BOOK(REQ_ID,BOOK,BORROWER,REQ_DATE) values (?,?,?,?)";
+            PreparedStatement stmt = connection.prepareStatement(template);
+
+            stmt.setInt((int) 1,i+1);
+            stmt.setInt((int) 3,library.getBooks().get(i).getHoldRequests().get(j).getBorrower().getID());
+            stmt.setInt((int) 2,library.getBooks().get(i).getHoldRequests().get(j).getBook().getID());
+            stmt.setDate((int) 4,new java.sql.Date(library.getBooks().get(i).getHoldRequests().get(j).getRequestDate().getTime()));
+
+            stmt.executeUpdate();
+            }
+        }
+
+        /* Filling Borrowed Book Table*/
+        for (int i = 0; i < library.getBooks().size(); i++) {
+            if (library.getBooks().get(i).getIssuedStatus() == true) {
+                boolean set = true;
+                for (int j = 0; j < loans.size() && set; j++) {
+                    if (library.getBooks().get(i).getID() == loans.get(j).getBook().getID()) {
+                        if (loans.get(j).getReceiver() == null) {
+                            template = "INSERT INTO LIBRARY.BORROWED_BOOK(BOOK,BORROWER) values (?,?)";
+                            PreparedStatement stmt = connection.prepareStatement(template);
+                            stmt.setInt((int) 1, loans.get(j).getBook().getID());
+                            stmt.setInt((int) 2, loans.get(j).getBorrower().getID());
+
+                            stmt.executeUpdate();
+                            set = false;
+                        }
+                    }
+
+                }
+
+            }
+        }
+    } // Filling Done!
 }

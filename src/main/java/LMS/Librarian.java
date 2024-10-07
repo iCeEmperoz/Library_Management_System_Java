@@ -5,7 +5,7 @@ public class Librarian extends Person {
     int officeNo;     //Office Number of the Librarian
     public static int currentOfficeNumber = 0;
 
-    public Librarian(int idNumber, String name, String address, String email, int phoneNum, double salary, int officeNumber)
+    public Librarian(int idNumber, String name, String email, String address, int phoneNum, double salary, int officeNumber)
     {
         super(idNumber, name, address, email, phoneNum);
         this.salary = salary;
@@ -29,6 +29,7 @@ public class Librarian extends Person {
         return salary;
     }
 
-    // addLibrarian here
-
+    public int getOfficeNo() {
+        return officeNo;
+    }
 }

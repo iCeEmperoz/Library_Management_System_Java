@@ -351,11 +351,7 @@ public class Library {
             }
 
             Librarian l = new Librarian(-1, n, address, email, phone, salary, -1);
-            if (Librarian.addLibrarian(l)) {
-                System.out.println("\nLibrarian with name " + n + " created successfully.");
-                System.out.println("\nYour ID is : " + l.getID());
-                System.out.println("Your Password is : " + l.getPassword());
-            }
+            persons.add(l); //
         }
 
         //If borrower is to be created
@@ -420,4 +416,38 @@ public class Library {
         System.out.println("\nSorry! Wrong ID or Password");
         return null;
     }
+
+    // History when a Book was Issued and was Returned!
+    public void viewHistory()
+    {
+        if (!loans.isEmpty())
+        {
+            System.out.println("\nIssued Books are: ");
+
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("No.\tBook's Title\tBorrower's Name\t  Issuer's Name\t\tIssued Date\t\t\tReceiver's Name\t\tReturned Date\t\tFine Paid");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+            for (int i = 0; i < loans.size(); i++)
+            {
+                if(loans.get(i).getIssuer()!=null)
+                    System.out.print(i + "-" + "\t" + loans.get(i).getBook().getTitle() + "\t\t\t" + loans.get(i).getBorrower().getName() + "\t\t" + loans.get(i).getIssuer().getName() + "\t    " + loans.get(i).getIssuedDate());
+
+                if (loans.get(i).getReceiver() != null)
+                {
+                    System.out.print("\t" + loans.get(i).getReceiver().getName() + "\t\t" + loans.get(i).getReturnDate() +"\t   " + loans.get(i).getFineStatus() + "\n");
+                }
+                else
+                    System.out.print("\t\t" + "--" + "\t\t\t" + "--" + "\t\t" + "--" + "\n");
+            }
+        }
+        else
+            System.out.println("\nNo issued books.");
+    }
+
+    //---------------------------------------------------------------------------------------//
+    /*--------------------------------IN- COLLABORATION WITH DATA BASE------------------------------------------*/
+
+    // Making Connection With Database
+    //...
 }

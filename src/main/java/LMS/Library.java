@@ -28,7 +28,7 @@ public class Library {
     //Created object of the hold request operations
     private final HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
 
-    private static final String JDBC_URL = "jdbc:h2:~/LibraryDB.mv.db"; // File-based H2 database
+    private static final String JDBC_URL = "jdbc:h2:file:"; // File-based H2 database
     private static final String USER = "sa";
     private static final String PASSWORD = "";
 

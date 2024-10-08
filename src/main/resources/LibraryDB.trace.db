@@ -1317,3 +1317,13 @@ Caused by: org.h2.mvstore.MVStoreException: The file is locked: D:/Document/OOP/
 	at com.h2database@2.2.220/org.h2.mvstore.SingleFileStore.open(SingleFileStore.java:81)
 	at com.h2database@2.2.220/org.h2.mvstore.MVStore.<init>(MVStore.java:286)
 	... 13 more
+2024-10-08 11:07:50 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Column "ID" not found [42122-220]
+	at com.h2database@2.2.220/org.h2.message.DbException.getJdbcSQLException(DbException.java:514)
+	at com.h2database@2.2.220/org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	at com.h2database@2.2.220/org.h2.message.DbException.get(DbException.java:223)
+	at com.h2database@2.2.220/org.h2.message.DbException.get(DbException.java:199)
+	at com.h2database@2.2.220/org.h2.jdbc.JdbcResultSet.getColumnIndex(JdbcResultSet.java:3492)
+	at com.h2database@2.2.220/org.h2.jdbc.JdbcResultSet.getInt(JdbcResultSet.java:337)
+	at group/LMS.Library.populateLibrary(Library.java:458)
+	at group/LMS.OnTerminal.main(OnTerminal.java:32)

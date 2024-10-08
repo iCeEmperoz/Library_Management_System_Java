@@ -18,6 +18,6 @@
 }
 
 .textfield:focused {
-  -fx-background-color: linear-gradient(to bottom right, #16a47c, #2a827b);
+  -fx-background-color: linear-gradient(to bottom right, #16a47c, #c3d6da);
   -fx-border-width: .8px;
 }

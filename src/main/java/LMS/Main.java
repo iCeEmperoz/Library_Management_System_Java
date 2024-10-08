@@ -20,9 +20,9 @@ public class Main extends Application {
 
         primaryStage.getIcons().add(icon);
 
-        FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/LMS/RegistrationForm.fxml"));
+        FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/LMS/FXMLDocument.fxml"));
 
-        Scene loginScene = new Scene(loginLoader.load(), 800, 500);
+        Scene loginScene = new Scene(loginLoader.load(), 393, 614);
 
         primaryStage.setTitle("Login");
         primaryStage.setScene(loginScene);

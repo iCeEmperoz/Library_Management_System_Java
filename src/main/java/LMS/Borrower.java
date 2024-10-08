@@ -25,7 +25,7 @@ public class Borrower extends Person {
    * @param email    Email address of the borrower.
    * @param phoneNum Phone number of the borrower.
    */
-  public Borrower(int idNumber, String name, String address, String email, int phoneNum) {
+  public Borrower(int idNumber, String name, String email, String address, int phoneNum) {
     super(idNumber, name, address, email, phoneNum);
     borrowedBooks = new ArrayList<>();
     onHoldBooks = new ArrayList<>();
@@ -146,7 +146,7 @@ public class Borrower extends Person {
    *
    * @throws IOException if an I/O error occurs.
    */
-  public void updateBorrowedBooksInfo() throws IOException {
+  public void updateBorrowerInfo() throws IOException {
     String choice;
 
     Scanner sc = new Scanner(System.in);

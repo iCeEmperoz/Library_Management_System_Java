@@ -13,12 +13,12 @@ public class Book {
     private HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
     static int currentIdNumber = 0;
 
-    public Book(int id,String t, String s, String a, boolean issued) {
+    public Book(int id, String t, String s, String a, boolean issued) {
         currentIdNumber++;
-        if(id==-1) {
+        if (id == -1) {
             bookID = currentIdNumber;
         } else
-            bookID=id;
+            bookID = id;
 
         title = t;
         subject = s;
@@ -59,7 +59,7 @@ public class Book {
         System.out.println("\nUpdate Author? (y/n)");
         input = scanner.next();
 
-        if(input.equals("y")) {
+        if (input.equals("y")) {
             System.out.println("\nEnter new Author: ");
             author = reader.readLine();
         }
@@ -67,7 +67,7 @@ public class Book {
         System.out.println("\nUpdate Subject? (y/n)");
         input = scanner.next();
 
-        if(input.equals("y")) {
+        if (input.equals("y")) {
             System.out.println("\nEnter new Subject: ");
             subject = reader.readLine();
         }
@@ -75,7 +75,7 @@ public class Book {
         System.out.println("\nUpdate Title? (y/n)");
         input = scanner.next();
 
-        if(input.equals("y")) {
+        if (input.equals("y")) {
             System.out.println("\nEnter new Title: ");
             title = reader.readLine();
         }
@@ -118,8 +118,7 @@ public class Book {
 
     /*------------Setter FUNCs.---------*/
 
-    public static void setIDCount(int n)
-    {
+    public static void setIDCount(int n) {
         currentIdNumber = n;
     }
 
@@ -138,8 +137,8 @@ public class Book {
         boolean makeRequest = true;
 
         //If that borrower has already borrowed that particular book. Then he isn't allowed to make request for that book. He will have to renew the issued book in order to extend the return deadline.
-        for(int i=0; i < borrower.getBorrowedBooks().size(); i++) {
-            if(borrower.getBorrowedBooks().get(i).getBook()==this) {
+        for (int i = 0; i < borrower.getBorrowedBooks().size(); i++) {
+            if (borrower.getBorrowedBooks().get(i).getBook() == this) {
                 System.out.println("\n" + "You have already borrowed " + title);
                 return;
             }
@@ -162,15 +161,13 @@ public class Book {
     }
 
     // Getting Info of a Hold Request
-    public void serviceHoldRequest(HoldRequest holdRequest)
-    {
+    public void serviceHoldRequest(HoldRequest holdRequest) {
         holdRequestsOperations.removeHoldRequest();
         holdRequest.getBorrower().removeHoldRequest(holdRequest);
     }
 
     // Issuing a Book
-    public void issueBook(Borrower borrower, Librarian librarian)
-    {
+    public void issueBook(Borrower borrower, Librarian librarian) {
         //First deleting the expired hold requests
         Date today = new Date();
 
@@ -181,9 +178,9 @@ public class Book {
 
             //Remove that hold request which has expired
             long days = ChronoUnit.DAYS.between(today.toInstant(), holdRequest.getRequestDate().toInstant());
-            days = 0-days;
+            days = 0 - days;
 
-            if(days > Library.getInstance().getHoldRequestExpiry()) {
+            if (days > Library.getInstance().getHoldRequestExpiry()) {
                 holdRequestsOperations.removeHoldRequest();
                 holdRequest.getBorrower().removeHoldRequest(holdRequest);
             }
@@ -237,7 +234,7 @@ public class Book {
             //If there are no hold requests for this book, then simply issue the book.
             setIssuedStatus(true);
 
-            Loan iHistory = new Loan(borrower,this, librarian,null,new Date(),null,false);
+            Loan iHistory = new Loan(borrower, this, librarian, null, new Date(), null, false);
 
             Library.getInstance().addLoan(iHistory);
             borrower.addBorrowedBook(iHistory);
@@ -248,8 +245,7 @@ public class Book {
     }
 
     // Returning a Book
-    public void returnBook(Borrower borrower, Loan loan, Librarian librarian)
-    {
+    public void returnBook(Borrower borrower, Loan loan, Librarian librarian) {
         loan.getBook().setIssuedStatus(false);
         loan.setReturnedDate(new Date());
         loan.setReceiver(librarian);

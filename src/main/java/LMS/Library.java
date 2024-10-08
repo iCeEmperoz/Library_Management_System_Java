@@ -9,25 +9,24 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Scanner;
 
 public class Library {
 
     private String name;
     public static ArrayList<Librarian> librarians;
     public static ArrayList<Person> persons;
-    private ArrayList<Book> booksInLibrary;
+    private final ArrayList<Book> booksInLibrary;
 
-    private ArrayList<Loan> loans;
+    private final ArrayList<Loan> loans;
 
     public int book_return_deadline;                   //return deadline after which fine will be generated each day
     public double per_day_fine;
 
     public int hold_request_expiry;                    //number of days after which a hold request will expire
     //Created object of the hold request operations
-    private HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
+    private final HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
 
-    private static final String JDBC_URL = "jdbc:h2:~/src/main/resources/LibraryDB.mv.db"; // File-based H2 database
+    private static final String JDBC_URL = "jdbc:h2:~/LibraryDB.mv.db"; // File-based H2 database
     private static final String USER = "sa";
     private static final String PASSWORD = "";
 
@@ -46,11 +45,11 @@ public class Library {
     private Library()   // default cons.
     {
         name = null;
-        librarians = new ArrayList();
-        persons = new ArrayList();
+        librarians = new ArrayList<>();
+        persons = new ArrayList<>();
 
-        booksInLibrary = new ArrayList();
-        loans = new ArrayList();
+        booksInLibrary = new ArrayList<>();
+        loans = new ArrayList<>();
     }
 
 
@@ -129,9 +128,9 @@ public class Library {
             System.out.println("\nInvalid Input");
         }
 
-        for (int i = 0; i < persons.size(); i++) {
-            if (persons.get(i).getID() == id && persons.get(i).getClass().getSimpleName().equals("Borrower"))
-                return (Borrower) (persons.get(i));
+        for (Person person : persons) {
+            if (person.getID() == id && person.getClass().getSimpleName().equals("Borrower"))
+                return (Borrower) person;
         }
 
         System.out.println("\nSorry this ID didn't match any Borrower's ID.");
@@ -232,12 +231,10 @@ public class Library {
             author = reader.readLine();
         }
 
-        ArrayList<Book> matchedBooks = new ArrayList();
+        ArrayList<Book> matchedBooks = new ArrayList<>();
 
         //Retrieving all the books which matched the user's search query
-        for (int i = 0; i < booksInLibrary.size(); i++) {
-            Book b = booksInLibrary.get(i);
-
+        for (Book b : booksInLibrary) {
             if (choice.equals("1")) {
                 if (b.getTitle().equals(title))
                     matchedBooks.add(b);
@@ -383,22 +380,22 @@ public class Library {
         System.out.println("\nBook with Title " + b.getTitle() + " is successfully created.");
     }
 
-    // Called when want an access to Portal
+    // Called when want access to Portal
     public Person login() {
         Scanner input = new Scanner(System.in);
 
-        String email = "";
-        String password = "";
+        String email;
+        String password;
 
         System.out.println("\nEnter Email: ");
         email = input.next();
         System.out.println("Enter Password: ");
         password = input.next();
 
-        for (int i = 0; i < persons.size(); i++) {
-            if (persons.get(i).getEmail().equals(email) && persons.get(i).getPassword().equals(password)) {
+        for (Person person : persons) {
+            if (person.getEmail().equals(email) && person.getPassword().equals(password)) {
                 System.out.println("\nLogin Successful");
-                return persons.get(i);
+                return person;
             }
         }
 
@@ -456,10 +453,10 @@ public class Library {
 
             do {
                 if (resultSet.getString("TITLE") != null && resultSet.getString("AUTHOR") != null && resultSet.getString("SUBJECT") != null && resultSet.getInt("ID") != 0) {
+                    int id = resultSet.getInt("ID");
                     String title = resultSet.getString("TITLE");
                     String author = resultSet.getString("AUTHOR");
                     String subject = resultSet.getString("SUBJECT");
-                    int id = resultSet.getInt("ID");
                     boolean issue = resultSet.getBoolean("IS_ISSUED");
                     Book b = new Book(id, title, subject, author, issue);
                     addBookinLibrary(b);
@@ -539,7 +536,7 @@ public class Library {
                 if (rid != null)    // if there is a receiver
                 {
                     rdate = new java.util.Date(resultSet.getTimestamp("RET_DATE").getTime());
-                    rd = (int) rid;
+                    rd = rid;
                 } else {
                     rdate = null;
                 }
@@ -559,7 +556,7 @@ public class Library {
                 }
 
                 set = true;
-                Librarian s[] = new Librarian[2];
+                Librarian[] s = new Librarian[2];
 
                 for (int k = 0; k < librarians.size() && set; k++) {
                     if (getLibrarians().get(k).getID() == issuerId) {
@@ -606,9 +603,9 @@ public class Library {
             System.out.println("No Books on Hold Yet!");
         } else {
             do {
-                int borrowerId = resultSet.getInt("BORROWER");
-                int bookId = resultSet.getInt("BOOK");
-                java.util.Date off = new Date(resultSet.getDate("REQ_DATE").getTime());
+                int borrowerId = resultSet.getInt("BORROWER_ID");
+                int bookId = resultSet.getInt("BOOK_ID");
+                java.util.Date off = new Date(resultSet.getDate("REQUEST_DATE").getTime());
 
                 boolean set = true;
                 Borrower bb = null;
@@ -685,16 +682,16 @@ public class Library {
         /* Setting Person ID Count */
         int max = 0;
 
-        for (int i = 0; i < persons.size(); i++) {
-            if (max < persons.get(i).getID())
-                max = persons.get(i).getID();
+        for (Person person : persons) {
+            if (max < person.getID())
+                max = person.getID();
         }
 
         Person.setIDCount(max);
     }
 
     // Filling Changes back to Database
-    public void fillItBack(Connection connection) throws SQLException, SQLIntegrityConstraintViolationException {
+    public void fillItBack(Connection connection) throws SQLException {
         /*-----------Loan Table Cleared------------*/
 
         String template = "DELETE FROM LIBRARY.LOAN";
@@ -792,15 +789,15 @@ public class Library {
         ArrayList<Book> books = library.getBooks();
 
         /*Filling Book's Table*/
-        for (int i = 0; i < books.size(); i++) {
+        for (Book book : books) {
             template = "INSERT INTO LIBRARY.BOOK (BOOK_ID, TITLE, AUTHOR, SUBJECT,IS_ISSUED) values (?,?,?,?,?)";
             PreparedStatement stmt = connection.prepareStatement(template);
 
-            stmt.setInt((int) 1, books.get(i).getID());
-            stmt.setString((int) 2, books.get(i).getTitle());
-            stmt.setString((int) 3, books.get(i).getAuthor());
-            stmt.setString((int) 4, books.get(i).getSubject());
-            stmt.setBoolean((int) 5, books.get(i).getIssuedStatus());
+            stmt.setInt((int) 1, book.getID());
+            stmt.setString((int) 2, book.getTitle());
+            stmt.setString((int) 3, book.getAuthor());
+            stmt.setString((int) 4, book.getSubject());
+            stmt.setBoolean((int) 5, book.getIssuedStatus());
             stmt.executeUpdate();
 
         }
@@ -865,7 +862,7 @@ public class Library {
 
         /* Filling Borrowed Book Table*/
         for (int i = 0; i < library.getBooks().size(); i++) {
-            if (library.getBooks().get(i).getIssuedStatus() == true) {
+            if (library.getBooks().get(i).getIssuedStatus()) {
                 boolean set = true;
                 for (int j = 0; j < loans.size() && set; j++) {
                     if (library.getBooks().get(i).getID() == loans.get(j).getBook().getID()) {

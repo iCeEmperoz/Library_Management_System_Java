@@ -3,6 +3,8 @@ package LMS;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,7 +28,7 @@ public class Library {
     //Created object of the hold request operations
     private final HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
 
-    private static final String JDBC_URL = "jdbc:h2:~/LibraryDB.mv.db"; // File-based H2 database
+    private static final String JDBC_URL = "jdbc:h2:file:"; // File-based H2 database
     private static final String USER = "sa";
     private static final String PASSWORD = "";
 
@@ -429,9 +431,10 @@ public class Library {
     /*--------------------------------IN- COLLABORATION WITH DATA BASE------------------------------------------*/
 
     // Making Connection With Database
-    public Connection makeConnection() {
+    public Connection makeConnection() throws UnsupportedEncodingException {
         try {
-            return DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            String dbPath = Paths.get("src/main/resources/LibraryDB").toAbsolutePath().toString();
+            return DriverManager.getConnection(JDBC_URL + dbPath, USER, PASSWORD);
         } catch (SQLException exception) {
             System.out.println(exception.getMessage());
             return null;

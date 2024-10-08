@@ -26,7 +26,7 @@ public class Library {
     //Created object of the hold request operations
     private final HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
 
-    private static final String JDBC_URL = "jdbc:h2:~/LibraryDB.mv.db"; // File-based H2 database
+    private static final String JDBC_URL = "jdbc:h2:~/LibraryDB"; // File-based H2 database
     private static final String USER = "sa";
     private static final String PASSWORD = "";
 
@@ -399,7 +399,7 @@ public class Library {
             }
         }
 
-        System.out.println("\nSorry! Wrong ID or Password");
+        System.out.println("\nSorry! Wrong Email or Password");
         return null;
     }
 
@@ -844,19 +844,17 @@ public class Library {
             }
         }
 
-        for(int i=0;i<library.getBooks().size();i++)
-        {
-            for(int j=0;j<library.getBooks().get(i).getHoldRequests().size();j++)
-            {
-            template = "INSERT INTO LIBRARY.ON_HOLD_BOOK(REQ_ID,BOOK,BORROWER,REQ_DATE) values (?,?,?,?)";
-            PreparedStatement stmt = connection.prepareStatement(template);
+        for (int i = 0; i < library.getBooks().size(); i++) {
+            for (int j = 0; j < library.getBooks().get(i).getHoldRequests().size(); j++) {
+                template = "INSERT INTO LIBRARY.ON_HOLD_BOOK(REQ_ID,BOOK,BORROWER,REQ_DATE) values (?,?,?,?)";
+                PreparedStatement stmt = connection.prepareStatement(template);
 
-            stmt.setInt((int) 1,i+1);
-            stmt.setInt((int) 3,library.getBooks().get(i).getHoldRequests().get(j).getBorrower().getID());
-            stmt.setInt((int) 2,library.getBooks().get(i).getHoldRequests().get(j).getBook().getID());
-            stmt.setDate((int) 4,new java.sql.Date(library.getBooks().get(i).getHoldRequests().get(j).getRequestDate().getTime()));
+                stmt.setInt((int) 1, i + 1);
+                stmt.setInt((int) 3, library.getBooks().get(i).getHoldRequests().get(j).getBorrower().getID());
+                stmt.setInt((int) 2, library.getBooks().get(i).getHoldRequests().get(j).getBook().getID());
+                stmt.setDate((int) 4, new java.sql.Date(library.getBooks().get(i).getHoldRequests().get(j).getRequestDate().getTime()));
 
-            stmt.executeUpdate();
+                stmt.executeUpdate();
             }
         }
 

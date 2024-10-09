@@ -359,13 +359,13 @@ public class Library {
                 System.out.println("\nInvalid Input.");
             }
 
-            Librarian l = new Librarian(-1, n, address, email, phone, salary, -1);
+            Librarian l = new Librarian(-1, n, address, phone, email, salary, -1);
             persons.add(l); //
         }
 
         //If borrower is to be created
         else {
-            Borrower b = new Borrower(-1, n, address, email, phone);
+            Borrower b = new Borrower(-1, n, address, phone, email);
             addBorrower(b);
             System.out.println("\nBorrower with name " + n + " created successfully.");
 
@@ -455,8 +455,8 @@ public class Library {
             int maxID = 0;
 
             do {
-                if (resultSet.getString("TITLE") != null && resultSet.getString("AUTHOR") != null && resultSet.getString("SUBJECT") != null && resultSet.getInt("ID") != 0) {
-                    int id = resultSet.getInt("ID");
+                if (resultSet.getInt("BOOK_ID") != 0 && resultSet.getString("TITLE") != null && resultSet.getString("AUTHOR") != null && resultSet.getString("SUBJECT") != null) {
+                    int id = resultSet.getInt("BOOK_ID");
                     String title = resultSet.getString("TITLE");
                     String author = resultSet.getString("AUTHOR");
                     String subject = resultSet.getString("SUBJECT");
@@ -473,7 +473,7 @@ public class Library {
             Book.setIDCount(maxID);
         }
 
-        SQL = "SELECT ID, NAME, PASSWORD, EMAIL, ADDRESS, PHONE_NO, SALARY,OFFICE_NO FROM PERSON INNER JOIN LIBRARIAN ON ID=L_ID INNER JOIN STAFF ON S_ID=L_ID";
+        SQL = "SELECT ID, NAME, PASSWORD, ADDRESS, PHONE_NO, EMAIL, SALARY, OFFICE_NO FROM PERSON INNER JOIN LIBRARIAN ON ID = LIBRARIAN_ID";
 
         resultSet = stmt.executeQuery(SQL);
         if (!resultSet.next()) {
@@ -482,12 +482,12 @@ public class Library {
             do {
                 int id = resultSet.getInt("ID");
                 String name = resultSet.getString("NAME");
-                String email = resultSet.getString("EMAIL");
                 String address = resultSet.getString("ADDRESS");
                 int phoneNumber = resultSet.getInt("PHONE_NO");
+                String email = resultSet.getString("EMAIL");
                 double salary = resultSet.getDouble("SALARY");
-                int officeNumer = resultSet.getInt("OFFICE_NO");
-                Librarian librarian = new Librarian(id, name, email, address, phoneNumber, salary, officeNumer);
+                int officeNumber = resultSet.getInt("OFFICE_NO");
+                Librarian librarian = new Librarian(id, name, address, phoneNumber, email, salary, officeNumber);
 
                 Library.addLibrarian(librarian);
 
@@ -497,7 +497,7 @@ public class Library {
 
         /*---Populating Borrowers (partially)!!!!!!--------*/
 
-        SQL = "SELECT ID, NAME, PASSWORD, EMAIL, ADDRESS, PHONE_NO FROM PERSON INNER JOIN BORROWER ON ID=B_ID";
+        SQL = "SELECT ID, NAME, PASSWORD, ADDRESS, PHONE_NO, EMAIL FROM PERSON INNER JOIN BORROWER ON ID = BORROWER_ID";
 
         resultSet = stmt.executeQuery(SQL);
 
@@ -507,11 +507,11 @@ public class Library {
             do {
                 int id = resultSet.getInt("ID");
                 String name = resultSet.getString("NAME");
-                String email = resultSet.getString("EMAIL");
                 String address = resultSet.getString("ADDRESS");
                 int phoneNumber = resultSet.getInt("PHONE_NO");
+                String email = resultSet.getString("EMAIL");
 
-                Borrower borrower = new Borrower(id, name, email, address, phoneNumber);
+                Borrower borrower = new Borrower(id, name, address, phoneNumber, email);
                 addBorrower(borrower);
 
             } while (resultSet.next());
@@ -527,29 +527,26 @@ public class Library {
             System.out.println("No Books Issued Yet!");
         } else {
             do {
-                int borrowerId = resultSet.getInt("BORROWER");
-                int bookId = resultSet.getInt("BOOK");
-                int issuerId = resultSet.getInt("ISSUER");
-                Integer rid = (Integer) resultSet.getObject("RECEIVER");
+                int borrowerId = resultSet.getInt("borrower_id"); // Updated
+                int bookId = resultSet.getInt("book_id"); // Updated
+                int issuerId = resultSet.getInt("issuer_id"); // Updated
+                Integer rid = (Integer) resultSet.getObject("receiver_id"); // Updated
                 int rd = 0;
                 java.util.Date rdate;
 
-                java.util.Date idate = new java.util.Date(resultSet.getTimestamp("ISS_DATE").getTime());
+                java.util.Date idate = new java.util.Date(resultSet.getTimestamp("issued_date").getTime()); // Updated
 
-                if (rid != null)    // if there is a receiver
-                {
-                    rdate = new java.util.Date(resultSet.getTimestamp("RET_DATE").getTime());
+                if (rid != null) { // if there is a receiver
+                    rdate = new java.util.Date(resultSet.getTimestamp("date_returned").getTime()); // Updated
                     rd = rid;
                 } else {
                     rdate = null;
                 }
 
-                boolean fineStatus = resultSet.getBoolean("FINE_PAID");
+                boolean fineStatus = resultSet.getBoolean("fine_paid"); // Updated
 
                 boolean set = true;
-
                 Borrower bb = null;
-
 
                 for (int i = 0; i < getPersons().size() && set; i++) {
                     if (getPersons().get(i).getID() == borrowerId) {
@@ -571,7 +568,7 @@ public class Library {
                 set = true;
                 // If not returned yet...
                 if (rid == null) {
-                    s[1] = null;  // no reciever
+                    s[1] = null;  // no receiver
                     rdate = null;
                 } else {
                     for (int k = 0; k < librarians.size() && set; k++) {
@@ -597,18 +594,18 @@ public class Library {
             } while (resultSet.next());
         }
 
-        /*----Populationg Hold Books----*/
+        /*----Populating Hold Books----*/
 
-        SQL = "SELECT * FROM ON_HOLD_BOOK";
+        SQL = "SELECT * FROM HOLD_REQUEST";
 
         resultSet = stmt.executeQuery(SQL);
         if (!resultSet.next()) {
             System.out.println("No Books on Hold Yet!");
         } else {
             do {
-                int borrowerId = resultSet.getInt("BORROWER_ID");
-                int bookId = resultSet.getInt("BOOK_ID");
-                java.util.Date off = new Date(resultSet.getDate("REQUEST_DATE").getTime());
+                int borrowerId = resultSet.getInt("borrower_id"); // Updated
+                int bookId = resultSet.getInt("book_id"); // Updated
+                java.util.Date off = new Date(resultSet.getDate("request_date").getTime()); // Updated
 
                 boolean set = true;
                 Borrower bb = null;
@@ -640,7 +637,9 @@ public class Library {
         /* --- Populating Borrower's Remaining Info----*/
 
         // Borrowed Books
-        SQL = "SELECT ID, BOOK FROM PERSON INNER JOIN BORROWER ON ID=B_ID INNER JOIN BORROWED_BOOK ON B_ID=BORROWER ";
+        SQL = "SELECT person.id, loan.book_ID FROM person " +
+                "INNER JOIN borrower ON person.id = borrower.borrower_id " +
+                "INNER JOIN loan ON borrower.borrower_id = loan.borrower_id";
 
         resultSet = stmt.executeQuery(SQL);
 
@@ -649,15 +648,14 @@ public class Library {
         } else {
 
             do {
-                int id = resultSet.getInt("ID");      // borrower
-                int bid = resultSet.getInt("BOOK");   // book
+                int id = resultSet.getInt("id");      // borrower
+                int bid = resultSet.getInt("bookID"); // book
 
                 Borrower bb = null;
                 boolean set = true;
-                boolean okay = true;
 
                 for (int i = 0; i < library.getPersons().size() && set; i++) {
-                    if (library.getPersons().get(i).getClass().getSimpleName().equals("Borrower")) {
+                    if (library.getPersons().get(i) instanceof Borrower) {
                         if (library.getPersons().get(i).getID() == id) {
                             set = false;
                             bb = (Borrower) (library.getPersons().get(i));
@@ -695,191 +693,129 @@ public class Library {
 
     // Filling Changes back to Database
     public void fillItBack(Connection connection) throws SQLException {
-        /*-----------Loan Table Cleared------------*/
+        // Clear Tables
+        String[] tables = {
+                "LOAN",
+                "BORROWED_BOOK",
+                "HOLD_REQUEST", // Updated table name
+                "BOOK",
+                "LIBRARIAN",
+                "BORROWER",
+                "PERSON"
+        };
 
-        String template = "DELETE FROM LIBRARY.LOAN";
-        PreparedStatement stmts = connection.prepareStatement(template);
-
-        stmts.executeUpdate();
-
-        /*-----------Borrowed Books Table Cleared------------*/
-
-        template = "DELETE FROM LIBRARY.BORROWED_BOOK";
-        stmts = connection.prepareStatement(template);
-
-        stmts.executeUpdate();
-
-        /*-----------OnHoldBooks Table Cleared------------*/
-
-        template = "DELETE FROM LIBRARY.ON_HOLD_BOOK";
-        stmts = connection.prepareStatement(template);
-
-        stmts.executeUpdate();
-
-        /*-----------Books Table Cleared------------*/
-
-        template = "DELETE FROM LIBRARY.BOOK";
-        stmts = connection.prepareStatement(template);
-
-        stmts.executeUpdate();
-
-        /*-----------Librarian Table Cleared------------*/
-
-        template = "DELETE FROM LIBRARY.LIBRARIAN";
-        stmts = connection.prepareStatement(template);
-
-        stmts.executeUpdate();
-
-        /*-----------Borrower Table Cleared------------*/
-
-        template = "DELETE FROM LIBRARY.BORROWER";
-        stmts = connection.prepareStatement(template);
-
-        stmts.executeUpdate();
-
-        /*-----------Person Table Cleared------------*/
-
-        template = "DELETE FROM LIBRARY.PERSON";
-        stmts = connection.prepareStatement(template);
-
-        stmts.executeUpdate();
+        for (String table : tables) {
+            String template = "DELETE FROM LIBRARY." + table;
+            try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                stmt.executeUpdate();
+            }
+        }
 
         Library library = this;
 
-        /* Filling Person's Table*/
-        for (int i = 0; i < library.getPersons().size(); i++) {
-            template = "INSERT INTO LIBRARY.PERSON (ID, NAME, PASSWORD, EMAIL, ADDRESS, PHONE_NO) values (?, ?, ?, ?, ?, ?)";
-
-            PreparedStatement stmt = connection.prepareStatement(template);
-
-            stmt.setInt((int) 1, library.getPersons().get(i).getID());
-            stmt.setString((int) 2, library.getPersons().get(i).getName());
-            stmt.setString((int) 3, library.getPersons().get(i).getEmail());
-            stmt.setString((int) 4, library.getPersons().get(i).getPassword());
-            stmt.setString((int) 5, library.getPersons().get(i).getAddress());
-            stmt.setInt((int) 6, library.getPersons().get(i).getPhoneNo());
-
-            stmt.executeUpdate();
-        }
-
-        /* Filling Librarian Table*/
-        for (int i = 0; i < library.getPersons().size(); i++) {
-            if (library.getPersons().get(i).getRole()) {
-                template = "INSERT INTO LIBRARY.LIBRARIAN (SALARY, PERSON_ID, OFFICE_NO) values (?,?,?)";
-                PreparedStatement stmt = connection.prepareStatement(template);
-
-                stmt.setDouble((int) 1, ((Librarian) (library.getPersons().get(i))).getSalary());
-                stmt.setInt((int) 2, library.getPersons().get(i).getID());
-                stmt.setInt((int) 3, ((Librarian) (library.getPersons().get(i))).getOfficeNo());
-
-                stmt.executeUpdate();
-            }
-
-        }
-
-        /* Filling Borrower's Table*/
-        for (int i = 0; i < library.getPersons().size(); i++) {
-            if (!library.getPersons().get(i).getRole()) {
-                template = "INSERT INTO LIBRARY.BORROWER(PERSON_ID) values (?)";
-                PreparedStatement stmt = connection.prepareStatement(template);
-
-                stmt.setInt((int) 1, library.getPersons().get(i).getID());
-
+        // Filling Person's Table
+        for (Person person : library.getPersons()) {
+            String template = "INSERT INTO LIBRARY.PERSON (ID, NAME, PASSWORD, EMAIL, ADDRESS, PHONE_NO) values (?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                stmt.setInt(1, person.getID());
+                stmt.setString(2, person.getName());
+                stmt.setString(3, person.getEmail());
+                stmt.setString(4, person.getPassword());
+                stmt.setString(5, person.getAddress());
+                stmt.setInt(6, person.getPhoneNo());
                 stmt.executeUpdate();
             }
         }
 
-        ArrayList<Book> books = library.getBooks();
-
-        /*Filling Book's Table*/
-        for (Book book : books) {
-            template = "INSERT INTO LIBRARY.BOOK (BOOK_ID, TITLE, AUTHOR, SUBJECT,IS_ISSUED) values (?,?,?,?,?)";
-            PreparedStatement stmt = connection.prepareStatement(template);
-
-            stmt.setInt((int) 1, book.getID());
-            stmt.setString((int) 2, book.getTitle());
-            stmt.setString((int) 3, book.getAuthor());
-            stmt.setString((int) 4, book.getSubject());
-            stmt.setBoolean((int) 5, book.getIssuedStatus());
-            stmt.executeUpdate();
-
-        }
-
-        /* Filling Loan Book's Table*/
-        for (int i = 0; i < loans.size(); i++) {
-            template = "INSERT INTO LIBRARY.LOAN(LOAN_ID, BORROWER_ID, BOOK_ID, I_LIBRARIAN_ID, ISSUED_DATE, R_LIBRARIAN_ID, RETURNED_DATE, FINE_PAID) values (?,?,?,?,?,?,?,?)";
-            PreparedStatement stmt = connection.prepareStatement(template);
-
-            stmt.setInt((int) 1, i + 1);
-            stmt.setInt((int) 2, loans.get(i).getBorrower().getID());
-            stmt.setInt((int) 3, loans.get(i).getBook().getID());
-            stmt.setInt((int) 4, loans.get(i).getIssuer().getID());
-            stmt.setTimestamp((int) 5, new java.sql.Timestamp(loans.get(i).getIssuedDate().getTime()));
-            stmt.setBoolean((int) 8, loans.get(i).getFineStatus());
-            if (loans.get(i).getReceiver() == null) {
-                stmt.setNull((int) 6, Types.INTEGER);
-                stmt.setDate((int) 7, null);
-            } else {
-                stmt.setInt((int) 6, loans.get(i).getReceiver().getID());
-                stmt.setTimestamp((int) 7, new java.sql.Timestamp(loans.get(i).getReturnDate().getTime()));
-            }
-
-            stmt.executeUpdate();
-
-        }
-
-        /* Filling On_Hold_ Table*/
-
-        int x = 1;
-        for (int i = 0; i < library.getBooks().size(); i++) {
-            for (int j = 0; j < library.getBooks().get(i).getHoldRequests().size(); j++) {
-                template = "INSERT INTO LIBRARY.ON_HOLD_BOOK(REQ_ID,BOOK,BORROWER,REQ_DATE) values (?,?,?,?)";
-                PreparedStatement stmt = connection.prepareStatement(template);
-
-                stmt.setInt((int) 1, x);
-                stmt.setInt((int) 3, library.getBooks().get(i).getHoldRequests().get(j).getBorrower().getID());
-                stmt.setInt((int) 2, library.getBooks().get(i).getHoldRequests().get(j).getBook().getID());
-                stmt.setDate((int) 4, new java.sql.Date(library.getBooks().get(i).getHoldRequests().get(j).getRequestDate().getTime()));
-
-                stmt.executeUpdate();
-                x++;
-
-            }
-        }
-
-        for (int i = 0; i < library.getBooks().size(); i++) {
-            for (int j = 0; j < library.getBooks().get(i).getHoldRequests().size(); j++) {
-                template = "INSERT INTO LIBRARY.ON_HOLD_BOOK(REQ_ID,BOOK,BORROWER,REQ_DATE) values (?,?,?,?)";
-                PreparedStatement stmt = connection.prepareStatement(template);
-
-                stmt.setInt((int) 1, i + 1);
-                stmt.setInt((int) 3, library.getBooks().get(i).getHoldRequests().get(j).getBorrower().getID());
-                stmt.setInt((int) 2, library.getBooks().get(i).getHoldRequests().get(j).getBook().getID());
-                stmt.setDate((int) 4, new java.sql.Date(library.getBooks().get(i).getHoldRequests().get(j).getRequestDate().getTime()));
-
-                stmt.executeUpdate();
-            }
-        }
-
-        /* Filling Borrowed Book Table*/
-        for (int i = 0; i < library.getBooks().size(); i++) {
-            if (library.getBooks().get(i).getIssuedStatus()) {
-                boolean set = true;
-                for (int j = 0; j < loans.size() && set; j++) {
-                    if (library.getBooks().get(i).getID() == loans.get(j).getBook().getID()) {
-                        if (loans.get(j).getReceiver() == null) {
-                            template = "INSERT INTO LIBRARY.BORROWED_BOOK(BOOK,BORROWER) values (?,?)";
-                            PreparedStatement stmt = connection.prepareStatement(template);
-                            stmt.setInt((int) 1, loans.get(j).getBook().getID());
-                            stmt.setInt((int) 2, loans.get(j).getBorrower().getID());
-
-                            stmt.executeUpdate();
-                            set = false;
-                        }
-                    }
-
+        // Filling Librarian Table
+        for (Person person : library.getPersons()) {
+            if (person.getRole()) {
+                String template = "INSERT INTO LIBRARY.LIBRARIAN (SALARY, PERSON_ID, OFFICE_NO) values (?, ?, ?)";
+                try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                    Librarian librarian = (Librarian) person;
+                    stmt.setDouble(1, librarian.getSalary());
+                    stmt.setInt(2, librarian.getID());
+                    stmt.setInt(3, librarian.getOfficeNo());
+                    stmt.executeUpdate();
                 }
+            }
+        }
 
+        // Filling Borrower's Table
+        for (Person person : library.getPersons()) {
+            if (!person.getRole()) {
+                String template = "INSERT INTO LIBRARY.BORROWER (PERSON_ID) values (?)";
+                try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                    stmt.setInt(1, person.getID());
+                    stmt.executeUpdate();
+                }
+            }
+        }
+
+        // Filling Book's Table
+        for (Book book : library.getBooks()) {
+            String template = "INSERT INTO LIBRARY.BOOK (BOOK_ID, TITLE, AUTHOR, SUBJECT, IS_ISSUED) values (?, ?, ?, ?, ?)";
+            try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                stmt.setInt(1, book.getID());
+                stmt.setString(2, book.getTitle());
+                stmt.setString(3, book.getAuthor());
+                stmt.setString(4, book.getSubject());
+                stmt.setBoolean(5, book.getIssuedStatus());
+                stmt.executeUpdate();
+            }
+        }
+
+        // Filling Loan Book's Table
+        for (int i = 0; i < loans.size(); i++) {
+            String template = "INSERT INTO LIBRARY.LOAN (LOAN_ID, BORROWER_ID, BOOK_ID, I_LIBRARIAN_ID, ISSUED_DATE, R_LIBRARIAN_ID, RETURNED_DATE, FINE_PAID) values (?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                Loan loan = loans.get(i);
+                stmt.setInt(1, i + 1);
+                stmt.setInt(2, loan.getBorrower().getID());
+                stmt.setInt(3, loan.getBook().getID());
+                stmt.setInt(4, loan.getIssuer().getID());
+                stmt.setTimestamp(5, new java.sql.Timestamp(loan.getIssuedDate().getTime()));
+                stmt.setBoolean(8, loan.getFineStatus());
+                if (loan.getReceiver() == null) {
+                    stmt.setNull(6, Types.INTEGER);
+                    stmt.setDate(7, null);
+                } else {
+                    stmt.setInt(6, loan.getReceiver().getID());
+                    stmt.setTimestamp(7, new java.sql.Timestamp(loan.getReturnDate().getTime()));
+                }
+                stmt.executeUpdate();
+            }
+        }
+
+        // Filling Hold Request Table
+        int x = 1;
+        for (Book book : library.getBooks()) {
+            for (HoldRequest holdRequest : book.getHoldRequests()) {
+                String template = "INSERT INTO LIBRARY.HOLD_REQUEST (REQ_ID, BOOK, BORROWER, REQ_DATE) values (?, ?, ?, ?)"; // Updated table name
+                try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                    stmt.setInt(1, x++);
+                    stmt.setInt(2, holdRequest.getBook().getID());
+                    stmt.setInt(3, holdRequest.getBorrower().getID());
+                    stmt.setDate(4, new java.sql.Date(holdRequest.getRequestDate().getTime()));
+                    stmt.executeUpdate();
+                }
+            }
+        }
+
+        // Filling Borrowed Book Table
+        for (Book book : library.getBooks()) {
+            if (book.getIssuedStatus()) {
+                for (Loan loan : loans) {
+                    if (book.getID() == loan.getBook().getID() && loan.getReceiver() == null) {
+                        String template = "INSERT INTO LIBRARY.BORROWED_BOOK (BOOK, BORROWER) values (?, ?)";
+                        try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                            stmt.setInt(1, loan.getBook().getID());
+                            stmt.setInt(2, loan.getBorrower().getID());
+                            stmt.executeUpdate();
+                        }
+                        break; // Exit the loop once a match is found
+                    }
+                }
             }
         }
     } // Filling Done!

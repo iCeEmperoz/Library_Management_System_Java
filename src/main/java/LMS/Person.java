@@ -26,7 +26,7 @@ public abstract class Person {
      * @param email    Email address of the person
      * @param phoneNum Phone number of the person
      */
-    public Person(int idNumber, String name, String email, String address, int phoneNum) {
+    public Person(int idNumber, String name, String address, int phoneNum, String email) {
         currentIdNumber++;
 
         if (idNumber == -1) {
@@ -37,9 +37,9 @@ public abstract class Person {
 
         password = Integer.toString(id);
         this.name = name;
-        this.email = email;
         this.address = address;
         phoneNo = phoneNum;
+        this.email = email;
     }
 
     /**
@@ -51,8 +51,8 @@ public abstract class Person {
         System.out.println("ID: " + id);
         System.out.println("Name: " + name);
         System.out.println("Address: " + address);
-        System.out.println("Email: " + email);
         System.out.println("Phone No: " + phoneNo + "\n");
+        System.out.println("Email: " + email);
     }
 
     /**

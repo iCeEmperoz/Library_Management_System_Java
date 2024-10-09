@@ -25,8 +25,8 @@ public class Borrower extends Person {
    * @param email    Email address of the borrower.
    * @param phoneNum Phone number of the borrower.
    */
-  public Borrower(int idNumber, String name, String email, String address, int phoneNum) {
-    super(idNumber, name, address, email, phoneNum);
+  public Borrower(int idNumber, String name, String address, int phoneNum, String email) {
+    super(idNumber, name, address, phoneNum, email);
     borrowedBooks = new ArrayList<>();
     onHoldBooks = new ArrayList<>();
     super.setBorrower();

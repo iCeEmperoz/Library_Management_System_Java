@@ -5,9 +5,9 @@ public class Librarian extends Person {
     int officeNo;     //Office Number of the Librarian
     public static int currentOfficeNumber = 0;
 
-    public Librarian(int idNumber, String name, String email, String address, int phoneNum, double salary, int officeNumber)
+    public Librarian(int idNumber, String name, String address, int phoneNum, String email, double salary, int officeNumber)
     {
-        super(idNumber, name, address, email, phoneNum);
+        super(idNumber, name, address, phoneNum, email);
         this.salary = salary;
         if (officeNumber == -1) {
             officeNo = currentOfficeNumber;

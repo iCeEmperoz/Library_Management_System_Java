@@ -1,55 +1,48 @@
--- Person table
 CREATE TABLE Person (
-                        id INT PRIMARY KEY AUTO_INCREMENT,
-                        name VARCHAR(255) NOT NULL,
-                        password VARCHAR(255) NOT NULL,
-                        address VARCHAR(255),
-                        phoneNo BIGINT
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    password VARCHAR(100),
+    address VARCHAR(255),
+    phone_no INT,
+    email VARCHAR(100) -- Added email attribute
 );
 
--- Borrower table
 CREATE TABLE Borrower (
-                          person_id INT PRIMARY KEY,
-                          FOREIGN KEY (person_id) REFERENCES Person(id)
+    borrower_id INT PRIMARY KEY,
+    FOREIGN KEY (borrower_id) REFERENCES Person(id)
 );
 
--- Staff table
 CREATE TABLE Librarian (
-                       salary DOUBLE,
-                       person_id INT PRIMARY KEY,
-                       officeNo INT,
-                       FOREIGN KEY (person_id) REFERENCES Person(id)
+    librarian_id INT PRIMARY KEY,
+    salary DOUBLE,
+    office_no INT,
+    FOREIGN KEY (librarian_id) REFERENCES Person(id)
 );
 
--- Book table
 CREATE TABLE Book (
-                      bookID INT PRIMARY KEY AUTO_INCREMENT,
-                      title VARCHAR(255) NOT NULL,
-                      author VARCHAR(255),
-                      subject VARCHAR(255),
-                      isIssued BOOLEAN
+    book_id INT PRIMARY KEY,
+    title VARCHAR(255),
+    author VARCHAR(255),
+    subject VARCHAR(255),
+    is_issued BOOLEAN
 );
 
--- HoldRequest table
-CREATE TABLE HoldRequest (
-                             requestID INT PRIMARY KEY AUTO_INCREMENT,
-                             requestDate DATE,
-                             borrower_id INT,
-                             bookID INT,
-                             FOREIGN KEY (borrower_id) REFERENCES Borrower(person_id),
-                             FOREIGN KEY (bookID) REFERENCES Book(bookID)
-);
-
--- Loan table
 CREATE TABLE Loan (
-                      loanID INT PRIMARY KEY AUTO_INCREMENT,
-                      issuedDate DATE,
-                      dateReturned DATE,
-                      finePaid BOOLEAN,
-                      borrower_id INT,
-                      bookID INT,
-                      librarian_id INT,
-                      FOREIGN KEY (borrower_id) REFERENCES Borrower(person_id),
-                      FOREIGN KEY (bookID) REFERENCES Book(bookID),
-                      FOREIGN KEY (librarian_id) REFERENCES Librarian(person_id)
+    loan_id INT PRIMARY KEY AUTO_INCREMENT,
+    issued_date DATE,
+    date_returned DATE,
+    fine_paid BOOLEAN,
+    borrower_id INT,
+    book_id INT,
+    FOREIGN KEY (borrower_id) REFERENCES Borrower(borrower_id),
+    FOREIGN KEY (book_id) REFERENCES Book(book_id)
+);
+
+CREATE TABLE Hold_Request (
+    hold_request_id INT PRIMARY KEY AUTO_INCREMENT,
+    request_date DATE,
+    borrower_id INT,
+    book_id INT,
+    FOREIGN KEY (borrower_id) REFERENCES Borrower(borrower_id),
+    FOREIGN KEY (book_id) REFERENCES Book(book_id)
 );

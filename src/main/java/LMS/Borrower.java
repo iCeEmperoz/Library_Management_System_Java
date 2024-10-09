@@ -21,12 +21,13 @@ public class Borrower extends Person {
    *
    * @param idNumber ID for the borrower, if -1 is passed, an ID will be auto-generated.
    * @param name     Name of the borrower.
+   * @param password  Password the borrower.
    * @param address  Address of the borrower.
    * @param email    Email address of the borrower.
    * @param phoneNum Phone number of the borrower.
    */
-  public Borrower(int idNumber, String name, String address, int phoneNum, String email) {
-    super(idNumber, name, address, phoneNum, email);
+  public Borrower(int idNumber, String name, String password, String address, int phoneNum, String email) {
+    super(idNumber, name, password, address, phoneNum, email);
     borrowedBooks = new ArrayList<>();
     onHoldBooks = new ArrayList<>();
     super.setBorrower();

@@ -43,124 +43,79 @@ public class OnTerminal {
                     System.out.println("Following Functionalities are available: \n");
                     System.out.println("1- Login");
                     System.out.println("2- Exit");
-                    System.out.println("3- Admininstrative Functions"); // Administration has access only 
+                    System.out.println("3- Administrative Functions"); // Administration has access only
 
                     System.out.println("-----------------------------------------\n");
 
-                    int choice = 0;
+                    int choice;
 
                     choice = takeInput(0, 4);
 
                     if (choice == 3) {
-                        System.out.println("\nEnter Password: ");
-                        String aPass = admin.next();
-
-                        if (aPass.equals("library")) {
-                            while (true)    // Way to Admin Portal
+                        Librarian librarian = library.librarianLogin();
+                        if (librarian != null) {
+                            while (true) // Way to Librarian Portal
                             {
                                 clearScreen();
 
                                 System.out.println("--------------------------------------------------------");
-                                System.out.println("\tWelcome to Admin's Portal");
+                                System.out.println("\tWelcome to Librarian's Portal");
                                 System.out.println("--------------------------------------------------------");
                                 System.out.println("Following Functionalities are available: \n");
+                                System.out.println("1 - Search a Book");
+                                System.out.println("2 - Place a Book on hold");
+                                System.out.println("3 - Check Personal Info of Borrower");
+                                System.out.println("4 - Check Total Fine of Borrower");
+                                System.out.println("5 - Check Hold Requests Queue of a Book");
+                                System.out.println("6 - Check out a Book");
+                                System.out.println("7 - Check in a Book");
+                                System.out.println("8 - Renew a Book");
+                                System.out.println("9 - Add a new Borrower");
+                                System.out.println("10- Update a Borrower's Info");
+                                System.out.println("11- Add new Book");
+                                System.out.println("12- Remove a Book");
+                                System.out.println("13- Change a Book's Info");
+                                System.out.println("14- View Issued Books History");
+                                System.out.println("15- View All Books in Library");
+                                System.out.println("16- Logout");
+                                System.out.println("--------------------------------------------------------");
+                                choice = takeInput(0, 17);
 
-                                System.out.println("1- Add Clerk");
-                                System.out.println("2- Add Librarian");
-                                System.out.println("3- View Issued Books History");
-                                System.out.println("4- View All Books in Library");
-                                System.out.println("5- Logout");
-
-                                System.out.println("---------------------------------------------");
-
-                                choice = takeInput(0, 6);
-
-                                if (choice == 5)
+                                if (choice == 16)
                                     break;
 
-                                if (choice == 1)
-                                    library.createPerson('c');
-                                else if (choice == 2)
-                                    library.createPerson('l');
-
-                                else if (choice == 3)
-                                    library.viewHistory();
-
-                                else if (choice == 4)
-                                    library.viewAllBooks();
-
-                                System.out.println("\nPress any key to continue..\n");
-                                admin.next();
-                            }
-                        } else
-                            System.out.println("\nSorry! Wrong Password.");
-                    } else if (choice == 1) {
-                        Person person = library.login();
-
-                        if (person != null) {
-                            switch (person.getClass().getSimpleName()) {
-                                case "Borrower" -> {
-                                    while (true)    // Way to Borrower's Portal
-                                    {
-                                        clearScreen();
-
-                                        System.out.println("--------------------------------------------------------");
-                                        System.out.println("\tWelcome to Borrower's Portal");
-                                        System.out.println("--------------------------------------------------------");
-                                        System.out.println("Following Functionalities are available: \n");
-                                        System.out.println("1- Search a Book");
-                                        System.out.println("2- Place a Book on hold");
-                                        System.out.println("3- Check Personal Info of Borrower");
-                                        System.out.println("4- Check Total Fine of Borrower");
-                                        System.out.println("5- Check Hold Requests Queue of a Book");
-                                        System.out.println("6- Logout");
-                                        System.out.println("--------------------------------------------------------");
-
-                                        choice = takeInput(0, 7);
-
-                                        if (choice == 6)
-                                            break;
-
-                                        allFunctionalities(person, choice);
-                                    }
-                                }
-                                case "Librarian" -> {
-                                    while (true) // Way to Librarian Portal
-                                    {
-                                        clearScreen();
-
-                                        System.out.println("--------------------------------------------------------");
-                                        System.out.println("\tWelcome to Librarian's Portal");
-                                        System.out.println("--------------------------------------------------------");
-                                        System.out.println("Following Functionalities are available: \n");
-                                        System.out.println("1- Search a Book");
-                                        System.out.println("2- Place a Book on hold");
-                                        System.out.println("3- Check Personal Info of Borrower");
-                                        System.out.println("4- Check Total Fine of Borrower");
-                                        System.out.println("5- Check Hold Requests Queue of a Book");
-                                        System.out.println("6- Check out a Book");
-                                        System.out.println("7- Check in a Book");
-                                        System.out.println("8- Renew a Book");
-                                        System.out.println("9- Add a new Borrower");
-                                        System.out.println("10- Update a Borrower's Info");
-                                        System.out.println("11- Add new Book");
-                                        System.out.println("12- Remove a Book");
-                                        System.out.println("13- Change a Book's Info");
-                                        System.out.println("14- Check Personal Info of Clerk");
-                                        System.out.println("15- Logout");
-                                        System.out.println("--------------------------------------------------------");
-
-                                        choice = takeInput(0, 16);
-
-                                        if (choice == 15)
-                                            break;
-
-                                        allFunctionalities(person, choice);
-                                    }
-                                }
+                                allFunctionalities(librarian, choice);
                             }
                         }
+                    } else if (choice == 1) {
+                        Borrower borrower = library.borrowerLogin();
 
+                        if (borrower != null) {
+
+                            while (true)    // Way to Borrower's Portal
+                            {
+                                clearScreen();
+
+                                System.out.println("--------------------------------------------------------");
+                                System.out.println("\tWelcome to Borrower's Portal");
+                                System.out.println("--------------------------------------------------------");
+                                System.out.println("Following Functionalities are available: \n");
+                                System.out.println("1- Search a Book");
+                                System.out.println("2- Place a Book on hold");
+                                System.out.println("3- Check Personal Info of Borrower");
+                                System.out.println("4- Check Total Fine of Borrower");
+                                System.out.println("5- Check Hold Requests Queue of a Book");
+                                System.out.println("6- Logout");
+                                System.out.println("--------------------------------------------------------");
+
+                                choice = takeInput(0, 7);
+
+                                if (choice == 6)
+                                    break;
+
+                                allFunctionalities(borrower, choice);
+                            }
+                        }
                     } else
                         stop = true;
 
@@ -210,7 +165,7 @@ public class OnTerminal {
         Library library = Library.getInstance();
     
         Scanner scanner = new Scanner(System.in);
-        int input = 0;
+        int input;
     
         //Search Book
         if (choice == 1) {
@@ -238,7 +193,7 @@ public class OnTerminal {
     
         //View borrower's personal information
         else if (choice == 3) {
-            if ("Clerk".equals(person.getClass().getSimpleName()) || "Librarian".equals(person.getClass().getSimpleName())) {
+            if ("Librarian".equals(person.getClass().getSimpleName())) {
                 Borrower bor = library.findBorrower();
     
                 if (bor != null)
@@ -325,7 +280,7 @@ public class OnTerminal {
     
         //Add new Borrower
         else if (choice == 9) {
-            library.createPerson('b');
+            library.createBorrower();
         }
     
         //Update Borrower's Personal Info
@@ -373,6 +328,14 @@ public class OnTerminal {
                 books.get(input).changeBookInfo();
             }
         }
+
+        //View Issued books History
+        else if (choice == 14)
+            library.viewHistory();
+
+        //View All Books in Library
+        else if (choice == 15)
+            library.viewAllBooks();
     
     
         // Functionality Performed.

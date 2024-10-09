@@ -16,7 +16,7 @@ public class Library {
 
     private String name;
     public static ArrayList<Librarian> librarians;
-    public static ArrayList<Person> persons;
+    public static ArrayList<Borrower> borrowers;
     private final ArrayList<Book> booksInLibrary;
 
     private final ArrayList<Loan> loans;
@@ -48,7 +48,7 @@ public class Library {
     {
         name = null;
         librarians = new ArrayList<>();
-        persons = new ArrayList<>();
+        borrowers = new ArrayList<>();
 
         booksInLibrary = new ArrayList<>();
         loans = new ArrayList<>();
@@ -82,8 +82,8 @@ public class Library {
         return hold_request_expiry;
     }
 
-    public ArrayList<Person> getPersons() {
-        return persons;
+    public ArrayList<Borrower> getborrowers() {
+        return borrowers;
     }
 
     public ArrayList<Librarian> getLibrarians() {
@@ -103,7 +103,7 @@ public class Library {
     /*-----Adding other People in Library----*/
 
     public void addBorrower(Borrower borrower) {
-        persons.add(borrower);
+        borrowers.add(borrower);
     }
 
     public static void addLibrarian(Librarian librarian) {
@@ -130,9 +130,9 @@ public class Library {
             System.out.println("\nInvalid Input");
         }
 
-        for (Person person : persons) {
-            if (person.getID() == id && person.getClass().getSimpleName().equals("Borrower"))
-                return (Borrower) person;
+        for (Borrower borrower : borrowers) {
+            if (borrower.getID() == id && borrower.getClass().getSimpleName().equals("Borrower"))
+                return borrower;
         }
 
         System.out.println("\nSorry this ID didn't match any Borrower's ID.");
@@ -152,9 +152,9 @@ public class Library {
         boolean delete = true;
 
         //Checking if this book is currently borrowed by some borrower
-        for (int i = 0; i < persons.size() && delete; i++) {
-            if (persons.get(i).getClass().getSimpleName().equals("Borrower")) {
-                ArrayList<Loan> borBooks = ((Borrower) (persons.get(i))).getBorrowedBooks();
+        for (int i = 0; i < borrowers.size() && delete; i++) {
+            if (borrowers.get(i).getClass().getSimpleName().equals("Borrower")) {
+                ArrayList<Loan> borBooks = (borrowers.get(i)).getBorrowedBooks();
 
                 for (int j = 0; j < borBooks.size() && delete; j++) {
                     if (borBooks.get(j).getBook() == b) {
@@ -311,7 +311,8 @@ public class Library {
         return totalFine;
     }
 
-    public void createPerson(char x) {
+    public void createBorrower() {
+//    public void createBorrower(char x) {
         Scanner sc = new Scanner(System.in);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
@@ -322,6 +323,15 @@ public class Library {
         } catch (IOException ex) {
             Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        System.out.println("\nEnter Name: ");
+        String password = "";
+        try {
+            password = reader.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         System.out.println("Enter Address: ");
         String address = "";
         try {
@@ -348,30 +358,30 @@ public class Library {
             Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-
-        //If librarian is to be created
-        if (x == 'l') {
-            double salary = 0;
-            try {
-                System.out.println("Enter Salary: ");
-                salary = sc.nextDouble();
-            } catch (java.util.InputMismatchException e) {
-                System.out.println("\nInvalid Input.");
-            }
-
-            Librarian l = new Librarian(-1, n, address, phone, email, salary, -1);
-            persons.add(l); //
-        }
+//
+//        //If librarian is to be created
+//        if (x == 'l') {
+//            double salary = 0;
+//            try {
+//                System.out.println("Enter Salary: ");
+//                salary = sc.nextDouble();
+//            } catch (java.util.InputMismatchException e) {
+//                System.out.println("\nInvalid Input.");
+//            }
+//
+//            Librarian l = new Librarian(-1, n, address, phone, email, salary, -1);
+//            borrowers.add(l); //
+//        }
 
         //If borrower is to be created
-        else {
-            Borrower b = new Borrower(-1, n, address, phone, email);
+//        else {
+            Borrower b = new Borrower(-1, n, password, address, phone, email);
             addBorrower(b);
             System.out.println("\nBorrower with name " + n + " created successfully.");
 
             System.out.println("\nYour ID is : " + b.getID());
             System.out.println("Your Password is : " + b.getPassword());
-        }
+//        }
     }
 
     public void createBook(String title, String subject, String author) {
@@ -383,7 +393,7 @@ public class Library {
     }
 
     // Called when want access to Portal
-    public Person login() {
+    public Borrower borrowerLogin() {
         Scanner input = new Scanner(System.in);
 
         String email;
@@ -394,10 +404,33 @@ public class Library {
         System.out.println("Enter Password: ");
         password = input.next();
 
-        for (Person person : persons) {
-            if (person.getEmail().equals(email) && person.getPassword().equals(password)) {
+        for (Borrower borrower : borrowers) {
+            if (borrower.getEmail().equals(email) && borrower.getPassword().equals(password)) {
                 System.out.println("\nLogin Successful");
-                return person;
+                return borrower;
+            }
+        }
+
+        System.out.println("\nSorry! Wrong ID or Password");
+        return null;
+    }
+
+    public Librarian librarianLogin() {
+        Scanner input = new Scanner(System.in);
+
+        String email;
+        String password;
+
+        System.out.println("\nEnter Email: ");
+        email = input.next();
+        System.out.println("Enter Password: ");
+        password = input.next();
+
+        for (Librarian librarian : librarians) {
+            System.out.println("\n" + librarian.getEmail() + "\n" + librarian.getPassword());
+            if (librarian.getEmail().equals(email) && librarian.getPassword().equals(password)) {
+                System.out.println("\nLogin Successful");
+                return librarian;
             }
         }
 
@@ -482,12 +515,13 @@ public class Library {
             do {
                 int id = resultSet.getInt("ID");
                 String name = resultSet.getString("NAME");
+                String password = resultSet.getString("PASSWORD");
                 String address = resultSet.getString("ADDRESS");
                 int phoneNumber = resultSet.getInt("PHONE_NO");
                 String email = resultSet.getString("EMAIL");
                 double salary = resultSet.getDouble("SALARY");
                 int officeNumber = resultSet.getInt("OFFICE_NO");
-                Librarian librarian = new Librarian(id, name, address, phoneNumber, email, salary, officeNumber);
+                Librarian librarian = new Librarian(id, name, password, address, phoneNumber, email, salary, officeNumber);
 
                 Library.addLibrarian(librarian);
 
@@ -507,11 +541,12 @@ public class Library {
             do {
                 int id = resultSet.getInt("ID");
                 String name = resultSet.getString("NAME");
+                String password = resultSet.getString("PASSWORD");
                 String address = resultSet.getString("ADDRESS");
                 int phoneNumber = resultSet.getInt("PHONE_NO");
                 String email = resultSet.getString("EMAIL");
 
-                Borrower borrower = new Borrower(id, name, address, phoneNumber, email);
+                Borrower borrower = new Borrower(id, name, password, address, phoneNumber, email);
                 addBorrower(borrower);
 
             } while (resultSet.next());
@@ -548,10 +583,10 @@ public class Library {
                 boolean set = true;
                 Borrower bb = null;
 
-                for (int i = 0; i < getPersons().size() && set; i++) {
-                    if (getPersons().get(i).getID() == borrowerId) {
+                for (int i = 0; i < getborrowers().size() && set; i++) {
+                    if (getborrowers().get(i).getID() == borrowerId) {
                         set = false;
-                        bb = (Borrower) (getPersons().get(i));
+                        bb = (getborrowers().get(i));
                     }
                 }
 
@@ -610,12 +645,12 @@ public class Library {
                 boolean set = true;
                 Borrower bb = null;
 
-                ArrayList<Person> persons = library.getPersons();
+                ArrayList<Borrower> borrowers = library.getborrowers();
 
-                for (int i = 0; i < persons.size() && set; i++) {
-                    if (persons.get(i).getID() == borrowerId) {
+                for (int i = 0; i < borrowers.size() && set; i++) {
+                    if (borrowers.get(i).getID() == borrowerId) {
                         set = false;
-                        bb = (Borrower) (persons.get(i));
+                        bb = borrowers.get(i);
                     }
                 }
 
@@ -654,11 +689,11 @@ public class Library {
                 Borrower bb = null;
                 boolean set = true;
 
-                for (int i = 0; i < library.getPersons().size() && set; i++) {
-                    if (library.getPersons().get(i) instanceof Borrower) {
-                        if (library.getPersons().get(i).getID() == id) {
+                for (int i = 0; i < library.getborrowers().size() && set; i++) {
+                    if (library.getborrowers().get(i) != null) {
+                        if (library.getborrowers().get(i).getID() == id) {
                             set = false;
-                            bb = (Borrower) (library.getPersons().get(i));
+                            bb = library.getborrowers().get(i);
                         }
                     }
                 }
@@ -678,12 +713,12 @@ public class Library {
             } while (resultSet.next());
         }
 
-        ArrayList<Person> persons = library.getPersons();
+        ArrayList<Borrower> borrowers = library.getborrowers();
 
         /* Setting Person ID Count */
         int max = 0;
 
-        for (Person person : persons) {
+        for (Person person : borrowers) {
             if (max < person.getID())
                 max = person.getID();
         }
@@ -714,7 +749,7 @@ public class Library {
         Library library = this;
 
         // Filling Person's Table
-        for (Person person : library.getPersons()) {
+        for (Person person : library.getborrowers()) {
             String template = "INSERT INTO LIBRARY.PERSON (ID, NAME, PASSWORD, EMAIL, ADDRESS, PHONE_NO) values (?, ?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = connection.prepareStatement(template)) {
                 stmt.setInt(1, person.getID());
@@ -728,7 +763,7 @@ public class Library {
         }
 
         // Filling Librarian Table
-        for (Person person : library.getPersons()) {
+        for (Person person : library.getborrowers()) {
             if (person.getRole()) {
                 String template = "INSERT INTO LIBRARY.LIBRARIAN (SALARY, PERSON_ID, OFFICE_NO) values (?, ?, ?)";
                 try (PreparedStatement stmt = connection.prepareStatement(template)) {
@@ -742,7 +777,7 @@ public class Library {
         }
 
         // Filling Borrower's Table
-        for (Person person : library.getPersons()) {
+        for (Person person : library.getborrowers()) {
             if (!person.getRole()) {
                 String template = "INSERT INTO LIBRARY.BORROWER (PERSON_ID) values (?)";
                 try (PreparedStatement stmt = connection.prepareStatement(template)) {

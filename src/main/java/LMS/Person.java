@@ -23,10 +23,11 @@ public abstract class Person {
      * @param idNumber ID for the person, if -1 is passed, an ID will be auto-generated
      * @param address  Address of the person
      * @param name     Name of the person
+     * @param password    Password of the person
      * @param email    Email address of the person
      * @param phoneNum Phone number of the person
      */
-    public Person(int idNumber, String name, String address, int phoneNum, String email) {
+    public Person(int idNumber, String name, String password, String address, int phoneNum, String email) {
         currentIdNumber++;
 
         if (idNumber == -1) {
@@ -35,7 +36,7 @@ public abstract class Person {
             id = idNumber;
         }
 
-        password = Integer.toString(id);
+        this.password = password;
         this.name = name;
         this.address = address;
         phoneNo = phoneNum;

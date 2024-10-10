@@ -312,7 +312,6 @@ public class Library {
     }
 
     public void createBorrower() {
-//    public void createBorrower(char x) {
         Scanner sc = new Scanner(System.in);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
@@ -324,7 +323,7 @@ public class Library {
             Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        System.out.println("\nEnter Name: ");
+        System.out.println("\nEnter Password: ");
         String password = "";
         try {
             password = reader.readLine();
@@ -379,8 +378,9 @@ public class Library {
             addBorrower(b);
             System.out.println("\nBorrower with name " + n + " created successfully.");
 
-            System.out.println("\nYour ID is : " + b.getID());
+            System.out.println("\nYour Email is : " + b.getEmail());
             System.out.println("Your Password is : " + b.getPassword());
+            borrowers.add(b);
 //        }
     }
 
@@ -405,6 +405,7 @@ public class Library {
         password = input.next();
 
         for (Borrower borrower : borrowers) {
+            System.out.println("\n" + borrower.getEmail() + "\n" + borrower.getPassword());
             if (borrower.getEmail().equals(email) && borrower.getPassword().equals(password)) {
                 System.out.println("\nLogin Successful");
                 return borrower;

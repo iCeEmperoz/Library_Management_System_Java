@@ -120,8 +120,10 @@ public class OnTerminal {
                         }
                     } else if (choice == 3) {
                         library.createBorrower();
-                    } else {
+                    } else if (choice == 4) {
                         stop = true;
+                    } else {
+                        System.out.println("\nPlease enter a valid option.");
                     }
 
                     System.out.println("\nPress any key to continue..\n");
@@ -154,7 +156,7 @@ public class OnTerminal {
     
         while (true) {
             System.out.print("Please enter your choice: ");
-    
+
             choice = input.next();
             if ((!choice.matches(".*[a-zA-Z]+.*]")) &&
                     (Integer.parseInt(choice) > min && Integer.parseInt(choice) < max)) {

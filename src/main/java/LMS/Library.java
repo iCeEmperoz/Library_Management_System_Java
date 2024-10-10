@@ -380,7 +380,6 @@ public class Library {
 
             System.out.println("\nYour Email is : " + b.getEmail());
             System.out.println("Your Password is : " + b.getPassword());
-            borrowers.add(b);
 //        }
     }
 
@@ -731,17 +730,16 @@ public class Library {
     public void fillItBack(Connection connection) throws SQLException {
         // Clear Tables
         String[] tables = {
-                "LOAN",
-                "BORROWED_BOOK",
-                "HOLD_REQUEST", // Updated table name
                 "BOOK",
-                "LIBRARIAN",
                 "BORROWER",
+                "HOLD_REQUEST",
+                "LIBRARIAN",
+                "LOAN",
                 "PERSON"
         };
 
         for (String table : tables) {
-            String template = "DELETE FROM LIBRARY." + table;
+            String template = "DELETE FROM " + table;
             try (PreparedStatement stmt = connection.prepareStatement(template)) {
                 stmt.executeUpdate();
             }
@@ -750,47 +748,57 @@ public class Library {
         Library library = this;
 
         // Filling Person's Table
-        for (Person person : library.getborrowers()) {
-            String template = "INSERT INTO LIBRARY.PERSON (ID, NAME, PASSWORD, EMAIL, ADDRESS, PHONE_NO) values (?, ?, ?, ?, ?, ?)";
+        for (Borrower borrower : borrowers) {
+            String template = "INSERT INTO PERSON (ID, NAME, PASSWORD, EMAIL, ADDRESS, PHONE_NO) values (?, ?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = connection.prepareStatement(template)) {
-                stmt.setInt(1, person.getID());
-                stmt.setString(2, person.getName());
-                stmt.setString(3, person.getEmail());
-                stmt.setString(4, person.getPassword());
-                stmt.setString(5, person.getAddress());
-                stmt.setInt(6, person.getPhoneNo());
+                stmt.setInt(1, borrower.getID());
+                stmt.setString(2, borrower.getName());
+                stmt.setString(3, borrower.getEmail());
+                stmt.setString(4, borrower.getPassword());
+                stmt.setString(5, borrower.getAddress());
+                stmt.setInt(6, borrower.getPhoneNo());
+                stmt.executeUpdate();
+            }
+        }
+
+        for (Librarian librarian : librarians) {
+            String template = "INSERT INTO PERSON (ID, NAME, PASSWORD, EMAIL, ADDRESS, PHONE_NO) values (?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                stmt.setInt(1, librarian.getID());
+                stmt.setString(2, librarian.getName());
+                stmt.setString(3, librarian.getEmail());
+                stmt.setString(4, librarian.getPassword());
+                stmt.setString(5, librarian.getAddress());
+                stmt.setInt(6, librarian.getPhoneNo());
                 stmt.executeUpdate();
             }
         }
 
         // Filling Librarian Table
-        for (Person person : library.getborrowers()) {
-            if (person.getRole()) {
-                String template = "INSERT INTO LIBRARY.LIBRARIAN (SALARY, PERSON_ID, OFFICE_NO) values (?, ?, ?)";
-                try (PreparedStatement stmt = connection.prepareStatement(template)) {
-                    Librarian librarian = (Librarian) person;
-                    stmt.setDouble(1, librarian.getSalary());
-                    stmt.setInt(2, librarian.getID());
-                    stmt.setInt(3, librarian.getOfficeNo());
-                    stmt.executeUpdate();
-                }
+        for (Librarian librarian : librarians) {
+            String template = "INSERT INTO LIBRARIAN (LIBRARIAN_ID, SALARY, OFFICE_NO) values (?, ?, ?)";
+            try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                stmt.setInt(1, librarian.getID());
+                stmt.setDouble(2, librarian.getSalary());
+                stmt.setInt(3, librarian.getOfficeNo());
+                stmt.executeUpdate();
             }
         }
 
         // Filling Borrower's Table
-        for (Person person : library.getborrowers()) {
-            if (!person.getRole()) {
-                String template = "INSERT INTO LIBRARY.BORROWER (PERSON_ID) values (?)";
+        for (Borrower borrower : borrowers) {
+//            if (!person.getRole()) {
+                String template = "INSERT INTO BORROWER (BORROWER_ID) values (?)";
                 try (PreparedStatement stmt = connection.prepareStatement(template)) {
-                    stmt.setInt(1, person.getID());
+                    stmt.setInt(1, borrower.getID());
                     stmt.executeUpdate();
                 }
-            }
+//            }
         }
 
         // Filling Book's Table
         for (Book book : library.getBooks()) {
-            String template = "INSERT INTO LIBRARY.BOOK (BOOK_ID, TITLE, AUTHOR, SUBJECT, IS_ISSUED) values (?, ?, ?, ?, ?)";
+            String template = "INSERT INTO BOOK (BOOK_ID, TITLE, AUTHOR, SUBJECT, IS_ISSUED) values (?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = connection.prepareStatement(template)) {
                 stmt.setInt(1, book.getID());
                 stmt.setString(2, book.getTitle());
@@ -803,7 +811,7 @@ public class Library {
 
         // Filling Loan Book's Table
         for (int i = 0; i < loans.size(); i++) {
-            String template = "INSERT INTO LIBRARY.LOAN (LOAN_ID, BORROWER_ID, BOOK_ID, I_LIBRARIAN_ID, ISSUED_DATE, R_LIBRARIAN_ID, RETURNED_DATE, FINE_PAID) values (?, ?, ?, ?, ?, ?, ?, ?)";
+            String template = "INSERT INTO LOAN (LOAN_ID, BORROWER_ID, BOOK_ID, I_LIBRARIAN_ID, ISSUED_DATE, R_LIBRARIAN_ID, RETURNED_DATE, FINE_PAID) values (?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = connection.prepareStatement(template)) {
                 Loan loan = loans.get(i);
                 stmt.setInt(1, i + 1);
@@ -827,7 +835,7 @@ public class Library {
         int x = 1;
         for (Book book : library.getBooks()) {
             for (HoldRequest holdRequest : book.getHoldRequests()) {
-                String template = "INSERT INTO LIBRARY.HOLD_REQUEST (REQ_ID, BOOK, BORROWER, REQ_DATE) values (?, ?, ?, ?)"; // Updated table name
+                String template = "INSERT INTO HOLD_REQUEST (REQ_ID, BOOK, BORROWER, REQ_DATE) values (?, ?, ?, ?)"; // Updated table name
                 try (PreparedStatement stmt = connection.prepareStatement(template)) {
                     stmt.setInt(1, x++);
                     stmt.setInt(2, holdRequest.getBook().getID());
@@ -843,7 +851,7 @@ public class Library {
             if (book.getIssuedStatus()) {
                 for (Loan loan : loans) {
                     if (book.getID() == loan.getBook().getID() && loan.getReceiver() == null) {
-                        String template = "INSERT INTO LIBRARY.BORROWED_BOOK (BOOK, BORROWER) values (?, ?)";
+                        String template = "INSERT INTO BORROWED_BOOK (BOOK, BORROWER) values (?, ?)";
                         try (PreparedStatement stmt = connection.prepareStatement(template)) {
                             stmt.setInt(1, loan.getBook().getID());
                             stmt.setInt(2, loan.getBorrower().getID());

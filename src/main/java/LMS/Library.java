@@ -753,8 +753,8 @@ public class Library {
             try (PreparedStatement stmt = connection.prepareStatement(template)) {
                 stmt.setInt(1, borrower.getID());
                 stmt.setString(2, borrower.getName());
-                stmt.setString(3, borrower.getEmail());
-                stmt.setString(4, borrower.getPassword());
+                stmt.setString(3, borrower.getPassword());
+                stmt.setString(4, borrower.getEmail());
                 stmt.setString(5, borrower.getAddress());
                 stmt.setInt(6, borrower.getPhoneNo());
                 stmt.executeUpdate();
@@ -766,8 +766,8 @@ public class Library {
             try (PreparedStatement stmt = connection.prepareStatement(template)) {
                 stmt.setInt(1, librarian.getID());
                 stmt.setString(2, librarian.getName());
-                stmt.setString(3, librarian.getEmail());
-                stmt.setString(4, librarian.getPassword());
+                stmt.setString(3, librarian.getPassword());
+                stmt.setString(4, librarian.getEmail());
                 stmt.setString(5, librarian.getAddress());
                 stmt.setInt(6, librarian.getPhoneNo());
                 stmt.executeUpdate();

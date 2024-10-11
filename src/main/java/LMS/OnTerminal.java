@@ -346,7 +346,7 @@ public class OnTerminal {
     
     
         // Functionality Performed.
-        System.out.println("\nPress any key to continue..\n");
+        System.out.println("\nPress Q and Enter to continue!\n");
         scanner.next();
     }
 }

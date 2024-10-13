@@ -6,14 +6,19 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Scanner;
-
+/**
+ * Main class for the Library Management System (LMS) application.
+ * This class launches the JavaFX application.
+ */
 public class Main extends Application {
 
+    /**
+     * The main entry point for all JavaFX applications.
+     * This method is called after the init method has returned, and after the system is ready for the application to begin running.
+     *
+     * @param primaryStage The primary stage for this application, onto which the application scene can be set.
+     * @throws Exception if something goes wrong during loading the FXML file.
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         Image icon = new Image(getClass().getResource("/images/icon.png").toString());
@@ -29,6 +34,12 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+    /**
+     * The main method is ignored in JavaFX applications.
+     * main() serves only as fallback in case the application is launched in a way that doesn't support JavaFX.
+     *
+     * @param args the command line arguments
+     */
     public static void main(String[] args) {
         launch(args);
     }

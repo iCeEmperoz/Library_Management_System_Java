@@ -2,6 +2,10 @@ package LMS;
 
 import java.util.ArrayList;
 
+/**
+ * The HoldRequestOperations class provides methods to manage hold requests in a library management system.
+ * It allows adding and removing hold requests from a list.
+ */
 public class HoldRequestOperations {
 
     static ArrayList<HoldRequest> holdRequests;

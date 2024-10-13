@@ -12,6 +12,58 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The Library class represents a library in the Library Management System.
+ * It follows the Singleton Design Pattern to ensure only one instance of the library exists.
+ * The library manages books, borrowers, librarians, loans, and hold requests.
+ * It also provides methods to interact with these entities.
+ * 
+ * <p>Attributes:</p>
+ * <ul>
+ *   <li>name: The name of the library.</li>
+ *   <li>librarians: A list of librarians working in the library.</li>
+ *   <li>borrowers: A list of borrowers registered in the library.</li>
+ *   <li>booksInLibrary: A list of books available in the library.</li>
+ *   <li>loans: A list of loans issued by the library.</li>
+ *   <li>book_return_deadline: The deadline for returning books after which a fine is generated each day.</li>
+ *   <li>per_day_fine: The fine amount per day for late returns.</li>
+ *   <li>hold_request_expiry: The number of days after which a hold request expires.</li>
+ *   <li>holdRequestsOperations: An instance of HoldRequestOperations to manage hold requests.</li>
+ *   <li>JDBC_URL: The JDBC URL for the H2 database.</li>
+ *   <li>USER: The username for the database connection.</li>
+ *   <li>PASSWORD: The password for the database connection.</li>
+ * </ul>
+ * 
+ * <p>Methods:</p>
+ * <ul>
+ *   <li>getInstance(): Returns the single instance of the Library class.</li>
+ *   <li>setReturnDeadline(int deadline): Sets the return deadline for books.</li>
+ *   <li>setFine(double perDayFine): Sets the fine amount per day for late returns.</li>
+ *   <li>setRequestExpiry(int hrExpiry): Sets the expiry duration for hold requests.</li>
+ *   <li>setName(String name): Sets the name of the library.</li>
+ *   <li>getHoldRequestExpiry(): Returns the hold request expiry duration.</li>
+ *   <li>getborrowers(): Returns the list of borrowers.</li>
+ *   <li>getLibrarians(): Returns the list of librarians.</li>
+ *   <li>getLibraryName(): Returns the name of the library.</li>
+ *   <li>getBooks(): Returns the list of books in the library.</li>
+ *   <li>addBorrower(Borrower borrower): Adds a borrower to the library.</li>
+ *   <li>addLibrarian(Librarian librarian): Adds a librarian to the library.</li>
+ *   <li>addLoan(Loan loan): Adds a loan to the library.</li>
+ *   <li>findBorrower(): Finds a borrower by their ID.</li>
+ *   <li>addBookinLibrary(Book b): Adds a book to the library.</li>
+ *   <li>removeBookfromLibrary(Book b): Removes a book from the library.</li>
+ *   <li>searchForBooks(): Searches for books by title, subject, or author.</li>
+ *   <li>viewAllBooks(): Displays information about all books in the library.</li>
+ *   <li>computeFine2(Borrower borrower): Computes the total fine for all loans of a borrower.</li>
+ *   <li>createBorrower(): Creates a new borrower and adds them to the library.</li>
+ *   <li>createBook(String title, String subject, String author): Creates a new book and adds it to the library.</li>
+ *   <li>borrowerLogin(): Authenticates a borrower by their email and password.</li>
+ *   <li>librarianLogin(): Authenticates a librarian by their email and password.</li>
+ *   <li>viewHistory(): Displays the history of issued and returned books.</li>
+ *   <li>makeConnection(): Establishes a connection to the database.</li>
+ *   <li>populateLibrary(Connection connection): Populates the library with data from the database.</li>
+ * </ul>
+ */
 public class Library {
 
     private String name;
@@ -35,6 +87,12 @@ public class Library {
     /*----Following Singleton Design Pattern (Lazy Instantiation)------------*/
     private static Library obj;
 
+    /**
+     * Returns the singleton instance of the Library class.
+     * If the instance does not exist, it creates a new one.
+     *
+     * @return the singleton instance of the Library class
+     */
     public static Library getInstance() {
         if (obj == null) {
             obj = new Library();
@@ -44,8 +102,15 @@ public class Library {
     }
 
     /*---------------------------------------------------------------------*/
-    private Library()   // default cons.
-    {
+    /**
+     * Represents a Library with a collection of books, librarians, and borrowers.
+     * This class is responsible for managing the books available in the library,
+     * the loans of books to borrowers, and the librarians who manage the library.
+     * 
+     * The constructor initializes the library with empty lists for librarians,
+     * borrowers, books, and loans.
+     */
+    private Library() {
         name = null;
         librarians = new ArrayList<>();
         borrowers = new ArrayList<>();
@@ -57,14 +122,29 @@ public class Library {
 
     /*------------Setter FUNCs.------------*/
 
+    /**
+     * Sets the return deadline for books.
+     *
+     * @param deadline the number of days until the book must be returned
+     */
     public void setReturnDeadline(int deadline) {
         book_return_deadline = deadline;
     }
 
+    /**
+     * Sets the fine amount to be charged per day for overdue items.
+     *
+     * @param perDayFine the fine amount to be charged per day
+     */
     public void setFine(double perDayFine) {
         per_day_fine = perDayFine;
     }
 
+    /**
+     * Sets the expiry time for hold requests.
+     *
+     * @param hrExpiry the number of hours after which a hold request expires
+     */
     public void setRequestExpiry(int hrExpiry) {
         hold_request_expiry = hrExpiry;
     }
@@ -72,28 +152,58 @@ public class Library {
 
 
     // Setter Func.
+    /**
+     * Sets the name of the library.
+     *
+     * @param name the name to set for the library
+     */
     public void setName(String name) {
         this.name = name;
     }
 
     /*-----------Getter FUNCs.------------*/
 
+    /**
+     * Retrieves the expiry duration for hold requests.
+     *
+     * @return the number of days after which a hold request expires.
+     */
     public int getHoldRequestExpiry() {
         return hold_request_expiry;
     }
 
+    /**
+     * Retrieves the list of borrowers.
+     *
+     * @return An ArrayList containing Borrower objects.
+     */
     public ArrayList<Borrower> getborrowers() {
         return borrowers;
     }
 
+    /**
+     * Retrieves the list of librarians.
+     *
+     * @return an ArrayList containing all the librarians.
+     */
     public ArrayList<Librarian> getLibrarians() {
         return librarians;
     }
 
+    /**
+     * Retrieves the name of the library.
+     *
+     * @return the name of the library as a String.
+     */
     public String getLibraryName() {
         return name;
     }
 
+    /**
+     * Retrieves the list of books available in the library.
+     *
+     * @return an ArrayList of Book objects representing the books in the library.
+     */
     public ArrayList<Book> getBooks() {
         return booksInLibrary;
     }
@@ -102,14 +212,29 @@ public class Library {
 
     /*-----Adding other People in Library----*/
 
+    /**
+     * Adds a borrower to the list of borrowers.
+     *
+     * @param borrower the borrower to be added
+     */
     public void addBorrower(Borrower borrower) {
         borrowers.add(borrower);
     }
 
+    /**
+     * Adds a new librarian to the list of librarians.
+     *
+     * @param librarian the Librarian object to be added
+     */
     public static void addLibrarian(Librarian librarian) {
         librarians.add(librarian);
     }
 
+    /**
+     * Adds a loan to the list of loans.
+     *
+     * @param loan the loan to be added
+     */
     public void addLoan(Loan loan) {
         loans.add(loan);
     }
@@ -117,6 +242,16 @@ public class Library {
     /*----------------------------------------------*/
 
 
+    /**
+     * Finds a borrower by their ID.
+     * <p>
+     * Prompts the user to enter a borrower's ID and searches through the list of borrowers
+     * to find a match. If a match is found, the corresponding borrower is returned.
+     * If the input is invalid or no match is found, appropriate messages are displayed.
+     * </p>
+     *
+     * @return the borrower with the matching ID, or {@code null} if no match is found
+     */
     public Borrower findBorrower() {
         System.out.println("\nEnter Borrower's ID: ");
 
@@ -139,16 +274,37 @@ public class Library {
         return null;
     }
 
+    /**
+     * Adds a book to the library's collection.
+     *
+     * @param b the book to be added to the library
+     */
     public void addBookinLibrary(Book b) {
         booksInLibrary.add(b);
     }
 
-    //When this function is called, only the pointer of the book placed in booksInLibrary is removed. But the real object of book
-    //is still there in memory because pointers of that book placed in IssuedBooks and ReturnedBooks are still pointing to that book. And we
-    //are maintaining those pointers so that we can maintain history.
-    //But if we donot want to maintain history then we can delete those pointers placed in IssuedBooks and ReturnedBooks as well which are
-    //pointing to that book. In this way the book will be really removed from memory.
-    public void removeBookfromLibrary(Book b) {
+    /**
+     * Removes a book from the library if it is not currently borrowed by any borrower.
+     * If the book is on hold by any borrower, prompts the user for confirmation before deleting.
+     * 
+     * @param book The book to be removed from the library.
+     * 
+     * <p>Steps:</p>
+     * <ol>
+     *   <li>Checks if the book is currently borrowed by any borrower. If it is, the book cannot be deleted.</li>
+     *   <li>If the book is not borrowed, checks if there are any hold requests for the book.</li>
+     *   <li>If there are hold requests, prompts the user for confirmation to delete the book and the associated hold requests.</li>
+     *   <li>If the user confirms, removes the hold requests and deletes the book from the library.</li>
+     *   <li>If the book is successfully removed, prints a success message. Otherwise, prints a failure message.</li>
+     * </ol>
+     * 
+     * <p>Note:</p>
+     * <ul>
+     *   <li>If the book is currently borrowed, it cannot be deleted.</li>
+     *   <li>If the book has hold requests, user confirmation is required to delete the book and the hold requests.</li>
+     * </ul>
+     */
+    public void removeBookfromLibrary(Book book) {
         boolean delete = true;
 
         //Checking if this book is currently borrowed by some borrower
@@ -157,7 +313,7 @@ public class Library {
                 ArrayList<Loan> borBooks = (borrowers.get(i)).getBorrowedBooks();
 
                 for (int j = 0; j < borBooks.size() && delete; j++) {
-                    if (borBooks.get(j).getBook() == b) {
+                    if (borBooks.get(j).getBook() == book) {
                         delete = false;
                         System.out.println("This particular book is currently borrowed by some borrower.");
                     }
@@ -167,7 +323,7 @@ public class Library {
 
         if (delete) {
             System.out.println("\nCurrently this book is not borrowed by anyone.");
-            ArrayList<HoldRequest> hRequests = b.getHoldRequests();
+            ArrayList<HoldRequest> hRequests = book.getHoldRequests();
 
             if (!hRequests.isEmpty()) {
                 System.out.println("\nThis book might be on hold requests by some borrowers. Deleting this book will delete the relevant hold requests too.");
@@ -198,13 +354,24 @@ public class Library {
             } else
                 System.out.println("This book has no hold requests.");
 
-            booksInLibrary.remove(b);
+            booksInLibrary.remove(book);
             System.out.println("The book is successfully removed.");
         } else
             System.out.println("\nDelete Unsuccessful.");
     }
 
     //
+    /**
+     * Searches for books in the library based on the user's input criteria (Title, Subject, or Author).
+     * 
+     * @return An ArrayList of Book objects that match the search criteria. If no books are found, returns null.
+     * @throws IOException If an input or output exception occurs.
+     * 
+     * The method prompts the user to choose a search criterion (Title, Subject, or Author) and then
+     * asks for the corresponding search term. It then iterates through the list of books in the library
+     * and collects those that match the search term. If matching books are found, they are printed and
+     * returned. If no books match the search criteria, a message is displayed and null is returned.
+     */
     public ArrayList<Book> searchForBooks() throws IOException {
         String choice;
         String title = "", subject = "", author = "";
@@ -271,6 +438,12 @@ public class Library {
     }
 
     // View Info of all Books in Library
+    /**
+     * Displays all the books available in the library.
+     * If the library has books, it prints the list of books with their details
+     * including the index number, title, author, and subject.
+     * If the library is empty, it informs the user that there are no books currently.
+     */
     public void viewAllBooks() {
         if (!booksInLibrary.isEmpty()) {
             System.out.println("\nBooks are: ");
@@ -289,6 +462,16 @@ public class Library {
     }
 
     //Computes total fine for all loans of a borrower
+    /**
+     * Computes the total fine for a given borrower based on their loan records.
+     * 
+     * This method iterates through all the loans and calculates the fine for each loan
+     * associated with the specified borrower. It prints a detailed table of the fines
+     * for each loan and returns the total fine amount.
+     * 
+     * @param borrower The borrower for whom the fine is to be computed.
+     * @return The total fine amount for the specified borrower.
+     */
     public double computeFine2(Borrower borrower) {
         System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------");
         System.out.println("No.\t\tBook's Title\t\tBorrower's Name\t\t\tIssued Date\t\t\tReturned Date\t\t\t\tFine(Rs)");
@@ -311,6 +494,27 @@ public class Library {
         return totalFine;
     }
 
+    /**
+     * This method prompts the user to enter details for creating a new borrower.
+     * It collects the borrower's name, password, address, phone number, and email.
+     * After collecting the information, it creates a new Borrower object and adds it to the system.
+     * 
+     * <p>Steps involved:</p>
+     * <ul>
+     *   <li>Prompts the user to enter their name, password, address, phone number, and email.</li>
+     *   <li>Handles potential IOExceptions during input reading.</li>
+     *   <li>Handles potential InputMismatchException for phone number input.</li>
+     *   <li>Creates a new Borrower object with the collected information.</li>
+     *   <li>Adds the new Borrower to the system.</li>
+     *   <li>Prints confirmation messages with the borrower's email and password.</li>
+     * </ul>
+     * 
+     * <p>Exceptions handled:</p>
+     * <ul>
+     *   <li>IOException: If an input or output exception occurred.</li>
+     *   <li>InputMismatchException: If the input for the phone number is not a valid integer.</li>
+     * </ul>
+     */
     public void createBorrower() {
         Scanner sc = new Scanner(System.in);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -357,32 +561,21 @@ public class Library {
             Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-//
-//        //If librarian is to be created
-//        if (x == 'l') {
-//            double salary = 0;
-//            try {
-//                System.out.println("Enter Salary: ");
-//                salary = sc.nextDouble();
-//            } catch (java.util.InputMismatchException e) {
-//                System.out.println("\nInvalid Input.");
-//            }
-//
-//            Librarian l = new Librarian(-1, n, address, phone, email, salary, -1);
-//            borrowers.add(l); //
-//        }
+        Borrower b = new Borrower(-1, n, password, address, phone, email);
+        addBorrower(b);
+        System.out.println("\nBorrower with name " + n + " created successfully.");
 
-        //If borrower is to be created
-//        else {
-            Borrower b = new Borrower(-1, n, password, address, phone, email);
-            addBorrower(b);
-            System.out.println("\nBorrower with name " + n + " created successfully.");
-
-            System.out.println("\nYour Email is : " + b.getEmail());
-            System.out.println("Your Password is : " + b.getPassword());
-//        }
+        System.out.println("\nYour Email is : " + b.getEmail());
+        System.out.println("Your Password is : " + b.getPassword());
     }
 
+    /**
+     * Creates a new book with the given title, subject, and author, and adds it to the library.
+     *
+     * @param title  the title of the book
+     * @param subject  the subject of the book
+     * @param author  the author of the book
+     */
     public void createBook(String title, String subject, String author) {
         Book b = new Book(-1, title, subject, author, false);
 
@@ -392,6 +585,13 @@ public class Library {
     }
 
     // Called when want access to Portal
+    /**
+     * This method handles the login process for a borrower.
+     * It prompts the user to enter their email and password, 
+     * and then checks these credentials against the list of registered borrowers.
+     * 
+     * @return Borrower object if the login is successful, otherwise returns null.
+     */
     public Borrower borrowerLogin() {
         Scanner input = new Scanner(System.in);
 
@@ -415,6 +615,18 @@ public class Library {
         return null;
     }
 
+    /**
+     * Authenticates a librarian by prompting for email and password.
+     * 
+     * This method prompts the user to enter their email and password, then checks
+     * the entered credentials against the list of librarians. If a match is found,
+     * the corresponding librarian is returned. If no match is found, a message is
+     * displayed indicating that the login attempt was unsuccessful, and the method
+     * returns null.
+     * 
+     * @return the authenticated Librarian if login is successful, or null if the
+     *         credentials are incorrect.
+     */
     public Librarian librarianLogin() {
         Scanner input = new Scanner(System.in);
 
@@ -439,6 +651,14 @@ public class Library {
     }
 
     // History when a Book was Issued and was Returned!
+    /**
+     * Displays the history of issued books.
+     * 
+     * This method prints a list of all issued books along with details such as 
+     * the book's title, borrower's name, issuer's name, issued date, receiver's 
+     * name, returned date, and fine status. If there are no issued books, it 
+     * prints a message indicating that no books have been issued.
+     */
     public void viewHistory() {
         if (!loans.isEmpty()) {
             System.out.println("\nIssued Books are: ");
@@ -463,7 +683,12 @@ public class Library {
     //---------------------------------------------------------------------------------------//
     /*--------------------------------IN- COLLABORATION WITH DATA BASE------------------------------------------*/
 
-    // Making Connection With Database
+    /**
+     * Establishes a connection to the library database.
+     *
+     * @return a Connection object to the library database, or null if a SQLException occurs.
+     * @throws UnsupportedEncodingException if the encoding is not supported.
+     */
     public Connection makeConnection() throws UnsupportedEncodingException {
         try {
             String dbPath = Paths.get("src/main/resources/LibraryDB").toAbsolutePath().toString();
@@ -474,6 +699,26 @@ public class Library {
         }
     }
 
+    /**
+     * Populates the library with data from the database.
+     * 
+     * This method retrieves data from the database and populates the library with books, librarians, borrowers, loans, and hold requests.
+     * 
+     * @param connection The database connection to use for retrieving data.
+     * @throws SQLException If a database access error occurs.
+     * @throws IOException If an I/O error occurs.
+     * 
+     * The method performs the following steps:
+     * 1. Populates the library with books from the BOOK table.
+     * 2. Populates the library with librarians from the PERSON and LIBRARIAN tables.
+     * 3. Populates the library with borrowers from the PERSON and BORROWER tables.
+     * 4. Populates the library with loans from the LOAN table.
+     * 5. Populates the library with hold requests from the HOLD_REQUEST table.
+     * 6. Populates the remaining information for borrowers, including borrowed books.
+     * 7. Sets the ID count for books and persons.
+     * 
+     * The method prints messages to the console if no data is found for books, librarians, borrowers, loans, or hold requests.
+     */
     public void populateLibrary(Connection connection) throws SQLException, IOException {
         Library library = this;
         Statement stmt = connection.createStatement();
@@ -726,7 +971,22 @@ public class Library {
         Person.setIDCount(max);
     }
 
-    // Filling Changes back to Database
+    /**
+     * Fills the database tables with the current state of the library.
+     * 
+     * This method performs the following steps:
+     * 1. Clears the existing data from the tables: BOOK, BORROWER, HOLD_REQUEST, LIBRARIAN, LOAN, and PERSON.
+     * 2. Inserts the current borrowers and librarians into the PERSON table.
+     * 3. Inserts the current librarians into the LIBRARIAN table.
+     * 4. Inserts the current borrowers into the BORROWER table.
+     * 5. Inserts the current books into the BOOK table.
+     * 6. Inserts the current loans into the LOAN table.
+     * 7. Inserts the current hold requests into the HOLD_REQUEST table.
+     * 8. Inserts the currently borrowed books into the BORROWED_BOOK table.
+     * 
+     * @param connection The database connection to use for executing the SQL statements.
+     * @throws SQLException If any SQL error occurs during the execution of the statements.
+     */
     public void fillItBack(Connection connection) throws SQLException {
         // Clear Tables
         String[] tables = {
@@ -787,13 +1047,11 @@ public class Library {
 
         // Filling Borrower's Table
         for (Borrower borrower : borrowers) {
-//            if (!person.getRole()) {
-                String template = "INSERT INTO BORROWER (BORROWER_ID) values (?)";
-                try (PreparedStatement stmt = connection.prepareStatement(template)) {
-                    stmt.setInt(1, borrower.getID());
-                    stmt.executeUpdate();
-                }
-//            }
+            String template = "INSERT INTO BORROWER (BORROWER_ID) values (?)";
+            try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                stmt.setInt(1, borrower.getID());
+                stmt.executeUpdate();
+            }
         }
 
         // Filling Book's Table

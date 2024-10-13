@@ -4,6 +4,9 @@ import java.io.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+/**
+ * Represents a Book in the library management system (LMS).
+ */
 public class Book {
     private int bookID;
     private String title;
@@ -13,20 +16,32 @@ public class Book {
     private HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
     static int currentIdNumber = 0;
 
-    public Book(int id, String t, String s, String a, boolean issued) {
+    /**
+     * Constructor to initialize a Book object.
+     *
+     * @param id      ID for the book, if -1 is passed, an ID will be auto-generated
+     * @param title   Title of the book
+     * @param subject Subject of the book
+     * @param author  Author of the book
+     * @param issued  Issued status of the book
+     */
+    public Book(int id, String title, String subject, String author, boolean issued) {
         currentIdNumber++;
         if (id == -1) {
             bookID = currentIdNumber;
-        } else
+        } else {
             bookID = id;
+        }
 
-        title = t;
-        subject = s;
-        author = a;
+        this.title = title;
+        this.subject = subject;
+        this.author = author;
         isIssued = issued;
-
     }
 
+    /**
+     * Prints the hold requests for the book.
+     */
     public void printHoldRequests() {
         if (!holdRequestsOperations.holdRequests.isEmpty()) {
             System.out.println("\nHold Requests are: ");
@@ -44,12 +59,18 @@ public class Book {
         }
     }
 
-    // Currently printing out at command line
+    /**
+     * Prints the information of the book.
+     */
     public void printInfo() {
         System.out.println(title + "\t\t\t" + author + "\t\t\t" + subject);
     }
 
-    // Currently printing out at command line
+    /**
+     * Changes the information of the book.
+     *
+     * @throws IOException If an input or output exception occurred
+     */
     public void changeBookInfo() throws IOException {
         Scanner scanner = new Scanner(System.in);
         String input;
@@ -81,49 +102,86 @@ public class Book {
         }
 
         System.out.println("\nBook is successfully updated.");
-
     }
 
-    /*------------Getter FUNCs.---------*/
-
+    /**
+     * Gets the title of the book.
+     *
+     * @return The title of the book
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Gets the subject of the book.
+     *
+     * @return The subject of the book
+     */
     public String getSubject() {
         return subject;
     }
 
+    /**
+     * Gets the author of the book.
+     *
+     * @return The author of the book
+     */
     public String getAuthor() {
         return author;
     }
 
+    /**
+     * Gets the issued status of the book.
+     *
+     * @return True if the book is issued, false otherwise
+     */
     public boolean getIssuedStatus() {
         return isIssued;
     }
 
-    public void setIssuedStatus(boolean s) {
-        isIssued = s;
+    /**
+     * Sets the issued status of the book.
+     *
+     * @param s Issued status to be set
+     */
+    public void setIssuedStatus(boolean status) {
+        isIssued = status;
     }
 
+    /**
+     * Gets the ID of the book.
+     *
+     * @return The ID of the book
+     */
     public int getID() {
         return bookID;
     }
 
+    /**
+     * Gets the hold requests for the book.
+     *
+     * @return The list of hold requests for the book
+     */
     public ArrayList<HoldRequest> getHoldRequests() {
         return holdRequestsOperations.holdRequests;
     }
-    /*-----------------------------------*/
 
-
-    /*------------Setter FUNCs.---------*/
-
+    /**
+     * Sets the current ID counter to a specific value.
+     * This is useful for resetting or setting the ID generation starting point.
+     *
+     * @param n The new starting value for the ID counter
+     */
     public static void setIDCount(int n) {
         currentIdNumber = n;
     }
 
-    /*-----------------------------------*/
-
+    /**
+     * Places the book on hold for a borrower.
+     *
+     * @param borrower The borrower placing the hold request
+     */
     public void placeBookOnHold(Borrower borrower) {
         HoldRequest holdRequest = new HoldRequest(borrower, this, new Date());
 
@@ -133,10 +191,15 @@ public class Book {
         System.out.println("\nThe book " + title + " has been successfully placed on hold by borrower " + borrower.getName() + ".\n");
     }
 
+    /**
+     * Makes a hold request for the book.
+     *
+     * @param borrower The borrower making the hold request
+     */
     public void makeHoldRequest(Borrower borrower) {
         boolean makeRequest = true;
 
-        //If that borrower has already borrowed that particular book. Then he isn't allowed to make request for that book. He will have to renew the issued book in order to extend the return deadline.
+        // If that borrower has already borrowed that particular book. Then he isn't allowed to make request for that book. He will have to renew the issued book in order to extend the return deadline.
         for (int i = 0; i < borrower.getBorrowedBooks().size(); i++) {
             if (borrower.getBorrowedBooks().get(i).getBook() == this) {
                 System.out.println("\n" + "You have already borrowed " + title);
@@ -144,8 +207,7 @@ public class Book {
             }
         }
 
-
-        //If that borrower has already requested for that particular book. Then he isn't allowed to make the same request again.
+        // If that borrower has already requested for that particular book. Then he isn't allowed to make the same request again.
         for (int i = 0; i < holdRequestsOperations.holdRequests.size(); i++) {
             if ((holdRequestsOperations.holdRequests.get(i).getBorrower() == borrower)) {
                 makeRequest = false;
@@ -155,20 +217,29 @@ public class Book {
 
         if (makeRequest) {
             placeBookOnHold(borrower);
-        } else
+        } else {
             System.out.println("\nYou already have one hold request for this book.\n");
-
+        }
     }
 
-    // Getting Info of a Hold Request
+    /**
+     * Services a hold request for the book.
+     *
+     * @param holdRequest The hold request to be serviced
+     */
     public void serviceHoldRequest(HoldRequest holdRequest) {
         holdRequestsOperations.removeHoldRequest();
         holdRequest.getBorrower().removeHoldRequest(holdRequest);
     }
 
-    // Issuing a Book
+    /**
+     * Issues the book to a borrower.
+     *
+     * @param borrower  The borrower to whom the book is issued
+     * @param librarian The librarian issuing the book
+     */
     public void issueBook(Borrower borrower, Librarian librarian) {
-        //First deleting the expired hold requests
+        // First deleting the expired hold requests
         Date today = new Date();
 
         ArrayList<HoldRequest> hRequests = holdRequestsOperations.holdRequests;
@@ -176,7 +247,7 @@ public class Book {
         for (int i = 0; i < hRequests.size(); i++) {
             HoldRequest holdRequest = hRequests.get(i);
 
-            //Remove that hold request which has expired
+            // Remove that hold request which has expired
             long days = ChronoUnit.DAYS.between(today.toInstant(), holdRequest.getRequestDate().toInstant());
             days = 0 - days;
 
@@ -201,17 +272,16 @@ public class Book {
                 boolean hasRequest = false;
 
                 for (int i = 0; i < holdRequestsOperations.holdRequests.size() && !hasRequest; i++) {
-                    if (holdRequestsOperations.holdRequests.get(i).getBorrower() == borrower)
+                    if (holdRequestsOperations.holdRequests.get(i).getBorrower() == borrower) {
                         hasRequest = true;
-
+                    }
                 }
 
                 if (hasRequest) {
-                    //If this particular borrower has the earliest request for this book
-                    if (holdRequestsOperations.holdRequests.get(0).getBorrower() == borrower)
+                    // If this particular borrower has the earliest request for this book
+                    if (holdRequestsOperations.holdRequests.get(0).getBorrower() == borrower) {
                         serviceHoldRequest(holdRequestsOperations.holdRequests.get(0));
-
-                    else {
+                    } else {
                         System.out.println("\nSorry some other users have requested for this book earlier than you. So you have to wait until their hold requests are processed.");
                         return;
                     }
@@ -231,7 +301,7 @@ public class Book {
                 }
             }
 
-            //If there are no hold requests for this book, then simply issue the book.
+            // If there are no hold requests for this book, then simply issue the book.
             setIssuedStatus(true);
 
             Loan iHistory = new Loan(borrower, this, librarian, null, new Date(), null, false);
@@ -244,7 +314,13 @@ public class Book {
         }
     }
 
-    // Returning a Book
+    /**
+     * Returns the book from a borrower.
+     *
+     * @param borrower The borrower returning the book
+     * @param loan     The loan associated with the book
+     * @param librarian The librarian receiving the returned book
+     */
     public void returnBook(Borrower borrower, Loan loan, Librarian librarian) {
         loan.getBook().setIssuedStatus(false);
         loan.setReturnedDate(new Date());

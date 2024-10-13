@@ -2,39 +2,71 @@ package LMS;
 
 import java.util.Date;
 
+/**
+ * The HoldRequest class represents a request made by a borrower to hold a book.
+ * It contains information about the borrower, the book, and the date the request was made.
+ */
 public class HoldRequest {
 
+    /**
+     * The borrower who made the hold request.
+     */
     Borrower borrower;
+
+    /**
+     * The book that is being requested to hold.
+     */
     Book book;
+
+    /**
+     * The date when the hold request was made.
+     */
     Date requestDate;
 
-    public HoldRequest(Borrower bor, Book b, Date reqDate)  // para cons.
-    {
+    /**
+     * Constructs a new HoldRequest with the specified borrower, book, and request date.
+     *
+     * @param bor the borrower who made the hold request
+     * @param b the book that is being requested to hold
+     * @param reqDate the date when the hold request was made
+     */
+    public HoldRequest(Borrower bor, Book b, Date reqDate) {
         borrower = bor;
         book = b;
         requestDate = reqDate;
     }
 
-    /*----- Getter FUNCs.--------*/
-    public Borrower getBorrower()
-    {
+    /**
+     * Returns the borrower who made the hold request.
+     *
+     * @return the borrower who made the hold request
+     */
+    public Borrower getBorrower() {
         return borrower;
     }
 
-    public Book getBook()
-    {
+    /**
+     * Returns the book that is being requested to hold.
+     *
+     * @return the book that is being requested to hold
+     */
+    public Book getBook() {
         return book;
     }
 
-    public Date getRequestDate()
-    {
+    /**
+     * Returns the date when the hold request was made.
+     *
+     * @return the date when the hold request was made
+     */
+    public Date getRequestDate() {
         return requestDate;
     }
-    /*--------------------------*/
 
-    // Print Hold Request Info
-    public void print()
-    {
+    /**
+     * Prints the hold request information, including the book title, borrower name, and request date.
+     */
+    public void print() {
         System.out.print(book.getTitle() + "\t\t\t\t" + borrower.getName() + "\t\t\t\t"  + requestDate + "\n");
     }
 }

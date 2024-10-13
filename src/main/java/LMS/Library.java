@@ -57,8 +57,7 @@ import java.util.logging.Logger;
  *   <li>computeFine2(Borrower borrower): Computes the total fine for all loans of a borrower.</li>
  *   <li>createBorrower(): Creates a new borrower and adds them to the library.</li>
  *   <li>createBook(String title, String subject, String author): Creates a new book and adds it to the library.</li>
- *   <li>borrowerLogin(): Authenticates a borrower by their email and password.</li>
- *   <li>librarianLogin(): Authenticates a librarian by their email and password.</li>
+ *   <li>Login(): Authenticates a user by their email and password.</li>
  *   <li>viewHistory(): Displays the history of issued and returned books.</li>
  *   <li>makeConnection(): Establishes a connection to the database.</li>
  *   <li>populateLibrary(Connection connection): Populates the library with data from the database.</li>
@@ -570,6 +569,96 @@ public class Library {
     }
 
     /**
+     * Creates a new librarian by prompting the user for various details such as name, password, address, phone number, email, salary, and office number.
+     * The method reads input from the console and handles potential input mismatches and IO exceptions.
+     * After collecting the necessary information, it creates a Librarian object and adds it to the library system.
+     * Finally, it confirms the creation of the librarian and displays the email and password.
+     *
+     * Input:
+     * - Name: String
+     * - Password: String
+     * - Address: String
+     * - Phone Number: int
+     * - Email: String
+     * - Salary: double
+     * - Office Number: int (or -1 to auto-assign)
+     *
+     * Exceptions:
+     * - IOException: If an input or output exception occurs while reading from the console.
+     * - InputMismatchException: If the input does not match the expected type for phone number, salary, or office number.
+     */
+    public void createLibrarian() {
+        Scanner sc = new Scanner(System.in);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+        System.out.println("\nEnter Name: ");
+        String name = "";
+        try {
+            name = reader.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        System.out.println("\nEnter Password: ");
+        String password = "";
+        try {
+            password = reader.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        System.out.println("Enter Address: ");
+        String address = "";
+        try {
+            address = reader.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        int phone = 0;
+        try {
+            System.out.println("Enter Phone Number: ");
+            phone = sc.nextInt();
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("\nInvalid Input.");
+        }
+
+        // Add Email
+        System.out.println("Enter Email: ");
+        String email = "";
+        try {
+            email = reader.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        // Add Salary
+        System.out.println("Enter Salary: ");
+        double salary = 0.0;
+        try {
+            salary = sc.nextDouble();
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("\nInvalid Input.");
+        }
+
+        // Add Office Number
+        System.out.println("Enter Office Number (or -1 to auto-assign): ");
+        int officeNumber = 0;
+        try {
+            officeNumber = sc.nextInt();
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("\nInvalid Input.");
+        }
+
+        Librarian librarian = new Librarian(-1, name, password, address, phone, email, salary, officeNumber);
+        addLibrarian(librarian);
+        System.out.println("\nLibrarian with name " + name + " created successfully.");
+
+        System.out.println("\nYour Email is : " + librarian.getEmail());
+        System.out.println("Your Password is : " + librarian.getPassword());
+    }
+
+    /**
      * Creates a new book with the given title, subject, and author, and adds it to the library.
      *
      * @param title  the title of the book
@@ -588,11 +677,11 @@ public class Library {
     /**
      * This method handles the login process for a borrower.
      * It prompts the user to enter their email and password, 
-     * and then checks these credentials against the list of registered borrowers.
+     * and then checks these credentials against the list of registered borrowers and librarians.
      * 
-     * @return Borrower object if the login is successful, otherwise returns null.
+     * @return Person object if the login is successful, otherwise returns null.
      */
-    public Borrower borrowerLogin() {
+    public Person Login() {
         Scanner input = new Scanner(System.in);
 
         String email;
@@ -606,42 +695,15 @@ public class Library {
         for (Borrower borrower : borrowers) {
             System.out.println("\n" + borrower.getEmail() + "\n" + borrower.getPassword());
             if (borrower.getEmail().equals(email) && borrower.getPassword().equals(password)) {
-                System.out.println("\nLogin Successful");
+                System.out.println("\n[Borrower] Login Successful.");
                 return borrower;
             }
         }
 
-        System.out.println("\nSorry! Wrong ID or Password");
-        return null;
-    }
-
-    /**
-     * Authenticates a librarian by prompting for email and password.
-     * 
-     * This method prompts the user to enter their email and password, then checks
-     * the entered credentials against the list of librarians. If a match is found,
-     * the corresponding librarian is returned. If no match is found, a message is
-     * displayed indicating that the login attempt was unsuccessful, and the method
-     * returns null.
-     * 
-     * @return the authenticated Librarian if login is successful, or null if the
-     *         credentials are incorrect.
-     */
-    public Librarian librarianLogin() {
-        Scanner input = new Scanner(System.in);
-
-        String email;
-        String password;
-
-        System.out.println("\nEnter Email: ");
-        email = input.next();
-        System.out.println("Enter Password: ");
-        password = input.next();
-
         for (Librarian librarian : librarians) {
             System.out.println("\n" + librarian.getEmail() + "\n" + librarian.getPassword());
             if (librarian.getEmail().equals(email) && librarian.getPassword().equals(password)) {
-                System.out.println("\nLogin Successful");
+                System.out.println("\n[Librarian] Login Successful");
                 return librarian;
             }
         }

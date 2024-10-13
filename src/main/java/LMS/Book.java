@@ -143,7 +143,7 @@ public class Book {
     /**
      * Sets the issued status of the book.
      *
-     * @param s Issued status to be set
+     * @param status Issued status to be set
      */
     public void setIssuedStatus(boolean status) {
         isIssued = status;

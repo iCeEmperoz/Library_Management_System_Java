@@ -48,21 +48,19 @@ public class OnTerminal {
 
                     System.out.println("Following Functionalities are available: \n");
                     System.out.println("1- Login");
-                    System.out.println("2- Administrative Functions");
-                    System.out.println("3- Create new account");
-                    System.out.println("4- Exit");
+                    System.out.println("2- Create new account");
+                    System.out.println("3- Exit");
 
                     System.out.println("-----------------------------------------\n");
 
                     int choice;
 
-                    choice = takeInput(0, 5);
+                    choice = takeInput(0, 4);
 
                     if (choice == 1) {
-                        Borrower borrower = library.borrowerLogin();
+                        Person user = library.Login();
 
-                        if (borrower != null) {
-
+                        if (user instanceof Borrower) {
                             while (true)    // Way to Borrower's Portal
                             {
                                 clearScreen();
@@ -84,13 +82,9 @@ public class OnTerminal {
                                 if (choice == 6)
                                     break;
 
-                                allFunctionalities(borrower, choice);
+                                allFunctionalities(user, choice);
                             }
-                        }
-                    } else if (choice == 2) {
-                        Librarian librarian = library.librarianLogin();
-
-                        if (librarian != null) {
+                        } else if (user instanceof Librarian) {
                             while (true) // Way to Librarian Portal
                             {
                                 clearScreen();
@@ -121,15 +115,30 @@ public class OnTerminal {
                                 if (choice == 16)
                                     break;
 
-                                allFunctionalities(librarian, choice);
+                                allFunctionalities(user, choice);
+                            }
+                        }
+                    } else if (choice == 2) {
+                        System.out.println("Choose work session: ");
+                        System.out.println("1- Borrower.");
+                        System.out.println("2- Librarian.");
+                        System.out.print("Please enter your choice: ");
+
+                        int ch = takeInput(0, 2);
+                        if (ch == 1) {
+                            library.createBorrower();
+                        } else if (ch == 2) {
+                            String lPassword = "LMS_Password";
+                            String pass = admin.next();
+                            System.out.print("Please enter system's password: ");
+                            if (pass.equals(lPassword)) {
+                                library.createLibrarian();
+                            } else {
+                                System.out.println("Wrong password.");
                             }
                         }
                     } else if (choice == 3) {
-                        library.createBorrower();
-                    } else if (choice == 4) {
                         stop = true;
-                    } else {
-                        System.out.println("\nPlease enter a valid option.");
                     }
 
                     System.out.println("\nPress any key to continue..\n");

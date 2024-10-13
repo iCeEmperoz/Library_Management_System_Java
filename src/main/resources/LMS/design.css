@@ -9,9 +9,11 @@
   -fx-font-size: 14px;
   -fx-font-family: Arial;
 }
+
 .btn:hover {
   -fx-background-color: linear-gradient(to bottom right, #1fa492, #0c5d63);
 }
+
 .textfield {
   -fx-border-coior: #000;
   -fx-border-width: .5px;
@@ -21,3 +23,4 @@
   -fx-background-color: linear-gradient(to bottom right, #16a47c, #c3d6da);
   -fx-border-width: .8px;
 }
+

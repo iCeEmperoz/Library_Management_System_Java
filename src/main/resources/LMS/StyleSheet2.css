@@ -1,0 +1,151 @@
+/* Base style for the tab buttons */
+.tab-button {
+    background-color: #c2fbd7;
+    border-radius: 100px;
+    -fx-background-radius: 100px;
+    -fx-background-color: #c2fbd7;
+    -fx-text-fill: green;
+    -fx-font-family: 'CerebriSans-Regular', 'Roboto', sans-serif;
+    -fx-padding: 7px 20px;
+    -fx-font-size: 16px;
+    -fx-cursor: hand;
+    -fx-border: 0;
+    -fx-transition: all 250ms;
+    -fx-user-select: none;
+    -fx-focus-color: transparent; /* Remove focus color */
+    -fx-faint-focus-color: transparent; /* Remove faint focus glow */
+    -fx-border-color: transparent; /* No border color */
+    -fx-effect: none; /* Remove all visual effects */
+}
+
+/* When the tab is clicked (selected), change background and text color */
+.tab-button:selected {
+    -fx-background-color: #a3e3b7; /* Darker green background */
+    -fx-text-fill: darkgreen; /* Darker text color */
+}
+
+/* Remove focus effects */
+.tab-button:focused {
+    -fx-effect: none; /* Disable any glow effect on focus */
+    -fx-border-color: transparent; /* Remove focus border */
+    -fx-background-insets: 0; /* Prevent insets from showing a border */
+}
+
+/* Remove hover effects (optional) */
+.tab-button:hover {
+    -fx-effect: none; /* No hover effect */
+    -fx-background-insets: 0; /* Prevent insets from showing a border */
+}
+
+/* Remove the tab header background */
+.tab-pane:top .tab-header-area .tab-header-background {
+    -fx-background-color: linear-gradient(lightcyan, lightgrey);
+}
+
+/* Remove the default glow around the text or tab label */
+.tab-pane:top .tab-header-area .tab:selected .tab-label {
+    -fx-underline: true;
+    -fx-effect: none; /* Remove glow effect around the label */
+    -fx-background-insets: 0; /* Ensure no borders are shown */
+    -fx-background-radius: 0; /* Ensure no rounded borders */
+    -fx-padding: 0; /* Remove any padding that could cause a visual glow */
+}
+
+
+.tab-pane:top .tab-header-area .tab-header-region {
+    -fx-border-style: double;
+}
+
+.anchor-pane {
+    -fx-background-color: #c1c6e1; /* Light brown color */
+    -fx-border-style: groove;
+    -fx-border-color: #0c5d63;
+    -fx-border-radius: 10px;
+    -fx-border-insets: 10;
+}
+
+.choice-box {
+    -fx-border-insets: 10;
+    -fx-border-radius: 50px;
+    -fx-background-color: #cccccc;
+}
+
+.button-83 {
+    -fx-background-color: transparent, linear-gradient(to bottom, #fff, #f8eedb); /* Two layers, base transparent and gradient */
+    -fx-border-outsets: 10px;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px; /* Top/Bottom, Left/Right */
+    -fx-font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -fx-font-size: 1em;
+    -fx-font-weight: bold;
+    -fx-text-fill: #482307; /* Text color */
+    -fx-background-radius: 0.5rem;
+    -fx-effect: dropshadow(gaussian, rgba(81,41,10,0.1), 10, 0, -6, 8),
+    dropshadow(gaussian, rgba(81,41,10,0.2), 2, 0, 0, 2);
+    -fx-cursor: hand;
+    -fx-transition: all 0.1s cubic-bezier(.4, 0, .2, 1);
+    -fx-alignment: center; /* Align text to center */
+}
+
+.button-83:pressed {
+    -fx-background-color: #f3f4f6;
+    -fx-effect: dropshadow(gaussian, rgba(81,41,10,0.15), 5, 0, -1, 2),
+    dropshadow(gaussian, rgba(81,41,10,0.15), 1, 0, 0, 1);
+    -fx-translate-y: 2px; /* Simulate slight downward movement when pressed */
+}
+
+.button-83:focused {
+    -fx-effect: innershadow(gaussian, rgba(72, 35, 7, 0.46), 4, 0, 0, 0),
+    dropshadow(gaussian, rgba(81,41,10,0.1), 10, 0, -6, 8),
+    dropshadow(gaussian, rgba(81,41,10,0.2), 2, 0, 0, 2);
+}
+
+.custom-titled-pane .title > .arrow-button {
+    -fx-opacity: 0;
+    -fx-padding: 0;
+    -fx-shape: null;
+    -fx-background-color: transparent;
+}
+
+/* This will style the header (title) of the TitledPane */
+.button-83 .titled-pane > .title {
+    -fx-background-color: #c1c6e1;
+    -fx-background-radius: 10px;
+    -fx-border-color: grey;
+    -fx-border-outsets: 10px;
+    -fx-border-radius: 10px;
+    /*-fx-border-style: double;*/
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+
+/* Hide the disclosure triangle */
+.button-83 .titled-pane > .title > .arrow-button {
+    -fx-opacity: 0;
+    -fx-padding: 0;
+    -fx-shape: null;
+    -fx-background-color: transparent;
+}
+
+/* Style the content area of the TitledPane */
+.button-83 .titled-pane > .content {
+    -fx-background-color: #f0f0f0;
+}
+
+/* Hide the triangle icon (disclosure node) in the TitledPane */
+.button-83 .titled-pane > .title > .arrow-button {
+    -fx-opacity: 0; /* Hides the triangle icon */
+    -fx-padding: 0;  /* Removes padding so the space occupied by the icon is minimized */
+    -fx-background-color: transparent; /* Ensures no background is applied */
+}
+
+.v-box {
+    -fx-background-color: white;
+}
+
+.transparent-divider .split-pane-divider {
+    -fx-background-color: transparent; /* Makes the divider background transparent */
+}
+

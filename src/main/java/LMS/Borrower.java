@@ -30,7 +30,6 @@ public class Borrower extends Person {
     super(idNumber, name, password, address, phoneNum, email);
     borrowedBooks = new ArrayList<>();
     onHoldBooks = new ArrayList<>();
-    super.setBorrower();
   }
 
   /**
@@ -50,11 +49,11 @@ public class Borrower extends Person {
     if (!borrowedBooks.isEmpty()) {
       System.out.println("\nBorrowed Books are: ");
       System.out.println("-----------------------------------------------------");
-      System.out.println("No.\t\tTitle\t\t\tAuthor\t\t\tSubject");
+      System.out.printf("%-5s %-30s %-20s %-20s%n", "No.", "Title", "Author", "Subject");
       System.out.println("-----------------------------------------------------");
 
       for (int i = 0; i < borrowedBooks.size(); i++) {
-        System.out.print(i + "-" + "\t\t");
+        System.out.printf("%-5s ", i + "-");
         borrowedBooks.get(i).getBook().printInfo();
         System.out.println();
       }
@@ -69,12 +68,12 @@ public class Borrower extends Person {
   public void printOnHoldBooks() {
     if (!onHoldBooks.isEmpty()) {
       System.out.println("\nOn Hold Books are: ");
-      System.out.println("--------------------------------------------------------");
-      System.out.println("No.\t\tTitle\t\t\tAuthor\t\tSubject");
-      System.out.println("-------------------------------------------------------");
+      System.out.println("-----------------------------------------------------");
+      System.out.printf("%-5s %-30s %-20s %-20s%n", "No.", "Title", "Author", "Subject");
+      System.out.println("-----------------------------------------------------");
 
       for (int i = 0; i < onHoldBooks.size(); i++) {
-        System.out.print(i + "-" + "\t\t");
+        System.out.printf("%-5s ", i + "-");
         onHoldBooks.get(i).getBook().printInfo();
         System.out.println();
       }

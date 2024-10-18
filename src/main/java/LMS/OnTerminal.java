@@ -122,15 +122,15 @@ public class OnTerminal {
                         System.out.println("Choose work session: ");
                         System.out.println("1- Borrower.");
                         System.out.println("2- Librarian.");
-                        System.out.print("Please enter your choice: ");
+                        System.out.println("3- Back.");
 
-                        int ch = takeInput(0, 2);
+                        int ch = takeInput(0, 4);
                         if (ch == 1) {
                             library.createBorrower();
                         } else if (ch == 2) {
                             String lPassword = "LMS_Password";
-                            String pass = admin.next();
                             System.out.print("Please enter system's password: ");
+                            String pass = admin.next();
                             if (pass.equals(lPassword)) {
                                 library.createLibrarian();
                             } else {
@@ -246,11 +246,11 @@ public class OnTerminal {
                 Borrower bor = library.findBorrower();
 
                 if (bor != null) {
-                    double totalFine = library.computeFine2(bor);
+                    double totalFine = library.computeFine(bor);
                     System.out.println("\nYour Total Fine is : Rs " + totalFine);
                 }
             } else {
-                double totalFine = library.computeFine2((Borrower) person);
+                double totalFine = library.computeFine((Borrower) person);
                 System.out.println("\nYour Total Fine is : Rs " + totalFine);
             }
         }

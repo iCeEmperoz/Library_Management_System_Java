@@ -67,6 +67,6 @@ public class HoldRequest {
      * Prints the hold request information, including the book title, borrower name, and request date.
      */
     public void print() {
-        System.out.print(book.getTitle() + "\t\t\t\t" + borrower.getName() + "\t\t\t\t"  + requestDate + "\n");
+        System.out.printf("%-30s %-30s %-30s%n", book.getTitle(), borrower.getName(), requestDate);
     }
 }

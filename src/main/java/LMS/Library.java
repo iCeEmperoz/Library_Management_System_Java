@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * It follows the Singleton Design Pattern to ensure only one instance of the library exists.
  * The library manages books, borrowers, librarians, loans, and hold requests.
  * It also provides methods to interact with these entities.
- * 
+ *
  * <p>Attributes:</p>
  * <ul>
  *   <li>name: The name of the library.</li>
@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  *   <li>USER: The username for the database connection.</li>
  *   <li>PASSWORD: The password for the database connection.</li>
  * </ul>
- * 
+ *
  * <p>Methods:</p>
  * <ul>
  *   <li>getInstance(): Returns the single instance of the Library class.</li>
@@ -101,11 +101,12 @@ public class Library {
     }
 
     /*---------------------------------------------------------------------*/
+
     /**
      * Represents a Library with a collection of books, librarians, and borrowers.
      * This class is responsible for managing the books available in the library,
      * the loans of books to borrowers, and the librarians who manage the library.
-     * 
+     * <p>
      * The constructor initializes the library with empty lists for librarians,
      * borrowers, books, and loans.
      */
@@ -151,6 +152,7 @@ public class Library {
 
 
     // Setter Func.
+
     /**
      * Sets the name of the library.
      *
@@ -285,23 +287,23 @@ public class Library {
     /**
      * Removes a book from the library if it is not currently borrowed by any borrower.
      * If the book is on hold by any borrower, prompts the user for confirmation before deleting.
-     * 
+     *
      * @param book The book to be removed from the library.
-     * 
-     * <p>Steps:</p>
-     * <ol>
-     *   <li>Checks if the book is currently borrowed by any borrower. If it is, the book cannot be deleted.</li>
-     *   <li>If the book is not borrowed, checks if there are any hold requests for the book.</li>
-     *   <li>If there are hold requests, prompts the user for confirmation to delete the book and the associated hold requests.</li>
-     *   <li>If the user confirms, removes the hold requests and deletes the book from the library.</li>
-     *   <li>If the book is successfully removed, prints a success message. Otherwise, prints a failure message.</li>
-     * </ol>
-     * 
-     * <p>Note:</p>
-     * <ul>
-     *   <li>If the book is currently borrowed, it cannot be deleted.</li>
-     *   <li>If the book has hold requests, user confirmation is required to delete the book and the hold requests.</li>
-     * </ul>
+     *
+     *             <p>Steps:</p>
+     *             <ol>
+     *               <li>Checks if the book is currently borrowed by any borrower. If it is, the book cannot be deleted.</li>
+     *               <li>If the book is not borrowed, checks if there are any hold requests for the book.</li>
+     *               <li>If there are hold requests, prompts the user for confirmation to delete the book and the associated hold requests.</li>
+     *               <li>If the user confirms, removes the hold requests and deletes the book from the library.</li>
+     *               <li>If the book is successfully removed, prints a success message. Otherwise, prints a failure message.</li>
+     *             </ol>
+     *
+     *             <p>Note:</p>
+     *             <ul>
+     *               <li>If the book is currently borrowed, it cannot be deleted.</li>
+     *               <li>If the book has hold requests, user confirmation is required to delete the book and the hold requests.</li>
+     *             </ul>
      */
     public void removeBookfromLibrary(Book book) {
         boolean delete = true;
@@ -360,16 +362,17 @@ public class Library {
     }
 
     //
+
     /**
      * Searches for books in the library based on the user's input criteria (Title, Subject, or Author).
-     * 
+     *
      * @return An ArrayList of Book objects that match the search criteria. If no books are found, returns null.
      * @throws IOException If an input or output exception occurs.
-     * 
-     * The method prompts the user to choose a search criterion (Title, Subject, or Author) and then
-     * asks for the corresponding search term. It then iterates through the list of books in the library
-     * and collects those that match the search term. If matching books are found, they are printed and
-     * returned. If no books match the search criteria, a message is displayed and null is returned.
+     *                     <p>
+     *                     The method prompts the user to choose a search criterion (Title, Subject, or Author) and then
+     *                     asks for the corresponding search term. It then iterates through the list of books in the library
+     *                     and collects those that match the search term. If matching books are found, they are printed and
+     *                     returned. If no books match the search criteria, a message is displayed and null is returned.
      */
     public ArrayList<Book> searchForBooks() throws IOException {
         String choice;
@@ -420,13 +423,13 @@ public class Library {
             System.out.println("\nThese books are found: \n");
 
             System.out.println("------------------------------------------------------------------------------");
-            System.out.println("No.\t\tTitle\t\t\tAuthor\t\t\tSubject");
+            System.out.printf("%-5s %-30s %-30s %-30s\n", "No.", "Title", "Author", "Subject");
             System.out.println("------------------------------------------------------------------------------");
 
             for (int i = 0; i < matchedBooks.size(); i++) {
-                System.out.print(i + "-" + "\t\t");
-                matchedBooks.get(i).printInfo();
-                System.out.print("\n");
+            System.out.printf("%-5d ", i + 1);
+            matchedBooks.get(i).printInfo();
+            System.out.print("\n");
             }
 
             return matchedBooks;
@@ -437,6 +440,7 @@ public class Library {
     }
 
     // View Info of all Books in Library
+
     /**
      * Displays all the books available in the library.
      * If the library has books, it prints the list of books with their details
@@ -448,44 +452,51 @@ public class Library {
             System.out.println("\nBooks are: ");
 
             System.out.println("------------------------------------------------------------------------------");
-            System.out.println("No.\t\tTitle\t\t\tAuthor\t\t\tSubject");
+            System.out.printf("%-5s %-30s %-30s %-30s\n", "No.", "Title", "Author", "Subject");
             System.out.println("------------------------------------------------------------------------------");
 
             for (int i = 0; i < booksInLibrary.size(); i++) {
-                System.out.print(i + "-" + "\t\t");
+                System.out.printf("%-5d ", i + 1);
                 booksInLibrary.get(i).printInfo();
                 System.out.print("\n");
             }
-        } else
+        } else {
             System.out.println("\nCurrently, Library has no books.");
+        }
     }
 
     //Computes total fine for all loans of a borrower
+
     /**
      * Computes the total fine for a given borrower based on their loan records.
-     * 
+     * <p>
      * This method iterates through all the loans and calculates the fine for each loan
      * associated with the specified borrower. It prints a detailed table of the fines
      * for each loan and returns the total fine amount.
-     * 
+     *
      * @param borrower The borrower for whom the fine is to be computed.
      * @return The total fine amount for the specified borrower.
      */
-    public double computeFine2(Borrower borrower) {
+    public double computeFine(Borrower borrower) {
         System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-        System.out.println("No.\t\tBook's Title\t\tBorrower's Name\t\t\tIssued Date\t\t\tReturned Date\t\t\t\tFine(Rs)");
+        System.out.printf("%-5s %-30s %-20s %-20s %-20s %-10s\n", "No.", "Book's Title", "Borrower's Name", "Issued Date", "Returned Date", "Fine(Rs)");
         System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
         double totalFine = 0;
         double per_loan_fine = 0;
 
         for (int i = 0; i < loans.size(); i++) {
-            Loan l = loans.get(i);
+            Loan loan = loans.get(i);
 
-            if ((l.getBorrower() == borrower)) {
-                per_loan_fine = l.computeFine1();
-                System.out.print(i + "-" + "\t\t" + loans.get(i).getBook().getTitle() + "\t\t\t" + loans.get(i).getBorrower().getName() + "\t\t" + loans.get(i).getIssuedDate() + "\t\t\t" + loans.get(i).getReturnDate() + "\t\t\t\t" + per_loan_fine + "\n");
-
+            if ((loan.getBorrower().equals(borrower))) {
+                per_loan_fine = loan.computeFine0();
+                System.out.printf("%-5d %-30s %-20s %-20s %-20s %-10.2f\n",
+                        i + 1,
+                        loan.getBook().getTitle(),
+                        loan.getBorrower().getName(),
+                        loan.getIssuedDate(),
+                        loan.getReturnDate(),
+                        per_loan_fine);
                 totalFine += per_loan_fine;
             }
         }
@@ -497,7 +508,7 @@ public class Library {
      * This method prompts the user to enter details for creating a new borrower.
      * It collects the borrower's name, password, address, phone number, and email.
      * After collecting the information, it creates a new Borrower object and adds it to the system.
-     * 
+     *
      * <p>Steps involved:</p>
      * <ul>
      *   <li>Prompts the user to enter their name, password, address, phone number, and email.</li>
@@ -507,7 +518,7 @@ public class Library {
      *   <li>Adds the new Borrower to the system.</li>
      *   <li>Prints confirmation messages with the borrower's email and password.</li>
      * </ul>
-     * 
+     *
      * <p>Exceptions handled:</p>
      * <ul>
      *   <li>IOException: If an input or output exception occurred.</li>
@@ -564,8 +575,8 @@ public class Library {
         addBorrower(b);
         System.out.println("\nBorrower with name " + n + " created successfully.");
 
-        System.out.println("\nYour Email is : " + b.getEmail());
-        System.out.println("Your Password is : " + b.getPassword());
+        System.out.println("\nEmail : " + b.getEmail());
+        System.out.println("Password : " + b.getPassword());
     }
 
     /**
@@ -573,7 +584,7 @@ public class Library {
      * The method reads input from the console and handles potential input mismatches and IO exceptions.
      * After collecting the necessary information, it creates a Librarian object and adds it to the library system.
      * Finally, it confirms the creation of the librarian and displays the email and password.
-     *
+     * <p>
      * Input:
      * - Name: String
      * - Password: String
@@ -582,7 +593,7 @@ public class Library {
      * - Email: String
      * - Salary: double
      * - Office Number: int (or -1 to auto-assign)
-     *
+     * <p>
      * Exceptions:
      * - IOException: If an input or output exception occurs while reading from the console.
      * - InputMismatchException: If the input does not match the expected type for phone number, salary, or office number.
@@ -661,8 +672,8 @@ public class Library {
     /**
      * Creates a new book with the given title, subject, and author, and adds it to the library.
      *
-     * @param title  the title of the book
-     * @param subject  the subject of the book
+     * @param title   the title of the book
+     * @param subject the subject of the book
      * @param author  the author of the book
      */
     public void createBook(String title, String subject, String author) {
@@ -674,11 +685,12 @@ public class Library {
     }
 
     // Called when want access to Portal
+
     /**
      * This method handles the login process for a borrower.
-     * It prompts the user to enter their email and password, 
+     * It prompts the user to enter their email and password,
      * and then checks these credentials against the list of registered borrowers and librarians.
-     * 
+     *
      * @return Person object if the login is successful, otherwise returns null.
      */
     public Person Login() {
@@ -693,7 +705,6 @@ public class Library {
         password = input.next();
 
         for (Borrower borrower : borrowers) {
-            System.out.println("\n" + borrower.getEmail() + "\n" + borrower.getPassword());
             if (borrower.getEmail().equals(email) && borrower.getPassword().equals(password)) {
                 System.out.println("\n[Borrower] Login Successful.");
                 return borrower;
@@ -701,7 +712,6 @@ public class Library {
         }
 
         for (Librarian librarian : librarians) {
-            System.out.println("\n" + librarian.getEmail() + "\n" + librarian.getPassword());
             if (librarian.getEmail().equals(email) && librarian.getPassword().equals(password)) {
                 System.out.println("\n[Librarian] Login Successful");
                 return librarian;
@@ -713,12 +723,13 @@ public class Library {
     }
 
     // History when a Book was Issued and was Returned!
+
     /**
      * Displays the history of issued books.
-     * 
-     * This method prints a list of all issued books along with details such as 
-     * the book's title, borrower's name, issuer's name, issued date, receiver's 
-     * name, returned date, and fine status. If there are no issued books, it 
+     * <p>
+     * This method prints a list of all issued books along with details such as
+     * the book's title, borrower's name, issuer's name, issued date, receiver's
+     * name, returned date, and fine status. If there are no issued books, it
      * prints a message indicating that no books have been issued.
      */
     public void viewHistory() {
@@ -726,20 +737,26 @@ public class Library {
             System.out.println("\nIssued Books are: ");
 
             System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------");
-            System.out.println("No.\tBook's Title\tBorrower's Name\t  Issuer's Name\t\tIssued Date\t\t\tReceiver's Name\t\tReturned Date\t\tFine Paid");
+            System.out.printf("%-5s %-30s %-20s %-20s %-20s %-20s %-20s %-10s\n", "No.", "Book's Title", "Borrower's Name", "Issuer's Name", "Issued Date", "Receiver's Name", "Returned Date", "Fine Paid");
             System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------");
 
             for (int i = 0; i < loans.size(); i++) {
-                if (loans.get(i).getIssuer() != null)
-                    System.out.print(i + "-" + "\t" + loans.get(i).getBook().getTitle() + "\t\t\t" + loans.get(i).getBorrower().getName() + "\t\t" + loans.get(i).getIssuer().getName() + "\t    " + loans.get(i).getIssuedDate());
-
-                if (loans.get(i).getReceiver() != null) {
-                    System.out.print("\t" + loans.get(i).getReceiver().getName() + "\t\t" + loans.get(i).getReturnDate() + "\t   " + loans.get(i).getFineStatus() + "\n");
-                } else
-                    System.out.print("\t\t" + "--" + "\t\t\t" + "--" + "\t\t" + "--" + "\n");
+                Loan loan = loans.get(i);
+                String receiverName = (loan.getReceiver() != null) ? loan.getReceiver().getName() : "--";
+                String returnDate = (loan.getReturnDate() != null) ? loan.getReturnDate().toString() : "--";
+                System.out.printf("%-5d %-30s %-20s %-20s %-20s %-20s %-20s %-10s\n",
+                        i + 1,
+                        loan.getBook().getTitle(),
+                        loan.getBorrower().getName(),
+                        loan.getIssuer().getName(),
+                        loan.getIssuedDate(),
+                        receiverName,
+                        returnDate,
+                        loan.getFineStatus());
             }
-        } else
+        } else {
             System.out.println("\nNo issued books.");
+        }
     }
 
     //---------------------------------------------------------------------------------------//
@@ -763,23 +780,23 @@ public class Library {
 
     /**
      * Populates the library with data from the database.
-     * 
+     * <p>
      * This method retrieves data from the database and populates the library with books, librarians, borrowers, loans, and hold requests.
-     * 
+     *
      * @param connection The database connection to use for retrieving data.
      * @throws SQLException If a database access error occurs.
-     * @throws IOException If an I/O error occurs.
-     * 
-     * The method performs the following steps:
-     * 1. Populates the library with books from the BOOK table.
-     * 2. Populates the library with librarians from the PERSON and LIBRARIAN tables.
-     * 3. Populates the library with borrowers from the PERSON and BORROWER tables.
-     * 4. Populates the library with loans from the LOAN table.
-     * 5. Populates the library with hold requests from the HOLD_REQUEST table.
-     * 6. Populates the remaining information for borrowers, including borrowed books.
-     * 7. Sets the ID count for books and persons.
-     * 
-     * The method prints messages to the console if no data is found for books, librarians, borrowers, loans, or hold requests.
+     * @throws IOException  If an I/O error occurs.
+     *                      <p>
+     *                      The method performs the following steps:
+     *                      1. Populates the library with books from the BOOK table.
+     *                      2. Populates the library with librarians from the PERSON and LIBRARIAN tables.
+     *                      3. Populates the library with borrowers from the PERSON and BORROWER tables.
+     *                      4. Populates the library with loans from the LOAN table.
+     *                      5. Populates the library with hold requests from the HOLD_REQUEST table.
+     *                      6. Populates the remaining information for borrowers, including borrowed books.
+     *                      7. Sets the ID count for books and persons.
+     *                      <p>
+     *                      The method prints messages to the console if no data is found for books, librarians, borrowers, loans, or hold requests.
      */
     public void populateLibrary(Connection connection) throws SQLException, IOException {
         Library library = this;
@@ -1035,7 +1052,7 @@ public class Library {
 
     /**
      * Fills the database tables with the current state of the library.
-     * 
+     * <p>
      * This method performs the following steps:
      * 1. Clears the existing data from the tables: BOOK, BORROWER, HOLD_REQUEST, LIBRARIAN, LOAN, and PERSON.
      * 2. Inserts the current borrowers and librarians into the PERSON table.
@@ -1045,7 +1062,7 @@ public class Library {
      * 6. Inserts the current loans into the LOAN table.
      * 7. Inserts the current hold requests into the HOLD_REQUEST table.
      * 8. Inserts the currently borrowed books into the BORROWED_BOOK table.
-     * 
+     *
      * @param connection The database connection to use for executing the SQL statements.
      * @throws SQLException If any SQL error occurs during the execution of the statements.
      */

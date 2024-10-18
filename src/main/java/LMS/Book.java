@@ -44,14 +44,14 @@ public class Book {
      */
     public void printHoldRequests() {
         if (!holdRequestsOperations.holdRequests.isEmpty()) {
-            System.out.println("\nHold Requests are: ");
+            System.out.println("\nHold Requests are:");
 
-            System.out.println("---------------------------------------------------------------------------------------------------------------------------------------");
-            System.out.println("No.\t\tBook's Title\t\t\tBorrower's Name\t\t\tRequest Date");
-            System.out.println("---------------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("-----------------------------------------------------------------------");
+            System.out.printf("%-5s %-30s %-30s %-20s%n", "No.", "Book's Title", "Borrower's Name", "Request Date");
+            System.out.println("-----------------------------------------------------------------------");
 
             for (int i = 0; i < holdRequestsOperations.holdRequests.size(); i++) {
-                System.out.print(i + "-" + "\t\t");
+                System.out.printf("%-5d ", i + 1);
                 holdRequestsOperations.holdRequests.get(i).print();
             }
         } else {
@@ -63,7 +63,7 @@ public class Book {
      * Prints the information of the book.
      */
     public void printInfo() {
-        System.out.println(title + "\t\t\t" + author + "\t\t\t" + subject);
+        System.out.printf("%-30s %-30s %-30s%n", title, author, subject);
     }
 
     /**

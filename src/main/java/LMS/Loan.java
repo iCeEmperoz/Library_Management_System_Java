@@ -132,7 +132,7 @@ public class Loan {
      *
      * @return The total fine.
      */
-    public double computeFine1() {
+    public double computeFine0() {
         double totalFine = 0;
 
         if (!finePaid) {
@@ -140,7 +140,7 @@ public class Loan {
             Date rDate = new Date();
 
             long days = ChronoUnit.DAYS.between(rDate.toInstant(), iDate.toInstant());
-            days = 0 - days;
+            days = -days;
 
             days = days - Library.getInstance().book_return_deadline;
 
@@ -156,7 +156,7 @@ public class Loan {
      * Handles the fine payment process.
      */
     public void payFine() {
-        double totalFine = computeFine1();
+        double totalFine = computeFine0();
 
         if (totalFine > 0) {
             System.out.println("\nTotal Fine generated: Rs " + totalFine);

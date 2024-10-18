@@ -12,8 +12,6 @@ public abstract class Person {
     protected String email;     // Email address of the person
     protected String address;   // Address of the person
     protected int phoneNo;      // Phone number of the person
-    protected boolean isLibrarian = false;
-    protected boolean isBorrower = false;
 
     static int currentIdNumber = 0; // Static counter to assign unique IDs automatically
 
@@ -93,20 +91,6 @@ public abstract class Person {
     }
 
     /**
-     * Sets the librarian role of the person.
-     */
-    public void setLibrarian() {
-        this.isLibrarian = true;
-    }
-
-    /**
-     * Sets the borrower role of the person.
-     */
-    public void setBorrower() {
-        this.isBorrower = true;
-    }
-
-    /**
      * Gets the ID of the person.
      *
      * @return The ID of the person
@@ -172,9 +156,5 @@ public abstract class Person {
      */
     public String getPassword() {
         return password;
-    }
-
-    public Boolean getRole() {
-        return isLibrarian;
     }
 }

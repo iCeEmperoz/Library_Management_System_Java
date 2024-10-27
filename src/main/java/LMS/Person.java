@@ -157,4 +157,22 @@ public abstract class Person {
     public String getPassword() {
         return password;
     }
+
+    
+    /**
+     * Compares this object to the specified object for equality.
+     * 
+     * @param o the object to be compared for equality with this object
+     * @return {@code true} if the specified object is equal to this object;
+     *         {@code false} otherwise
+     */
+    public abstract boolean equals(Object o);
+    
+    /**
+     * Returns a hash code value for the object. This method is supported for the benefit
+     * of hash tables such as those provided by {@link java.util.HashMap}.
+     *
+     * @return a hash code value for this object.
+     */
+    public abstract int hashCode();
 }

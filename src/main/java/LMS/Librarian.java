@@ -1,5 +1,7 @@
 package LMS;
 
+import java.util.Objects;
+
 /**
  * The Librarian class represents a librarian in the library management system.
  * It extends the Person class and includes additional attributes such as salary and office number.
@@ -11,7 +13,7 @@ package LMS;
  */
 public class Librarian extends Person {
     protected double salary;
-    int officeNo;     //Office Number of the Librarian
+    protected int officeNo;     //Office Number of the Librarian
     public static int currentOfficeNumber = 0;
 
     /**
@@ -66,5 +68,22 @@ public class Librarian extends Person {
      */
     public int getOfficeNo() {
         return officeNo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Librarian && o != null) {
+        Librarian librarian = (Librarian) o;
+        return Objects.equals(getName(), librarian.getName()) 
+                && Objects.equals(getEmail(), librarian.getEmail()) 
+                && Objects.equals(getPhoneNo(), librarian.getPhoneNo());
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getEmail(), getPhoneNo());
     }
 }

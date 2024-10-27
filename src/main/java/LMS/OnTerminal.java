@@ -142,8 +142,9 @@ public class OnTerminal {
                     }
 
                     System.out.println("\nPress any key to continue..\n");
-                    Scanner scanner = new Scanner(System.in);
-                    scanner.next();
+                    try (Scanner scanner = new Scanner(System.in)) {
+                        scanner.next();
+                    }
 
                 }
             } finally {
@@ -176,18 +177,21 @@ public class OnTerminal {
      * @return The valid input value.
      */
     public static int takeInput(int min, int max) {
-        String choice;
-        Scanner input = new Scanner(System.in);
+        try (Scanner input = new Scanner(System.in)) {
+            while (true) {
+                System.out.print("Please enter your choice: ");
+                String choice = input.next();
 
-        while (true) {
-            System.out.print("Please enter your choice: ");
-
-            choice = input.next();
-            if ((!choice.matches(".*[a-zA-Z]+.*]")) &&
-                    (Integer.parseInt(choice) > min && Integer.parseInt(choice) < max)) {
-                return Integer.parseInt(choice);
-            } else {
-                System.out.println("Invalid input.");
+                try {
+                    int intChoice = Integer.parseInt(choice);
+                    if (intChoice > min && intChoice < max) {
+                        return intChoice;
+                    } else {
+                        System.out.println("Invalid input. Please enter an integer between " + (min + 1) + " and " + (max - 1) + ".");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a valid integer.");
+                }
             }
         }
     }
@@ -202,182 +206,183 @@ public class OnTerminal {
     public static void allFunctionalities(Person person, int choice) throws IOException {
         Library library = Library.getInstance();
 
-        Scanner scanner = new Scanner(System.in);
-        int input;
+        try (Scanner scanner = new Scanner(System.in)) {
+            int input;
 
-        //Search Book
-        if (choice == 1) {
-            library.searchForBooks();
-        }
-
-        //Do Hold Request
-        else if (choice == 2) {
-            ArrayList<Book> books = library.searchForBooks();
-
-            if (books != null) {
-                input = takeInput(-1, books.size());
-
-                Book b = books.get(input);
-
-                if ("Clerk".equals(person.getClass().getSimpleName()) || "Librarian".equals(person.getClass().getSimpleName())) {
-                    Borrower bor = library.findBorrower();
-
-                    if (bor != null)
-                        b.makeHoldRequest(bor);
-                } else
-                    b.makeHoldRequest((Borrower) person);
+            //Search Book
+            if (choice == 1) {
+                library.searchForBooks();
             }
-        }
 
-        //View borrower's personal information
-        else if (choice == 3) {
-            if ("Librarian".equals(person.getClass().getSimpleName())) {
-                Borrower bor = library.findBorrower();
+            //Do Hold Request
+            else if (choice == 2) {
+                ArrayList<Book> books = library.searchForBooks();
 
-                if (bor != null)
-                    bor.printInfo();
-            } else
-                person.printInfo();
-        }
+                if (books != null) {
+                    input = takeInput(-1, books.size());
 
-        //Compute Fine of a Borrower
-        else if (choice == 4) {
-            if ("Clerk".equals(person.getClass().getSimpleName()) || "Librarian".equals(person.getClass().getSimpleName())) {
-                Borrower bor = library.findBorrower();
+                    Book book = books.get(input);
 
-                if (bor != null) {
-                    double totalFine = library.computeFine(bor);
+                    if ("Librarian".equals(person.getClass().getSimpleName())) {
+                        Borrower borrower = library.findBorrower();
+
+                        if (borrower != null)
+                            book.makeHoldRequest(borrower);
+                    } else
+                        book.makeHoldRequest((Borrower) person);
+                }
+            }
+
+            //View borrower's personal information
+            else if (choice == 3) {
+                if ("Librarian".equals(person.getClass().getSimpleName())) {
+                    Borrower borrower = library.findBorrower();
+
+                    if (borrower != null)
+                        borrower.printInfo();
+                } else
+                    person.printInfo();
+            }
+
+            //Compute Fine of a Borrower
+            else if (choice == 4) {
+                if ("Librarian".equals(person.getClass().getSimpleName())) {
+                    Borrower borrower = library.findBorrower();
+
+                    if (borrower != null) {
+                        double totalFine = library.computeFine(borrower);
+                        System.out.println("\nYour Total Fine is : Rs " + totalFine);
+                    }
+                } else {
+                    double totalFine = library.computeFine((Borrower) person);
                     System.out.println("\nYour Total Fine is : Rs " + totalFine);
                 }
-            } else {
-                double totalFine = library.computeFine((Borrower) person);
-                System.out.println("\nYour Total Fine is : Rs " + totalFine);
             }
-        }
 
-        //Check hold request queue of a book
-        else if (choice == 5) {
-            ArrayList<Book> books = library.searchForBooks();
+            //Check hold request queue of a book
+            else if (choice == 5) {
+                ArrayList<Book> books = library.searchForBooks();
 
-            if (books != null) {
-                input = takeInput(-1, books.size());
-                books.get(input).printHoldRequests();
-            }
-        }
-
-        //Issue a Book
-        else if (choice == 6) {
-            ArrayList<Book> books = library.searchForBooks();
-
-            if (books != null) {
-                input = takeInput(-1, books.size());
-                Book b = books.get(input);
-
-                Borrower bor = library.findBorrower();
-
-                if (bor != null) {
-                    b.issueBook(bor, (Librarian) person);
+                if (books != null) {
+                    input = takeInput(-1, books.size());
+                    books.get(input).printHoldRequests();
                 }
             }
-        }
 
-        //Return a Book
-        else if (choice == 7) {
-            Borrower bor = library.findBorrower();
+            //Issue a Book
+            else if (choice == 6) {
+                ArrayList<Book> books = library.searchForBooks();
 
-            if (bor != null) {
-                bor.printBorrowedBooks();
-                ArrayList<Loan> loans = bor.getBorrowedBooks();
+                if (books != null) {
+                    input = takeInput(-1, books.size());
+                    Book book = books.get(input);
 
-                if (!loans.isEmpty()) {
-                    input = takeInput(-1, loans.size());
-                    Loan l = loans.get(input);
+                    Borrower borrower = library.findBorrower();
 
-                    l.getBook().returnBook(bor, l, (Librarian) person);
-                } else
-                    System.out.println("\nThis borrower " + bor.getName() + " has no book to return.");
+                    if (borrower != null) {
+                        book.issueBook(borrower, (Librarian) person);
+                    }
+                }
             }
-        }
 
-        //Renew a Book
-        else if (choice == 8) {
-            Borrower bor = library.findBorrower();
+            //Return a Book
+            else if (choice == 7) {
+                Borrower borrower = library.findBorrower();
 
-            if (bor != null) {
-                bor.printBorrowedBooks();
-                ArrayList<Loan> loans = bor.getBorrowedBooks();
+                if (borrower != null) {
+                    borrower.printBorrowedBooks();
+                    ArrayList<Loan> loans = borrower.getBorrowedBooks();
 
-                if (!loans.isEmpty()) {
-                    input = takeInput(-1, loans.size());
+                    if (!loans.isEmpty()) {
+                        input = takeInput(-1, loans.size());
+                        Loan l = loans.get(input);
 
-                    loans.get(input).renewIssuedBook(new java.util.Date());
-                } else
-                    System.out.println("\nThis borrower " + bor.getName() + " has no issued book which can be renewed.");
+                        l.getBook().returnBook(borrower, l, (Librarian) person);
+                    } else
+                        System.out.println("\nThis borrower " + borrower.getName() + " has no book to return.");
+                }
             }
-        }
 
-        //Add new Borrower
-        else if (choice == 9) {
-            library.createBorrower();
-        }
+            //Renew a Book
+            else if (choice == 8) {
+                Borrower borrower = library.findBorrower();
 
-        //Update Borrower's Personal Info
-        else if (choice == 10) {
-            Borrower bor = library.findBorrower();
+                if (borrower != null) {
+                    borrower.printBorrowedBooks();
+                    ArrayList<Loan> loans = borrower.getBorrowedBooks();
 
-            if (bor != null)
-                bor.updateBorrowerInfo();
-        }
+                    if (!loans.isEmpty()) {
+                        input = takeInput(-1, loans.size());
 
-        //Add new Book
-        else if (choice == 11) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-            System.out.println("\nEnter Title:");
-            String title = reader.readLine();
-
-            System.out.println("\nEnter Subject:");
-            String subject = reader.readLine();
-
-            System.out.println("\nEnter Author:");
-            String author = reader.readLine();
-
-            library.createBook(title, subject, author);
-        }
-
-        //Remove a Book
-        else if (choice == 12) {
-            ArrayList<Book> books = library.searchForBooks();
-
-            if (books != null) {
-                input = takeInput(-1, books.size());
-
-                library.removeBookfromLibrary(books.get(input));
+                        loans.get(input).renewIssuedBook(new java.util.Date());
+                    } else
+                        System.out.println("\nThis borrower " + borrower.getName() + " has no issued book which can be renewed.");
+                }
             }
-        }
 
-        //Change a Book's Info
-        else if (choice == 13) {
-            ArrayList<Book> books = library.searchForBooks();
-
-            if (books != null) {
-                input = takeInput(-1, books.size());
-
-                books.get(input).changeBookInfo();
+            //Add new Borrower
+            else if (choice == 9) {
+                library.createBorrower();
             }
+
+            //Update Borrower's Personal Info
+            else if (choice == 10) {
+                Borrower borrower = library.findBorrower();
+
+                if (borrower != null)
+                    borrower.updateBorrowerInfo();
+            }
+
+            //Add new Book
+            else if (choice == 11) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+                System.out.println("\nEnter Title:");
+                String title = reader.readLine();
+
+                System.out.println("\nEnter Subject:");
+                String subject = reader.readLine();
+
+                System.out.println("\nEnter Author:");
+                String author = reader.readLine();
+
+                library.createBook(title, subject, author);
+            }
+
+            //Remove a Book
+            else if (choice == 12) {
+                ArrayList<Book> books = library.searchForBooks();
+
+                if (books != null) {
+                    input = takeInput(-1, books.size());
+
+                    library.removeBookfromLibrary(books.get(input));
+                }
+            }
+
+            //Change a Book's Info
+            else if (choice == 13) {
+                ArrayList<Book> books = library.searchForBooks();
+
+                if (books != null) {
+                    input = takeInput(-1, books.size());
+
+                    books.get(input).changeBookInfo();
+                }
+            }
+
+            //View Issued books History
+            else if (choice == 14)
+                library.viewHistory();
+
+            //View All Books in Library
+            else if (choice == 15)
+                library.viewAllBooks();
+
+
+            // Functionality Performed.
+            System.out.println("\nPress Q and Enter to continue!\n");
+            scanner.next();
         }
-
-        //View Issued books History
-        else if (choice == 14)
-            library.viewHistory();
-
-        //View All Books in Library
-        else if (choice == 15)
-            library.viewAllBooks();
-
-
-        // Functionality Performed.
-        System.out.println("\nPress Q and Enter to continue!\n");
-        scanner.next();
     }
 }

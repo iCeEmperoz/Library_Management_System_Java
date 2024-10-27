@@ -8,17 +8,17 @@ import java.util.ArrayList;
  */
 public class HoldRequestOperations {
 
-    static ArrayList<HoldRequest> holdRequests;
+    private static ArrayList<HoldRequest> holdRequests;
 
     public HoldRequestOperations()
     {
-        holdRequests= new ArrayList<>();
+        holdRequests = new ArrayList<>();
     }
 
     /** Adding a hold request. */
     public void addHoldRequest(HoldRequest holdRequest)
     {
-        this.holdRequests.add(holdRequest);
+        holdRequests.add(holdRequest);
     }
 
     /** Removing a hold request. */
@@ -28,5 +28,14 @@ public class HoldRequestOperations {
         {
             holdRequests.remove(0);
         }
+    }
+
+    /**
+     * Retrieves a list of all hold requests.
+     *
+     * @return a list containing all hold requests.
+     */
+    public ArrayList<HoldRequest> getHoldRequests() {
+        return new ArrayList<>(holdRequests);
     }
 }

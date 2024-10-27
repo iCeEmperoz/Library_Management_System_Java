@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -192,19 +193,19 @@ public class Borrower extends Person {
   /**
    * Adds a hold request to the list of books on hold.
    *
-   * @param hr the HoldRequest object representing the book on hold.
+   * @param holdRequest the HoldRequest object representing the book on hold.
    */
-  public void addHoldRequest(HoldRequest hr) {
-    onHoldBooks.add(hr);
+  public void addHoldRequest(HoldRequest holdRequest) {
+    onHoldBooks.add(holdRequest);
   }
 
   /**
    * Removes a hold request from the list of books on hold.
    *
-   * @param hr the HoldRequest object representing the book on hold to be removed.
+   * @param holdRequest the HoldRequest object representing the book on hold to be removed.
    */
-  public void removeHoldRequest(HoldRequest hr) {
-    onHoldBooks.remove(hr);
+  public void removeHoldRequest(HoldRequest holdRequest) {
+    onHoldBooks.remove(holdRequest);
   }
 
   /**
@@ -213,7 +214,7 @@ public class Borrower extends Person {
    * @return the ArrayList of Loan objects representing borrowed books.
    */
   public ArrayList<Loan> getBorrowedBooks() {
-    return borrowedBooks;
+    return new ArrayList<>(borrowedBooks);
   }
 
   /**
@@ -222,6 +223,23 @@ public class Borrower extends Person {
    * @return the ArrayList of HoldRequest objects representing books on hold.
    */
   public ArrayList<HoldRequest> getOnHoldBooks() {
-    return onHoldBooks;
+    return new ArrayList<>(onHoldBooks);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof Borrower && o != null) {
+      Borrower borrower = (Borrower) o;
+      return borrower.getName().equals(getName()) 
+            && borrower.getEmail().equals(getEmail()) 
+            && borrower.getPhoneNo() == getPhoneNo();
+    }
+
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getName(), getEmail(), getPhoneNo());
   }
 }

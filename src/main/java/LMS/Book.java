@@ -43,16 +43,16 @@ public class Book {
      * Prints the hold requests for the book.
      */
     public void printHoldRequests() {
-        if (!holdRequestsOperations.holdRequests.isEmpty()) {
+        if (!holdRequestsOperations.getHoldRequests().isEmpty()) {
             System.out.println("\nHold Requests are:");
 
             System.out.println("-----------------------------------------------------------------------");
             System.out.printf("%-5s %-30s %-30s %-20s%n", "No.", "Book's Title", "Borrower's Name", "Request Date");
             System.out.println("-----------------------------------------------------------------------");
 
-            for (int i = 0; i < holdRequestsOperations.holdRequests.size(); i++) {
+            for (int i = 0; i < holdRequestsOperations.getHoldRequests().size(); i++) {
                 System.out.printf("%-5d ", i + 1);
-                holdRequestsOperations.holdRequests.get(i).print();
+                holdRequestsOperations.getHoldRequests().get(i).print();
             }
         } else {
             System.out.println("\nNo hold requests available");
@@ -72,35 +72,35 @@ public class Book {
      * @throws IOException If an input or output exception occurred
      */
     public void changeBookInfo() throws IOException {
-        Scanner scanner = new Scanner(System.in);
-        String input;
+        try (Scanner scanner = new Scanner(System.in)) {
+            String input;
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-        System.out.println("\nUpdate Author? (y/n)");
-        input = scanner.next();
+            System.out.println("\nUpdate Author? (y/n)");
+            input = scanner.next();
 
-        if (input.equals("y")) {
-            System.out.println("\nEnter new Author: ");
-            author = reader.readLine();
+            if (input.equals("y")) {
+                System.out.println("\nEnter new Author: ");
+                author = reader.readLine();
+            }
+
+            System.out.println("\nUpdate Subject? (y/n)");
+            input = scanner.next();
+
+            if (input.equals("y")) {
+                System.out.println("\nEnter new Subject: ");
+                subject = reader.readLine();
+            }
+
+            System.out.println("\nUpdate Title? (y/n)");
+            input = scanner.next();
+
+            if (input.equals("y")) {
+                System.out.println("\nEnter new Title: ");
+                title = reader.readLine();
+            }
         }
-
-        System.out.println("\nUpdate Subject? (y/n)");
-        input = scanner.next();
-
-        if (input.equals("y")) {
-            System.out.println("\nEnter new Subject: ");
-            subject = reader.readLine();
-        }
-
-        System.out.println("\nUpdate Title? (y/n)");
-        input = scanner.next();
-
-        if (input.equals("y")) {
-            System.out.println("\nEnter new Title: ");
-            title = reader.readLine();
-        }
-
         System.out.println("\nBook is successfully updated.");
     }
 
@@ -164,7 +164,7 @@ public class Book {
      * @return The list of hold requests for the book
      */
     public ArrayList<HoldRequest> getHoldRequests() {
-        return holdRequestsOperations.holdRequests;
+        return holdRequestsOperations.getHoldRequests();
     }
 
     /**
@@ -208,8 +208,8 @@ public class Book {
         }
 
         // If that borrower has already requested for that particular book. Then he isn't allowed to make the same request again.
-        for (int i = 0; i < holdRequestsOperations.holdRequests.size(); i++) {
-            if ((holdRequestsOperations.holdRequests.get(i).getBorrower() == borrower)) {
+        for (int i = 0; i < holdRequestsOperations.getHoldRequests().size(); i++) {
+            if ((holdRequestsOperations.getHoldRequests().get(i).getBorrower() == borrower)) {
                 makeRequest = false;
                 break;
             }
@@ -242,7 +242,7 @@ public class Book {
         // First deleting the expired hold requests
         Date today = new Date();
 
-        ArrayList<HoldRequest> hRequests = holdRequestsOperations.holdRequests;
+        ArrayList<HoldRequest> hRequests = holdRequestsOperations.getHoldRequests();
 
         for (int i = 0; i < hRequests.size(); i++) {
             HoldRequest holdRequest = hRequests.get(i);
@@ -261,26 +261,27 @@ public class Book {
             System.out.println("\nThe book " + title + " is already issued.");
             System.out.println("Would you like to place the book on hold? (y/n)");
 
-            Scanner sc = new Scanner(System.in);
-            String choice = sc.next();
+            try (Scanner scanner = new Scanner(System.in)) {
+                String choice = scanner.next();
 
-            if (choice.equals("y")) {
-                makeHoldRequest(borrower);
+                if (choice.equals("y")) {
+                    makeHoldRequest(borrower);
+                }
             }
         } else {
-            if (!holdRequestsOperations.holdRequests.isEmpty()) {
+            if (!holdRequestsOperations.getHoldRequests().isEmpty()) {
                 boolean hasRequest = false;
 
-                for (int i = 0; i < holdRequestsOperations.holdRequests.size() && !hasRequest; i++) {
-                    if (holdRequestsOperations.holdRequests.get(i).getBorrower() == borrower) {
+                for (int i = 0; i < holdRequestsOperations.getHoldRequests().size() && !hasRequest; i++) {
+                    if (holdRequestsOperations.getHoldRequests().get(i).getBorrower() == borrower) {
                         hasRequest = true;
                     }
                 }
 
                 if (hasRequest) {
                     // If this particular borrower has the earliest request for this book
-                    if (holdRequestsOperations.holdRequests.get(0).getBorrower() == borrower) {
-                        serviceHoldRequest(holdRequestsOperations.holdRequests.get(0));
+                    if (holdRequestsOperations.getHoldRequests().getFirst().getBorrower() == borrower) {
+                        serviceHoldRequest(holdRequestsOperations.getHoldRequests().getFirst());
                     } else {
                         System.out.println("\nSorry some other users have requested for this book earlier than you. So you have to wait until their hold requests are processed.");
                         return;
@@ -290,13 +291,13 @@ public class Book {
 
                     System.out.println("Would you like to place the book on hold? (y/n)");
 
-                    Scanner sc = new Scanner(System.in);
-                    String choice = sc.next();
+                    try (Scanner scanner = new Scanner(System.in)) {
+                        String choice = scanner.next();
 
-                    if (choice.equals("y")) {
-                        makeHoldRequest(borrower);
+                        if (choice.equals("y")) {
+                            makeHoldRequest(borrower);
+                        }
                     }
-
                     return;
                 }
             }
@@ -332,5 +333,33 @@ public class Book {
 
         System.out.println("\nThe book " + loan.getBook().getTitle() + " is successfully returned by " + borrower.getName() + ".");
         System.out.println("\nReceived by: " + librarian.getName());
+    }
+
+    /**
+     * Compares this book to the specified object. The result is true if and only if 
+     * the argument is not null and is a Book object that has the same title, author, 
+     * and subject as this book.
+     *
+     * @param object the object to compare this Book against
+     * @return true if the given object represents a Book equivalent to this book, false otherwise
+     */
+    public boolean equals(Object object) {
+        if (object instanceof Book && object != null) {
+            Book book = (Book) object;
+            return book.title.equals(getTitle())
+                && book.author.equals(getSubject())
+                && book.subject.equals(getAuthor());
+        }
+        return false;
+    }
+
+    /**
+     * Generates a hash code for this book based on its title, subject, and author.
+     * This method is used to support hash tables.
+     *
+     * @return a hash code value for this book.
+     */
+    public int hashCode() {
+        return Objects.hash(title, subject, author);
     }
 }

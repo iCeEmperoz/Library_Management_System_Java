@@ -69,6 +69,7 @@ public class OnTerminal {
                                 System.out.println("\tWelcome to Borrower's Portal");
                                 System.out.println("--------------------------------------------------------");
                                 System.out.println("Following Functionalities are available: \n");
+                                System.out.println("0- Check Notifications");
                                 System.out.println("1- Search a Book");
                                 System.out.println("2- Place a Book on hold");
                                 System.out.println("3- Check Personal Info of Borrower");
@@ -77,7 +78,7 @@ public class OnTerminal {
                                 System.out.println("6- Logout");
                                 System.out.println("--------------------------------------------------------");
 
-                                choice = takeInput(0, 7);
+                                choice = takeInput(-1, 7);
 
                                 if (choice == 6)
                                     break;
@@ -93,6 +94,7 @@ public class OnTerminal {
                                 System.out.println("\tWelcome to Librarian's Portal");
                                 System.out.println("--------------------------------------------------------");
                                 System.out.println("Following Functionalities are available: \n");
+                                System.out.println("0- Check Notifications");
                                 System.out.println("1 - Search a Book");
                                 System.out.println("2 - Place a Book on hold");
                                 System.out.println("3 - Check Personal Info of Borrower");
@@ -208,6 +210,11 @@ public class OnTerminal {
 
         try (Scanner scanner = new Scanner(System.in)) {
             int input;
+
+            //Check Notifications
+            if (choice == 0) {
+                person.printNotifications();
+            }
 
             //Search Book
             if (choice == 1) {

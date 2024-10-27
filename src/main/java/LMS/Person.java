@@ -1,11 +1,14 @@
 package LMS;
 
+import java.util.ArrayList;
+
 /**
  * Represents a Person in the library management system (LMS).
  * This is an abstract class that contains shared attributes for all persons
  * related to the library such as id, name, password, address, email, and phone number.
  */
 public abstract class Person {
+    protected ArrayList<String> notifications; 
     protected int id;           // ID of every person related to library
     protected String name;      // Name of the person
     protected String password;  // Password, defaulted to person's ID
@@ -39,6 +42,7 @@ public abstract class Person {
         this.address = address;
         phoneNo = phoneNum;
         this.email = email;
+        notifications = new ArrayList<>();
     }
 
     /**
@@ -158,6 +162,15 @@ public abstract class Person {
         return password;
     }
 
+    /**
+     * Prints all the notifications for the person.
+     * Iterates through the list of notifications and prints each one to the console.
+     */
+    public void printNotifications() {
+        for (String s : notifications) {
+            System.out.println(s);
+        }
+    }
 
     /**
      * Compares this object to the specified object for equality.

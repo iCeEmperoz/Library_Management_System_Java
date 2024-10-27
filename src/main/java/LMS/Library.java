@@ -25,9 +25,9 @@ import java.util.logging.Logger;
  *   <li>borrowers: A list of borrowers registered in the library.</li>
  *   <li>booksInLibrary: A list of books available in the library.</li>
  *   <li>loans: A list of loans issued by the library.</li>
- *   <li>book_return_deadline: The deadline for returning books after which a fine is generated each day.</li>
- *   <li>per_day_fine: The fine amount per day for late returns.</li>
- *   <li>hold_request_expiry: The number of days after which a hold request expires.</li>
+ *   <li>bookReturnDeadline: The deadline for returning books after which a fine is generated each day.</li>
+ *   <li>perDayFine: The fine amount per day for late returns.</li>
+ *   <li>holdRequestExpiry: The number of days after which a hold request expires.</li>
  *   <li>holdRequestsOperations: An instance of HoldRequestOperations to manage hold requests.</li>
  *   <li>JDBC_URL: The JDBC URL for the H2 database.</li>
  *   <li>USER: The username for the database connection.</li>
@@ -70,19 +70,13 @@ public class Library {
     private static ArrayList<Borrower> borrowers;
     private final ArrayList<Book> booksInLibrary;
     private final ArrayList<Loan> loans;
-
-    public int book_return_deadline;                   //return deadline after which fine will be generated each day
-    public double per_day_fine;
-
-    public int hold_request_expiry;                    //number of days after which a hold request will expire
-    //Created object of the hold request operations
+    public int bookReturnDeadline;
+    public double perDayFine;
+    public int holdRequestExpiry;
     private final HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
-
-    private static final String JDBC_URL = "jdbc:h2:file:"; // File-based H2 database
+    private static final String JDBC_URL = "jdbc:h2:file:";
     private static final String USER = "sa";
     private static final String PASSWORD = "";
-
-    /*----Following Singleton Design Pattern (Lazy Instantiation)------------*/
     private static Library obj;
 
     /**
@@ -113,7 +107,6 @@ public class Library {
         name = null;
         librarians = new ArrayList<>();
         borrowers = new ArrayList<>();
-
         booksInLibrary = new ArrayList<>();
         loans = new ArrayList<>();
     }
@@ -127,7 +120,7 @@ public class Library {
      * @param deadline the number of days until the book must be returned
      */
     public void setReturnDeadline(int deadline) {
-        book_return_deadline = deadline;
+        bookReturnDeadline = deadline;
     }
 
     /**
@@ -136,7 +129,7 @@ public class Library {
      * @param perDayFine the fine amount to be charged per day
      */
     public void setFine(double perDayFine) {
-        per_day_fine = perDayFine;
+        this.perDayFine = perDayFine;
     }
 
     /**
@@ -145,7 +138,7 @@ public class Library {
      * @param hrExpiry the number of hours after which a hold request expires
      */
     public void setRequestExpiry(int hrExpiry) {
-        hold_request_expiry = hrExpiry;
+        holdRequestExpiry = hrExpiry;
     }
     /*--------------------------------------*/
 
@@ -169,7 +162,7 @@ public class Library {
      * @return the number of days after which a hold request expires.
      */
     public int getHoldRequestExpiry() {
-        return hold_request_expiry;
+        return holdRequestExpiry;
     }
 
     /**
@@ -272,7 +265,7 @@ public class Library {
         }
 
         for (Borrower borrower : borrowers) {
-            if (borrower.getID() == id && borrower.getClass().getSimpleName().equals("Borrower"))
+            if (borrower.getID() == id)
                 return borrower;
         }
 
@@ -370,8 +363,6 @@ public class Library {
             System.out.println("\nDelete Unsuccessful.");
     }
 
-    //
-
     /**
      * Searches for books in the library based on the user's input criteria (Title, Subject, or Author).
      *
@@ -447,8 +438,6 @@ public class Library {
             return null;
         }
     }
-
-    // View Info of all Books in Library
 
     /**
      * Displays all the books available in the library.

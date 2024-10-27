@@ -142,10 +142,10 @@ public class Loan {
             long days = ChronoUnit.DAYS.between(rDate.toInstant(), iDate.toInstant());
             days = -days;
 
-            days = days - Library.getInstance().book_return_deadline;
+            days = days - Library.getInstance().bookReturnDeadline;
 
             if (days > 0)
-                totalFine = days * Library.getInstance().per_day_fine;
+                totalFine = days * Library.getInstance().perDayFine;
             else
                 totalFine = 0;
         }

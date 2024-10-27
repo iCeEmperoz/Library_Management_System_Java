@@ -12,7 +12,7 @@ import java.util.Scanner;
  * It extends the Person class and provides functionality for managing borrowed books and hold
  * requests.
  */
-public class Borrower extends Person {
+public class Borrower extends Person implements Observer {
 
     private ArrayList<Loan> borrowedBooks;
     private ArrayList<HoldRequest> onHoldBooks;
@@ -31,6 +31,7 @@ public class Borrower extends Person {
         super(idNumber, name, password, address, phoneNum, email);
         borrowedBooks = new ArrayList<>();
         onHoldBooks = new ArrayList<>();
+        notifications = new ArrayList<>();
     }
 
     /**
@@ -241,5 +242,10 @@ public class Borrower extends Person {
     @Override
     public int hashCode() {
         return Objects.hash(getName(), getEmail(), getPhoneNo());
+    }
+
+    @Override
+    public void update(String message) {
+        notifications.add(message);
     }
 }

@@ -26,14 +26,14 @@ public class HoldRequest {
     /**
      * Constructs a new HoldRequest with the specified borrower, book, and request date.
      *
-     * @param bor     the borrower who made the hold request
-     * @param b       the book that is being requested to hold
-     * @param reqDate the date when the hold request was made
+     * @param borrower     the borrower who made the hold request
+     * @param book       the book that is being requested to hold
+     * @param requestDate the date when the hold request was made
      */
-    public HoldRequest(Borrower bor, Book b, Date reqDate) {
-        borrower = bor;
-        book = b;
-        requestDate = reqDate;
+    public HoldRequest(Borrower borrower, Book book, Date requestDate) {
+        this.borrower = borrower;
+        this.book = book;
+        this.requestDate = requestDate;
     }
 
     /**

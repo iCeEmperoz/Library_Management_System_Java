@@ -7,13 +7,14 @@ import java.util.*;
 /**
  * Represents a Book in the library management system (LMS).
  */
-public class Book {
+public class Book implements Subject {
     private int bookID;
     private String title;
     private String subject;
     private String author;
     private boolean isIssued;
     private HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
+    private List<Observer> observers = new ArrayList<>();
     static int currentIdNumber = 0;
 
     /**
@@ -187,6 +188,7 @@ public class Book {
 
         holdRequestsOperations.addHoldRequest(holdRequest);
         borrower.addHoldRequest(holdRequest);
+        attach(borrower);
 
         System.out.println("\nThe book " + title + " has been successfully placed on hold by borrower " + borrower.getName() + ".\n");
     }
@@ -230,6 +232,7 @@ public class Book {
     public void serviceHoldRequest(HoldRequest holdRequest) {
         holdRequestsOperations.removeHoldRequest();
         holdRequest.getBorrower().removeHoldRequest(holdRequest);
+        detach(holdRequest.getBorrower());
     }
 
     /**
@@ -254,6 +257,7 @@ public class Book {
             if (days > Library.getInstance().getHoldRequestExpiry()) {
                 holdRequestsOperations.removeHoldRequest();
                 holdRequest.getBorrower().removeHoldRequest(holdRequest);
+                detach(holdRequest.getBorrower());
             }
         }
 
@@ -312,6 +316,9 @@ public class Book {
 
             System.out.println("\nThe book " + title + " is successfully issued to " + borrower.getName() + ".");
             System.out.println("\nIssued by: " + librarian.getName());
+
+            // Notify observers that the book is now issued
+            notifyObservers("The book " + title + " has been issued to " + borrower.getName());
         }
     }
 
@@ -333,6 +340,9 @@ public class Book {
 
         System.out.println("\nThe book " + loan.getBook().getTitle() + " is successfully returned by " + borrower.getName() + ".");
         System.out.println("\nReceived by: " + librarian.getName());
+
+        // Notify observers that the book is now available
+        notifyObservers("The book " + loan.getBook().getTitle() + " is now available.");
     }
 
     /**
@@ -359,5 +369,22 @@ public class Book {
      */
     public int hashCode() {
         return Objects.hash(title, subject, author);
+    }
+
+    @Override
+    public void attach(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void detach(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers(String message) {
+        for (Observer observer : observers) {
+            observer.update(message);
+        }
     }
 }

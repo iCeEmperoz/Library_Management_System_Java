@@ -265,7 +265,7 @@ public class Library {
 
         int id = 0;
 
-        try (Scanner scanner = new Scanner(System.in)){
+        try (Scanner scanner = new Scanner(System.in)) {
             id = scanner.nextInt();
         } catch (java.util.InputMismatchException e) {
             System.out.println("\nInvalid Input");
@@ -436,9 +436,9 @@ public class Library {
             System.out.println("------------------------------------------------------------------------------");
 
             for (int i = 0; i < matchedBooks.size(); i++) {
-            System.out.printf("%-5d ", i + 1);
-            matchedBooks.get(i).printInfo();
-            System.out.print("\n");
+                System.out.printf("%-5d ", i + 1);
+                matchedBooks.get(i).printInfo();
+                System.out.print("\n");
             }
 
             return matchedBooks;
@@ -581,7 +581,7 @@ public class Library {
             }
 
             Borrower borrower = new Borrower(-1, n, password, address, phone, email);
-            
+
             addBorrower(borrower);
             System.out.println("\nBorrower with name " + n + " created successfully.");
 

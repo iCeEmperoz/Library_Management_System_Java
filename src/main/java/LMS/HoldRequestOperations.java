@@ -10,23 +10,23 @@ public class HoldRequestOperations {
 
     private static ArrayList<HoldRequest> holdRequests;
 
-    public HoldRequestOperations()
-    {
+    public HoldRequestOperations() {
         holdRequests = new ArrayList<>();
     }
 
-    /** Adding a hold request. */
-    public void addHoldRequest(HoldRequest holdRequest)
-    {
+    /**
+     * Adding a hold request.
+     */
+    public void addHoldRequest(HoldRequest holdRequest) {
         holdRequests.add(holdRequest);
     }
 
-    /** Removing a hold request. */
-    public void removeHoldRequest()
-    {
-        if(!holdRequests.isEmpty())
-        {
-            holdRequests.remove(0);
+    /**
+     * Removing a hold request.
+     */
+    public void removeHoldRequest() {
+        if (!holdRequests.isEmpty()) {
+            holdRequests.removeFirst();
         }
     }
 

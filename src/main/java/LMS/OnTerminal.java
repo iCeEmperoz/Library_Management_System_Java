@@ -375,7 +375,7 @@ public class OnTerminal {
             else if (choice == 14)
                 library.viewHistory();
 
-            //View All Books in Library
+                //View All Books in Library
             else if (choice == 15)
                 library.viewAllBooks();
 

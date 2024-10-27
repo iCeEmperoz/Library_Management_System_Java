@@ -318,8 +318,8 @@ public class Book {
     /**
      * Returns the book from a borrower.
      *
-     * @param borrower The borrower returning the book
-     * @param loan     The loan associated with the book
+     * @param borrower  The borrower returning the book
+     * @param loan      The loan associated with the book
      * @param librarian The librarian receiving the returned book
      */
     public void returnBook(Borrower borrower, Loan loan, Librarian librarian) {
@@ -336,8 +336,8 @@ public class Book {
     }
 
     /**
-     * Compares this book to the specified object. The result is true if and only if 
-     * the argument is not null and is a Book object that has the same title, author, 
+     * Compares this book to the specified object. The result is true if and only if
+     * the argument is not null and is a Book object that has the same title, author,
      * and subject as this book.
      *
      * @param object the object to compare this Book against
@@ -346,9 +346,7 @@ public class Book {
     public boolean equals(Object object) {
         if (object instanceof Book && object != null) {
             Book book = (Book) object;
-            return book.title.equals(getTitle())
-                && book.author.equals(getSubject())
-                && book.subject.equals(getAuthor());
+            return book.title.equals(getTitle()) && book.author.equals(getSubject()) && book.subject.equals(getAuthor());
         }
         return false;
     }

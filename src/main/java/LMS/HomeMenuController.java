@@ -2,6 +2,7 @@ package LMS;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
 import javafx.fxml.FXML;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -10,10 +11,10 @@ import javafx.scene.text.Font;
  * Controller class for the Home Menu in the Library Management System.
  * This class is responsible for handling the interactions and events
  * in the Home Menu FXML file.
- * 
+ *
  * <p>It uses JavaFX annotations to link UI components defined in the FXML
  * file to the controller class.</p>
- * 
+ *
  * <p>Fields:</p>
  * <ul>
  *   <li>{@code resources} - ResourceBundle that can be used to localize the UI.</li>
@@ -23,13 +24,13 @@ import javafx.scene.text.Font;
  *   <li>{@code x3} - Font object linked to the FXML component with fx:id="x3".</li>
  *   <li>{@code x4} - Color object linked to the FXML component with fx:id="x4".</li>
  * </ul>
- * 
+ *
  * <p>Methods:</p>
  * <ul>
  *   <li>{@code initialize()} - This method is called after the FXML file has been loaded.
  *   It ensures that all the FXML components are properly injected.</li>
  * </ul>
- * 
+ *
  * <p>Assertions are used in the {@code initialize()} method to verify that the
  * FXML components are not null, indicating that they were successfully injected.</p>
  */

@@ -21,7 +21,7 @@ public abstract class Person {
      * @param idNumber ID for the person, if -1 is passed, an ID will be auto-generated
      * @param address  Address of the person
      * @param name     Name of the person
-     * @param password    Password of the person
+     * @param password Password of the person
      * @param email    Email address of the person
      * @param phoneNum Phone number of the person
      */
@@ -158,16 +158,16 @@ public abstract class Person {
         return password;
     }
 
-    
+
     /**
      * Compares this object to the specified object for equality.
-     * 
+     *
      * @param o the object to be compared for equality with this object
      * @return {@code true} if the specified object is equal to this object;
-     *         {@code false} otherwise
+     * {@code false} otherwise
      */
     public abstract boolean equals(Object o);
-    
+
     /**
      * Returns a hash code value for the object. This method is supported for the benefit
      * of hash tables such as those provided by {@link java.util.HashMap}.

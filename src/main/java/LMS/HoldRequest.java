@@ -26,8 +26,8 @@ public class HoldRequest {
     /**
      * Constructs a new HoldRequest with the specified borrower, book, and request date.
      *
-     * @param bor the borrower who made the hold request
-     * @param b the book that is being requested to hold
+     * @param bor     the borrower who made the hold request
+     * @param b       the book that is being requested to hold
      * @param reqDate the date when the hold request was made
      */
     public HoldRequest(Borrower bor, Book b, Date reqDate) {

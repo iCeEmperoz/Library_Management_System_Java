@@ -5,10 +5,10 @@ import java.util.Objects;
 /**
  * The Librarian class represents a librarian in the library management system.
  * It extends the Person class and includes additional attributes such as salary and office number.
- * 
- * <p>This class provides methods to get the salary and office number of the librarian, 
+ *
+ * <p>This class provides methods to get the salary and office number of the librarian,
  * as well as a method to print the librarian's information.</p>
- * 
+ *
  * @see Person
  */
 public class Librarian extends Person {
@@ -18,18 +18,17 @@ public class Librarian extends Person {
 
     /**
      * Constructs a new Librarian object with the specified details.
-     * 
-     * @param idNumber the unique identifier for the librarian
-     * @param name the name of the librarian
-     * @param password the password for the librarian's account
-     * @param address the address of the librarian
-     * @param phoneNum the phone number of the librarian
-     * @param email the email address of the librarian
-     * @param salary the salary of the librarian
+     *
+     * @param idNumber     the unique identifier for the librarian
+     * @param name         the name of the librarian
+     * @param password     the password for the librarian's account
+     * @param address      the address of the librarian
+     * @param phoneNum     the phone number of the librarian
+     * @param email        the email address of the librarian
+     * @param salary       the salary of the librarian
      * @param officeNumber the office number of the librarian; if -1, the current office number is assigned
      */
-    public Librarian(int idNumber, String name, String password, String address, int phoneNum, String email, double salary, int officeNumber)
-    {
+    public Librarian(int idNumber, String name, String password, String address, int phoneNum, String email, double salary, int officeNumber) {
         super(idNumber, name, password, address, phoneNum, email);
         this.salary = salary;
         if (officeNumber == -1) {
@@ -45,8 +44,7 @@ public class Librarian extends Person {
      * It first calls the superclass's printInfo method to print the common information.
      */
     @Override
-    public void printInfo()
-    {
+    public void printInfo() {
         super.printInfo();
         System.out.println("Salary: " + salary + "\n" + "Office No: " + officeNo + "\n");
     }
@@ -56,8 +54,7 @@ public class Librarian extends Person {
      *
      * @return the salary of the librarian.
      */
-    public double getSalary()
-    {
+    public double getSalary() {
         return salary;
     }
 
@@ -73,10 +70,10 @@ public class Librarian extends Person {
     @Override
     public boolean equals(Object o) {
         if (o instanceof Librarian && o != null) {
-        Librarian librarian = (Librarian) o;
-        return Objects.equals(getName(), librarian.getName()) 
-                && Objects.equals(getEmail(), librarian.getEmail()) 
-                && Objects.equals(getPhoneNo(), librarian.getPhoneNo());
+            Librarian librarian = (Librarian) o;
+            return Objects.equals(getName(), librarian.getName())
+                    && Objects.equals(getEmail(), librarian.getEmail())
+                    && Objects.equals(getPhoneNo(), librarian.getPhoneNo());
         }
 
         return false;

@@ -73,35 +73,35 @@ public class Book implements Subject {
      * @throws IOException If an input or output exception occurred
      */
     public void changeBookInfo() throws IOException {
-        try (Scanner scanner = new Scanner(System.in)) {
-            String input;
+        Scanner scanner = new Scanner(System.in);
+        String input;
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-            System.out.println("\nUpdate Author? (y/n)");
-            input = scanner.next();
+        System.out.println("\nUpdate Author? (y/n)");
+        input = scanner.next();
 
-            if (input.equals("y")) {
-                System.out.println("\nEnter new Author: ");
-                author = reader.readLine();
-            }
-
-            System.out.println("\nUpdate Subject? (y/n)");
-            input = scanner.next();
-
-            if (input.equals("y")) {
-                System.out.println("\nEnter new Subject: ");
-                subject = reader.readLine();
-            }
-
-            System.out.println("\nUpdate Title? (y/n)");
-            input = scanner.next();
-
-            if (input.equals("y")) {
-                System.out.println("\nEnter new Title: ");
-                title = reader.readLine();
-            }
+        if (input.equals("y")) {
+            System.out.println("\nEnter new Author: ");
+            author = reader.readLine();
         }
+
+        System.out.println("\nUpdate Subject? (y/n)");
+        input = scanner.next();
+
+        if (input.equals("y")) {
+            System.out.println("\nEnter new Subject: ");
+            subject = reader.readLine();
+        }
+
+        System.out.println("\nUpdate Title? (y/n)");
+        input = scanner.next();
+
+        if (input.equals("y")) {
+            System.out.println("\nEnter new Title: ");
+            title = reader.readLine();
+        }
+
         System.out.println("\nBook is successfully updated.");
     }
 
@@ -265,12 +265,11 @@ public class Book implements Subject {
             System.out.println("\nThe book " + title + " is already issued.");
             System.out.println("Would you like to place the book on hold? (y/n)");
 
-            try (Scanner scanner = new Scanner(System.in)) {
-                String choice = scanner.next();
+            Scanner scanner = new Scanner(System.in);
+            String choice = scanner.next();
 
-                if (choice.equals("y")) {
-                    makeHoldRequest(borrower);
-                }
+            if (choice.equals("y")) {
+                makeHoldRequest(borrower);
             }
         } else {
             if (!holdRequestsOperations.getHoldRequests().isEmpty()) {
@@ -295,12 +294,11 @@ public class Book implements Subject {
 
                     System.out.println("Would you like to place the book on hold? (y/n)");
 
-                    try (Scanner scanner = new Scanner(System.in)) {
-                        String choice = scanner.next();
+                    Scanner scanner = new Scanner(System.in);
+                    String choice = scanner.next();
 
-                        if (choice.equals("y")) {
-                            makeHoldRequest(borrower);
-                        }
+                    if (choice.equals("y")) {
+                        makeHoldRequest(borrower);
                     }
                     return;
                 }

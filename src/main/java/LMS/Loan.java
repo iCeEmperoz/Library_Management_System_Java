@@ -162,15 +162,15 @@ public class Loan {
             System.out.println("\nTotal Fine generated: Rs " + totalFine);
             System.out.println("Do you want to pay? (y/n)");
 
-            try (Scanner input = new Scanner(System.in)) {
-                String choice = input.next();
+            Scanner input = new Scanner(System.in);
+            String choice = input.next();
 
-                if (choice.equals("y") || choice.equals("Y"))
-                    finePaid = true;
+            if (choice.equals("y") || choice.equals("Y"))
+                finePaid = true;
 
-                if (choice.equals("n") || choice.equals("N"))
-                    finePaid = false;
-            }
+            if (choice.equals("n") || choice.equals("N"))
+                finePaid = false;
+
         } else {
             System.out.println("\nNo fine is generated.");
             finePaid = true;

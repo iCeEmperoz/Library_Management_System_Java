@@ -210,12 +210,14 @@ public class Library {
      *
      * @param borrower the borrower to be added
      */
-    public void addBorrower(Borrower borrower) {
+    public boolean addBorrower(Borrower borrower) {
         if (!borrowers.contains(borrower)) {
             borrowers.add(borrower);
-        } else {
-            System.out.println("This user was already added before.");
+            return true;
         }
+
+        Person.currentIdNumber--;
+        return false;
     }
 
     /**
@@ -223,12 +225,14 @@ public class Library {
      *
      * @param librarian the Librarian object to be added
      */
-    public static void addLibrarian(Librarian librarian) {
+    public static boolean addLibrarian(Librarian librarian) {
         if (!librarians.contains(librarian)) {
             librarians.add(librarian);
-        } else {
-            System.out.println("This user was already added before.");
+            return true;
         }
+
+        Person.currentIdNumber--;
+        return false;
     }
 
     /**
@@ -257,8 +261,9 @@ public class Library {
         System.out.println("\nEnter Borrower's ID: ");
 
         int id = 0;
+        Scanner scanner = new Scanner(System.in);
 
-        try (Scanner scanner = new Scanner(System.in)) {
+        try {
             id = scanner.nextInt();
         } catch (java.util.InputMismatchException e) {
             System.out.println("\nInvalid Input");
@@ -278,12 +283,12 @@ public class Library {
      *
      * @param book the book to be added to the library
      */
-    public void addBookinLibrary(Book book) {
+    public boolean addBookinLibrary(Book book) {
         if (!booksInLibrary.contains(book)) {
             booksInLibrary.add(book);
-        } else {
-            System.out.println("This book was already added before.");
+            return true;
         }
+        return false;
     }
 
     /**
@@ -331,27 +336,26 @@ public class Library {
             if (!hRequests.isEmpty()) {
                 System.out.println("\nThis book might be on hold requests by some borrowers. Deleting this book will delete the relevant hold requests too.");
                 System.out.println("Do you still want to delete the book? (y/n)");
+                Scanner scanner = new Scanner(System.in);
 
-                try (Scanner scanner = new Scanner(System.in)) {
-                    while (true) {
-                        String choice = scanner.next();
+                while (true) {
+                    String choice = scanner.next();
 
-                        if (choice.equals("y") || choice.equals("n")) {
-                            if (choice.equals("n")) {
-                                System.out.println("\nDelete Unsuccessful.");
-                                return;
-                            } else {
-                                //Empty the books hold request array
-                                //Delete the hold request from the borrowers too
-                                for (int i = 0; i < hRequests.size() && delete; i++) {
-                                    HoldRequest hr = hRequests.get(i);
-                                    hr.getBorrower().removeHoldRequest(hr);
-                                    holdRequestsOperations.removeHoldRequest();
-                                }
+                    if (choice.equals("y") || choice.equals("n")) {
+                        if (choice.equals("n")) {
+                            System.out.println("\nDelete Unsuccessful.");
+                            return;
+                        } else {
+                            //Empty the books hold request array
+                            //Delete the hold request from the borrowers too
+                            for (int i = 0; i < hRequests.size() && delete; i++) {
+                                HoldRequest hr = hRequests.get(i);
+                                hr.getBorrower().removeHoldRequest(hr);
+                                holdRequestsOperations.removeHoldRequest();
                             }
-                        } else
-                            System.out.println("Invalid Input. Enter (y/n): ");
-                    }
+                        }
+                    } else
+                        System.out.println("Invalid Input. Enter (y/n): ");
                 }
 
             } else
@@ -377,30 +381,29 @@ public class Library {
     public ArrayList<Book> searchForBooks() throws IOException {
         String choice;
         String title = "", subject = "", author = "";
+        Scanner scanner = new Scanner(System.in);
 
-        try (Scanner scanner = new Scanner(System.in)) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-            while (true) {
-                System.out.println("\nEnter either '1' or '2' or '3' for search by Title, Subject or Author of Book respectively: ");
-                choice = scanner.next();
+        while (true) {
+            System.out.println("\nEnter either '1' or '2' or '3' for search by Title, Subject or Author of Book respectively: ");
+            choice = scanner.next();
 
-                if (choice.equals("1") || choice.equals("2") || choice.equals("3"))
-                    break;
-                else
-                    System.out.println("\nWrong Input!");
-            }
+            if (choice.equals("1") || choice.equals("2") || choice.equals("3"))
+                break;
+            else
+                System.out.println("\nWrong Input!");
+        }
 
-            if (choice.equals("1")) {
-                System.out.println("\nEnter the Title of the Book: ");
-                title = reader.readLine();
-            } else if (choice.equals("2")) {
-                System.out.println("\nEnter the Subject of the Book: ");
-                subject = reader.readLine();
-            } else {
-                System.out.println("\nEnter the Author of the Book: ");
-                author = reader.readLine();
-            }
+        if (choice.equals("1")) {
+            System.out.println("\nEnter the Title of the Book: ");
+            title = reader.readLine();
+        } else if (choice.equals("2")) {
+            System.out.println("\nEnter the Subject of the Book: ");
+            subject = reader.readLine();
+        } else {
+            System.out.println("\nEnter the Author of the Book: ");
+            author = reader.readLine();
         }
         ArrayList<Book> matchedBooks = new ArrayList<>();
 
@@ -524,63 +527,65 @@ public class Library {
      * </ul>
      */
     public void createBorrower() {
-        try (Scanner scanner = new Scanner(System.in)) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        Scanner scanner = new Scanner(System.in);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-            System.out.println("\nEnter Name: ");
-            String n = "";
-            try {
-                n = reader.readLine();
-            } catch (IOException ex) {
-                Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        System.out.println("\nEnter Name: ");
+        String n = "";
+        try {
+            n = reader.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            System.out.println("\nEnter Password: ");
-            String password = "";
-            try {
-                password = reader.readLine();
-            } catch (IOException ex) {
-                Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        System.out.println("\nEnter Password: ");
+        String password = "";
+        try {
+            password = reader.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            System.out.println("Enter Address: ");
-            String address = "";
-            try {
-                address = reader.readLine();
-            } catch (IOException ex) {
-                Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        System.out.println("Enter Address: ");
+        String address = "";
+        try {
+            address = reader.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            int phone = 0;
+        int phone = 0;
 
-            try {
-                System.out.println("Enter Phone Number: ");
-                phone = scanner.nextInt();
-            } catch (java.util.InputMismatchException e) {
-                System.out.println("\nInvalid Input.");
-            }
+        try {
+            System.out.println("Enter Phone Number: ");
+            phone = scanner.nextInt();
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("\nInvalid Input.");
+        }
 
-            // Add Email
-            System.out.println("Enter Email: ");
-            String email = "";
-            try {
-                email = reader.readLine();
-            } catch (IOException ex) {
-                Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        // Add Email
+        System.out.println("Enter Email: ");
+        String email = "";
+        try {
+            email = reader.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            Borrower borrower = new Borrower(-1, n, password, address, phone, email);
+        Borrower borrower = new Borrower(-1, n, password, address, phone, email);
 
-            addBorrower(borrower);
+        if (addBorrower(borrower)) {
             System.out.println("\nBorrower with name " + n + " created successfully.");
 
             System.out.println("\nEmail : " + borrower.getEmail());
             System.out.println("Password : " + borrower.getPassword());
+        } else {
+            System.out.println("This user was already added before.");
         }
     }
 
     /**
-     * Creates a new librarian by prompting the user for various details such as name, password, address, phone number, email, salary, and office number.
+     * Creates a new librarian by prompting the user for various details such as name, password, address, phone number, email, and salary.
      * The method reads input from the console and handles potential input mismatches and IO exceptions.
      * After collecting the necessary information, it creates a Librarian object and adds it to the library system.
      * Finally, it confirms the creation of the librarian and displays the email and password.
@@ -592,81 +597,73 @@ public class Library {
      * - Phone Number: int
      * - Email: String
      * - Salary: double
-     * - Office Number: int (or -1 to auto-assign)
      * <p>
      * Exceptions:
      * - IOException: If an input or output exception occurs while reading from the console.
-     * - InputMismatchException: If the input does not match the expected type for phone number, salary, or office number.
+     * - InputMismatchException: If the input does not match the expected type for phone number, or salary number.
      */
     public void createLibrarian() {
-        try (Scanner scanner = new Scanner(System.in)) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        Scanner scanner = new Scanner(System.in);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-            System.out.println("\nEnter Name: ");
-            String name = "";
-            try {
-                name = reader.readLine();
-            } catch (IOException ex) {
-                Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        System.out.println("\nEnter Name: ");
+        String name = "";
+        try {
+            name = reader.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            System.out.println("\nEnter Password: ");
-            String password = "";
-            try {
-                password = reader.readLine();
-            } catch (IOException ex) {
-                Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        System.out.println("\nEnter Password: ");
+        String password = "";
+        try {
+            password = reader.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            System.out.println("Enter Address: ");
-            String address = "";
-            try {
-                address = reader.readLine();
-            } catch (IOException ex) {
-                Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        System.out.println("Enter Address: ");
+        String address = "";
+        try {
+            address = reader.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            int phone = 0;
-            try {
-                System.out.println("Enter Phone Number: ");
-                phone = scanner.nextInt();
-            } catch (java.util.InputMismatchException e) {
-                System.out.println("\nInvalid Input.");
-            }
+        int phone = 0;
+        try {
+            System.out.println("Enter Phone Number: ");
+            phone = scanner.nextInt();
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("\nInvalid Input.");
+        }
 
-            // Add Email
-            System.out.println("Enter Email: ");
-            String email = "";
-            try {
-                email = reader.readLine();
-            } catch (IOException ex) {
-                Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        // Add Email
+        System.out.println("Enter Email: ");
+        String email = "";
+        try {
+            email = reader.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            // Add Salary
-            System.out.println("Enter Salary: ");
-            double salary = 0.0;
-            try {
-                salary = scanner.nextDouble();
-            } catch (java.util.InputMismatchException e) {
-                System.out.println("\nInvalid Input.");
-            }
+        // Add Salary
+        System.out.println("Enter Salary: ");
+        double salary = 0.0;
+        try {
+            salary = scanner.nextDouble();
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("\nInvalid Input.");
+        }
 
-            // Add Office Number
-            System.out.println("Enter Office Number (or -1 to auto-assign): ");
-            int officeNumber = 0;
-            try {
-                officeNumber = scanner.nextInt();
-            } catch (java.util.InputMismatchException e) {
-                System.out.println("\nInvalid Input.");
-            }
-
-            Librarian librarian = new Librarian(-1, name, password, address, phone, email, salary, officeNumber);
-            addLibrarian(librarian);
+        Librarian librarian = new Librarian(-1, name, password, address, phone, email, salary);
+        if (addLibrarian(librarian)) {
             System.out.println("\nLibrarian with name " + name + " created successfully.");
 
             System.out.println("\nYour Email is : " + librarian.getEmail());
             System.out.println("Your Password is : " + librarian.getPassword());
+        } else {
+            System.out.println("This user was already added before.");
         }
     }
 
@@ -680,9 +677,11 @@ public class Library {
     public void createBook(String title, String subject, String author) {
         Book book = new Book(-1, title, subject, author, false);
 
-        addBookinLibrary(book);
-
-        System.out.println("\nBook with Title " + book.getTitle() + " is successfully created.");
+        if (addBookinLibrary(book)) {
+            System.out.println("\nBook with Title " + book.getTitle() + " is successfully created.");
+        } else {
+            System.out.println("This book was already added before.");
+        }
     }
 
     // Called when want access to Portal
@@ -695,29 +694,29 @@ public class Library {
      * @return Person object if the login is successful, otherwise returns null.
      */
     public Person Login() {
-        try (Scanner input = new Scanner(System.in)) {
-            String email;
-            String password;
+        Scanner input = new Scanner(System.in);
+        String email;
+        String password;
 
-            System.out.println("\nEnter Email: ");
-            email = input.next();
-            System.out.println("Enter Password: ");
-            password = input.next();
+        System.out.println("\nEnter Email: ");
+        email = input.next();
+        System.out.println("Enter Password: ");
+        password = input.next();
 
-            for (Borrower borrower : borrowers) {
-                if (borrower.getEmail().equals(email) && borrower.getPassword().equals(password)) {
-                    System.out.println("\n[Borrower] Login Successful.");
-                    return borrower;
-                }
-            }
-
-            for (Librarian librarian : librarians) {
-                if (librarian.getEmail().equals(email) && librarian.getPassword().equals(password)) {
-                    System.out.println("\n[Librarian] Login Successful");
-                    return librarian;
-                }
+        for (Borrower borrower : borrowers) {
+            if (borrower.getEmail().equals(email) && borrower.getPassword().equals(password)) {
+                System.out.println("\n[Borrower] Login Successful.");
+                return borrower;
             }
         }
+
+        for (Librarian librarian : librarians) {
+            if (librarian.getEmail().equals(email) && librarian.getPassword().equals(password)) {
+                System.out.println("\n[Librarian] Login Successful");
+                return librarian;
+            }
+        }
+
 
         System.out.println("\nSorry! Wrong ID or Password");
         return null;
@@ -833,7 +832,7 @@ public class Library {
             Book.setIDCount(maxID);
         }
 
-        SQL = "SELECT ID, NAME, PASSWORD, ADDRESS, PHONE_NO, EMAIL, SALARY, OFFICE_NO FROM PERSON INNER JOIN LIBRARIAN ON ID = LIBRARIAN_ID";
+        SQL = "SELECT ID, NAME, PASSWORD, ADDRESS, PHONE_NO, EMAIL, SALARY FROM PERSON INNER JOIN LIBRARIAN ON ID = LIBRARIAN_ID";
 
         resultSet = stmt.executeQuery(SQL);
         if (!resultSet.next()) {
@@ -847,8 +846,7 @@ public class Library {
                 int phoneNumber = resultSet.getInt("PHONE_NO");
                 String email = resultSet.getString("EMAIL");
                 double salary = resultSet.getDouble("SALARY");
-                int officeNumber = resultSet.getInt("OFFICE_NO");
-                Librarian librarian = new Librarian(id, name, password, address, phoneNumber, email, salary, officeNumber);
+                Librarian librarian = new Librarian(id, name, password, address, phoneNumber, email, salary);
 
                 Library.addLibrarian(librarian);
 
@@ -908,12 +906,12 @@ public class Library {
                 boolean fineStatus = resultSet.getBoolean("fine_paid"); // Updated
 
                 boolean set = true;
-                Borrower bb = null;
+                Borrower borower = null;
 
                 for (int i = 0; i < getborrowers().size() && set; i++) {
                     if (getborrowers().get(i).getID() == borrowerId) {
                         set = false;
-                        bb = (getborrowers().get(i));
+                        borower = (getborrowers().get(i));
                     }
                 }
 
@@ -948,7 +946,7 @@ public class Library {
                 for (int k = 0; k < books.size() && set; k++) {
                     if (books.get(k).getID() == bookId) {
                         set = false;
-                        Loan loan = new Loan(bb, books.get(k), s[0], s[1], idate, rdate, fineStatus);
+                        Loan loan = new Loan(borower, books.get(k), s[0], s[1], idate, rdate, fineStatus);
                         loans.add(loan);
                     }
                 }
@@ -970,14 +968,14 @@ public class Library {
                 java.util.Date off = new Date(resultSet.getDate("request_date").getTime()); // Updated
 
                 boolean set = true;
-                Borrower bb = null;
+                Borrower borower = null;
 
                 ArrayList<Borrower> borrowers = library.getborrowers();
 
                 for (int i = 0; i < borrowers.size() && set; i++) {
                     if (borrowers.get(i).getID() == borrowerId) {
                         set = false;
-                        bb = borrowers.get(i);
+                        borower = borrowers.get(i);
                     }
                 }
 
@@ -988,9 +986,9 @@ public class Library {
                 for (int i = 0; i < books.size() && set; i++) {
                     if (books.get(i).getID() == bookId) {
                         set = false;
-                        HoldRequest hbook = new HoldRequest(bb, books.get(i), off);
+                        HoldRequest hbook = new HoldRequest(borower, books.get(i), off);
                         holdRequestsOperations.addHoldRequest(hbook);
-                        bb.addHoldRequest(hbook);
+                        borower.addHoldRequest(hbook);
                     }
                 }
             } while (resultSet.next());
@@ -1011,16 +1009,16 @@ public class Library {
 
             do {
                 int id = resultSet.getInt("id");      // borrower
-                int bid = resultSet.getInt("bookID"); // book
+                int bookID = resultSet.getInt("bookID"); // book
 
-                Borrower bb = null;
+                Borrower borower = null;
                 boolean set = true;
 
                 for (int i = 0; i < library.getborrowers().size() && set; i++) {
                     if (library.getborrowers().get(i) != null) {
                         if (library.getborrowers().get(i).getID() == id) {
                             set = false;
-                            bb = library.getborrowers().get(i);
+                            borower = library.getborrowers().get(i);
                         }
                     }
                 }
@@ -1030,10 +1028,10 @@ public class Library {
                 ArrayList<Loan> books = loans;
 
                 for (int i = 0; i < books.size() && set; i++) {
-                    if (books.get(i).getBook().getID() == bid && books.get(i).getReceiver() == null) {
+                    if (books.get(i).getBook().getID() == bookID && books.get(i).getReceiver() == null) {
                         set = false;
-                        Loan bBook = new Loan(bb, books.get(i).getBook(), books.get(i).getIssuer(), null, books.get(i).getIssuedDate(), null, books.get(i).getFineStatus());
-                        bb.addBorrowedBook(bBook);
+                        Loan bBook = new Loan(borower, books.get(i).getBook(), books.get(i).getIssuer(), null, books.get(i).getIssuedDate(), null, books.get(i).getFineStatus());
+                        borower.addBorrowedBook(bBook);
                     }
                 }
 
@@ -1043,14 +1041,14 @@ public class Library {
         ArrayList<Borrower> borrowers = library.getborrowers();
 
         /* Setting Person ID Count */
-        int max = 0;
-
-        for (Person person : borrowers) {
-            if (max < person.getID())
-                max = person.getID();
+        
+        if (borrowers.size() > 0 || librarians.size() > 0) {
+            SQL = "SELECT MAX(ID) AS max_id FROM PERSON";
+            resultSet = stmt.executeQuery(SQL);
+            if (resultSet.next()) {
+                Person.setIDCount(resultSet.getInt("max_id"));
+            }
         }
-
-        Person.setIDCount(max);
     }
 
     /**
@@ -1119,11 +1117,10 @@ public class Library {
 
         // Filling Librarian Table
         for (Librarian librarian : librarians) {
-            String template = "INSERT INTO LIBRARIAN (LIBRARIAN_ID, SALARY, OFFICE_NO) values (?, ?, ?)";
+            String template = "INSERT INTO LIBRARIAN (LIBRARIAN_ID, SALARY) values (?, ?)";
             try (PreparedStatement stmt = connection.prepareStatement(template)) {
                 stmt.setInt(1, librarian.getID());
                 stmt.setDouble(2, librarian.getSalary());
-                stmt.setInt(3, librarian.getOfficeNo());
                 stmt.executeUpdate();
             }
         }

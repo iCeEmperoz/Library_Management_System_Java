@@ -170,7 +170,7 @@ public class Library {
      *
      * @return An ArrayList containing Borrower objects.
      */
-    public ArrayList<Borrower> getborrowers() {
+    public ArrayList<Borrower> getBorrowers() {
         return borrowers;
     }
 
@@ -908,10 +908,10 @@ public class Library {
                 boolean set = true;
                 Borrower borower = null;
 
-                for (int i = 0; i < getborrowers().size() && set; i++) {
-                    if (getborrowers().get(i).getID() == borrowerId) {
+                for (int i = 0; i < getBorrowers().size() && set; i++) {
+                    if (getBorrowers().get(i).getID() == borrowerId) {
                         set = false;
-                        borower = (getborrowers().get(i));
+                        borower = (getBorrowers().get(i));
                     }
                 }
 
@@ -970,7 +970,7 @@ public class Library {
                 boolean set = true;
                 Borrower borower = null;
 
-                ArrayList<Borrower> borrowers = library.getborrowers();
+                ArrayList<Borrower> borrowers = library.getBorrowers();
 
                 for (int i = 0; i < borrowers.size() && set; i++) {
                     if (borrowers.get(i).getID() == borrowerId) {
@@ -1014,11 +1014,11 @@ public class Library {
                 Borrower borower = null;
                 boolean set = true;
 
-                for (int i = 0; i < library.getborrowers().size() && set; i++) {
-                    if (library.getborrowers().get(i) != null) {
-                        if (library.getborrowers().get(i).getID() == id) {
+                for (int i = 0; i < library.getBorrowers().size() && set; i++) {
+                    if (library.getBorrowers().get(i) != null) {
+                        if (library.getBorrowers().get(i).getID() == id) {
                             set = false;
-                            borower = library.getborrowers().get(i);
+                            borower = library.getBorrowers().get(i);
                         }
                     }
                 }
@@ -1038,7 +1038,7 @@ public class Library {
             } while (resultSet.next());
         }
 
-        ArrayList<Borrower> borrowers = library.getborrowers();
+        ArrayList<Borrower> borrowers = library.getBorrowers();
 
         /* Setting Person ID Count */
         

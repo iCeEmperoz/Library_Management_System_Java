@@ -13,6 +13,11 @@ import java.util.Scanner;
 public class OnTerminal {
     public static final int lineOnScreen = 20;
     private static final Scanner scanner = new Scanner(System.in); // Single Scanner instance
+    private static Library library;
+
+    public static void setLibrary(Library library) {
+        OnTerminal.library = library;
+    }
 
     /**
      * The main entry point for the terminal application.
@@ -22,139 +27,160 @@ public class OnTerminal {
     public static void main(String[] args) {
         try {
             Library library = Library.getInstance();
-
-            library.setFine(20);
-            library.setRequestExpiry(7);
-            library.setReturnDeadline(5);
-            library.setName("Library");
+            setupLibrary(library);
 
             Connection connection = library.makeConnection();
-
             if (connection == null) {
                 System.out.println("\nError connecting to Database. Exiting.");
                 return;
             }
 
             try {
-                library.populateLibrary(connection);   // Populating Library with all Records
-
-                boolean stop = false;
-                while (!stop) {
-                    clearScreen();
-
-                    // FRONT END //
-                    System.out.println("--------------------------------------------------------");
-                    System.out.println("\tWelcome to Library Management System");
-                    System.out.println("--------------------------------------------------------");
-
-                    System.out.println("Following Functionalities are available: \n");
-                    System.out.println("1- Login");
-                    System.out.println("2- Create new account");
-                    System.out.println("3- Exit");
-
-                    System.out.println("-----------------------------------------\n");
-
-                    int choice = takeInput(0, 4);
-
-                    if (choice == 1) {
-                        Person user = library.Login();
-
-                        if (user instanceof Borrower) {
-                            while (true)    // Way to Borrower's Portal
-                            {
-                                clearScreen();
-
-                                System.out.println("--------------------------------------------------------");
-                                System.out.println("\tWelcome to Borrower's Portal");
-                                System.out.println("--------------------------------------------------------");
-                                System.out.println("Following Functionalities are available: \n");
-                                System.out.println("0- Check Notifications");
-                                System.out.println("1- Search a Book");
-                                System.out.println("2- Place a Book on hold");
-                                System.out.println("3- Check Personal Info of Borrower");
-                                System.out.println("4- Check Total Fine of Borrower");
-                                System.out.println("5- Check Hold Requests Queue of a Book");
-                                System.out.println("6- Logout");
-                                System.out.println("--------------------------------------------------------");
-
-                                choice = takeInput(-1, 7);
-
-                                if (choice == 6)
-                                    break;
-
-                                allFunctionalities(user, choice);
-                            }
-                        } else if (user instanceof Librarian) {
-                            while (true) // Way to Librarian Portal
-                            {
-                                clearScreen();
-
-                                System.out.println("--------------------------------------------------------");
-                                System.out.println("\tWelcome to Librarian's Portal");
-                                System.out.println("--------------------------------------------------------");
-                                System.out.println("Following Functionalities are available: \n");
-                                System.out.println("0 - Check Notifications");
-                                System.out.println("1 - Search a Book");
-                                System.out.println("2 - Place a Book on hold");
-                                System.out.println("3 - Check Personal Info of Borrower");
-                                System.out.println("4 - Check Total Fine of Borrower");
-                                System.out.println("5 - Check Hold Requests Queue of a Book");
-                                System.out.println("6 - Check out a Book");
-                                System.out.println("7 - Check in a Book");
-                                System.out.println("8 - Renew a Book");
-                                System.out.println("9 - Add a new Borrower");
-                                System.out.println("10- Update a Borrower's Info");
-                                System.out.println("11- Add new Book");
-                                System.out.println("12- Remove a Book");
-                                System.out.println("13- Change a Book's Info");
-                                System.out.println("14- View Issued Books History");
-                                System.out.println("15- View All Books in Library");
-                                System.out.println("16- Logout");
-                                System.out.println("--------------------------------------------------------");
-                                choice = takeInput(-1, 17);
-
-                                if (choice == 16)
-                                    break;
-
-                                allFunctionalities(user, choice);
-                            }
-                        }
-                    } else if (choice == 2) {
-                        System.out.println("Choose work session: ");
-                        System.out.println("1- Borrower.");
-                        System.out.println("2- Librarian.");
-                        System.out.println("3- Back.");
-
-                        int ch = takeInput(0, 4);
-                        if (ch == 1) {
-                            library.createBorrower();
-                        } else if (ch == 2) {
-                            String lPassword = "LMS_Password";
-                            System.out.print("Please enter system's password: ");
-                            String pass = scanner.next();
-                            if (pass.equals(lPassword)) {
-                                library.createLibrarian();
-                            } else {
-                                System.out.println("Wrong password.");
-                            }
-                        }
-                    } else if (choice == 3) {
-                        stop = true;
-                    }
-
-                    System.out.println("\nPress any key to continue..\n");
-                    scanner.next(); // Wait for user input to continue
-                }
+                library.populateLibrary(connection);
+                runMainLoop(library);
             } finally {
                 // Do not close the scanner here
             }
 
-            // Loading back all the records in database
             library.fillItBack(connection);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println("\nExiting...\n");
-        }   // System Closed!
+        }
+    }
+
+    private static void setupLibrary(Library library) {
+        library.setFine(20);
+        library.setRequestExpiry(7);
+        library.setReturnDeadline(5);
+        library.setName("Library");
+    }
+
+    private static void runMainLoop(Library library) throws IOException {
+        boolean stop = false;
+        while (!stop) {
+            clearScreen();
+            displayMainMenu();
+            int choice = takeInput(0, 4);
+//            int choice = 3;
+
+            switch (choice) {
+                case 1:
+                    handleLogin(library);
+                    break;
+                case 2:
+                    handleAccountCreation(library);
+                    break;
+                case 3:
+                    stop = true;
+                    System.out.println("\nExiting...\n");
+                    break;
+            }
+
+            System.out.println("\nPress any key to continue..\n");
+            scanner.next();
+        }
+    }
+
+    private static void displayMainMenu() {
+        System.out.println("--------------------------------------------------------");
+        System.out.println("\tWelcome to Library Management System");
+        System.out.println("--------------------------------------------------------");
+        System.out.println("Following Functionalities are available: \n");
+        System.out.println("1- Login");
+        System.out.println("2- Create new account");
+        System.out.println("3- Exit");
+        System.out.println("-----------------------------------------\n");
+    }
+
+    private static void handleLogin(Library library) throws IOException {
+        Person user = library.Login();
+        if (user instanceof Borrower) {
+            runBorrowerPortal(user);
+        } else if (user instanceof Librarian) {
+            runLibrarianPortal(user);
+        }
+    }
+
+    private static void runBorrowerPortal(Person user) throws IOException {
+        while (true) {
+            clearScreen();
+            displayBorrowerMenu();
+            int choice = takeInput(-1, 7);
+            if (choice == 6) break;
+            allFunctionalities(user, choice);
+        }
+    }
+
+    private static void displayBorrowerMenu() {
+        System.out.println("--------------------------------------------------------");
+        System.out.println("\tWelcome to Borrower's Portal");
+        System.out.println("--------------------------------------------------------");
+        System.out.println("Following Functionalities are available: \n");
+        System.out.println("0- Check Notifications");
+        System.out.println("1- Search a Book");
+        System.out.println("2- Place a Book on hold");
+        System.out.println("3- Check Personal Info of Borrower");
+        System.out.println("4- Check Total Fine of Borrower");
+        System.out.println("5- Check Hold Requests Queue of a Book");
+        System.out.println("6- Logout");
+        System.out.println("--------------------------------------------------------");
+    }
+
+    private static void runLibrarianPortal(Person user) throws IOException {
+        while (true) {
+            clearScreen();
+            displayLibrarianMenu();
+            int choice = takeInput(-1, 17);
+            if (choice == 16) break;
+            allFunctionalities(user, choice);
+        }
+    }
+
+    private static void displayLibrarianMenu() {
+        System.out.println("--------------------------------------------------------");
+        System.out.println("\tWelcome to Librarian's Portal");
+        System.out.println("--------------------------------------------------------");
+        System.out.println("Following Functionalities are available: \n");
+        System.out.println("0 - Check Notifications");
+        System.out.println("1 - Search a Book");
+        System.out.println("2 - Place a Book on hold");
+        System.out.println("3 - Check Personal Info of Borrower");
+        System.out.println("4 - Check Total Fine of Borrower");
+        System.out.println("5 - Check Hold Requests Queue of a Book");
+        System.out.println("6 - Check out a Book");
+        System.out.println("7 - Check in a Book");
+        System.out.println("8 - Renew a Book");
+        System.out.println("9 - Add a new Borrower");
+        System.out.println("10- Update a Borrower's Info");
+        System.out.println("11- Add new Book");
+        System.out.println("12- Remove a Book");
+        System.out.println("13- Change a Book's Info");
+        System.out.println("14- View Issued Books History");
+        System.out.println("15- View All Books in Library");
+        System.out.println("16- Logout");
+        System.out.println("--------------------------------------------------------");
+    }
+
+    private static void handleAccountCreation(Library library) throws IOException {
+        System.out.println("Choose work session: ");
+        System.out.println("1- Borrower.");
+        System.out.println("2- Librarian.");
+        System.out.println("3- Back.");
+
+        int ch = takeInput(0, 4);
+        if (ch == 1) {
+            library.createBorrower();
+        } else if (ch == 2) {
+            String lPassword = "LMS_Password";
+            System.out.print("Please enter system's password: ");
+            String pass = scanner.next();
+            if (pass.equals(lPassword)) {
+                library.createLibrarian();
+            } else {
+                System.out.println("Wrong password.");
+            }
+        }
     }
 
     /**
@@ -200,188 +226,179 @@ public class OnTerminal {
      */
     public static void allFunctionalities(Person person, int choice) throws IOException {
         Library library = Library.getInstance();
-
         int input;
 
-        //Check Notifications
-        if (choice == 0) {
-            person.printNotifications();
+        switch (choice) {
+            case 0:
+                person.printNotifications();
+                break;
+            case 1:
+                library.searchForBooks();
+                break;
+            case 2:
+                handleHoldRequest(library, person);
+                break;
+            case 3:
+                handlePersonalInfo(library, person);
+                break;
+            case 4:
+                handleFineCheck(library, person);
+                break;
+            case 5:
+                handleHoldRequestQueue(library);
+                break;
+            case 6:
+                handleBookIssue(library, person);
+                break;
+            case 7:
+                handleBookReturn(library, person);
+                break;
+            case 8:
+                handleBookRenewal(library, person);
+                break;
+            case 9:
+                library.createBorrower();
+                break;
+            case 10:
+                handleBorrowerInfoUpdate(library);
+                break;
+            case 11:
+                handleBookCreation(library);
+                break;
+            case 12:
+                handleBookRemoval(library);
+                break;
+            case 13:
+                handleBookInfoChange(library);
+                break;
+            case 14:
+                library.viewHistory();
+                break;
+            case 15:
+                library.viewAllBooks();
+                break;
         }
 
-        //Search Book
-        if (choice == 1) {
-            library.searchForBooks();
-        }
-
-        //Do Hold Request
-        else if (choice == 2) {
-            ArrayList<Book> books = library.searchForBooks();
-
-            if (books != null) {
-                input = takeInput(-1, books.size());
-
-                Book book = books.get(input);
-
-                if ("Librarian".equals(person.getClass().getSimpleName())) {
-                    Borrower borrower = library.findBorrower();
-
-                    if (borrower != null)
-                        book.makeHoldRequest(borrower);
-                } else
-                    book.makeHoldRequest((Borrower) person);
-            }
-        }
-
-        //View borrower's personal information
-        else if (choice == 3) {
-            if ("Librarian".equals(person.getClass().getSimpleName())) {
-                Borrower borrower = library.findBorrower();
-
-                if (borrower != null)
-                    borrower.printInfo();
-            } else
-                person.printInfo();
-        }
-
-        //Compute Fine of a Borrower
-        else if (choice == 4) {
-            if ("Librarian".equals(person.getClass().getSimpleName())) {
-                Borrower borrower = library.findBorrower();
-
-                if (borrower != null) {
-                    double totalFine = library.computeFine(borrower);
-                    System.out.println("\nYour Total Fine is : Rs " + totalFine);
-                }
-            } else {
-                double totalFine = library.computeFine((Borrower) person);
-                System.out.println("\nYour Total Fine is : Rs " + totalFine);
-            }
-        }
-
-        //Check hold request queue of a book
-        else if (choice == 5) {
-            ArrayList<Book> books = library.searchForBooks();
-
-            if (books != null) {
-                input = takeInput(-1, books.size());
-                books.get(input).printHoldRequests();
-            }
-        }
-
-        //Issue a Book
-        else if (choice == 6) {
-            ArrayList<Book> books = library.searchForBooks();
-
-            if (books != null) {
-                input = takeInput(-1, books.size());
-                Book book = books.get(input);
-
-                Borrower borrower = library.findBorrower();
-
-                if (borrower != null) {
-                    book.issueBook(borrower, (Librarian) person);
-                }
-            }
-        }
-
-        //Return a Book
-        else if (choice == 7) {
-            Borrower borrower = library.findBorrower();
-
-            if (borrower != null) {
-                borrower.printBorrowedBooks();
-                ArrayList<Loan> loans = borrower.getBorrowedBooks();
-
-                if (!loans.isEmpty()) {
-                    input = takeInput(-1, loans.size());
-                    Loan l = loans.get(input);
-
-                    l.getBook().returnBook(borrower, l, (Librarian) person);
-                } else
-                    System.out.println("\nThis borrower " + borrower.getName() + " has no book to return.");
-            }
-        }
-
-        //Renew a Book
-        else if (choice == 8) {
-            Borrower borrower = library.findBorrower();
-
-            if (borrower != null) {
-                borrower.printBorrowedBooks();
-                ArrayList<Loan> loans = borrower.getBorrowedBooks();
-
-                if (!loans.isEmpty()) {
-                    input = takeInput(-1, loans.size());
-
-                    loans.get(input).renewIssuedBook(new java.util.Date());
-                } else
-                    System.out.println("\nThis borrower " + borrower.getName() + " has no issued book which can be renewed.");
-            }
-        }
-
-        //Add new Borrower
-        else if (choice == 9) {
-            library.createBorrower();
-        }
-
-        //Update Borrower's Personal Info
-        else if (choice == 10) {
-            Borrower borrower = library.findBorrower();
-
-            if (borrower != null)
-                borrower.updateBorrowerInfo();
-        }
-
-        //Add new Book
-        else if (choice == 11) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-            System.out.println("\nEnter Title:");
-            String title = reader.readLine();
-
-            System.out.println("\nEnter Subject:");
-            String subject = reader.readLine();
-
-            System.out.println("\nEnter Author:");
-            String author = reader.readLine();
-
-            library.createBook(title, subject, author);
-        }
-
-        //Remove a Book
-        else if (choice == 12) {
-            ArrayList<Book> books = library.searchForBooks();
-
-            if (books != null) {
-                input = takeInput(-1, books.size());
-
-                library.removeBookfromLibrary(books.get(input));
-            }
-        }
-
-        //Change a Book's Info
-        else if (choice == 13) {
-            ArrayList<Book> books = library.searchForBooks();
-
-            if (books != null) {
-                input = takeInput(-1, books.size());
-
-                books.get(input).changeBookInfo();
-            }
-        }
-
-        //View Issued books History
-        else if (choice == 14)
-            library.viewHistory();
-
-            //View All Books in Library
-        else if (choice == 15)
-            library.viewAllBooks();
-
-
-        // Functionality Performed.
         System.out.println("\nPress Q and Enter to continue!\n");
         scanner.next();
+    }
 
+    private static void handleHoldRequest(Library library, Person person) throws IOException {
+        ArrayList<Book> books = library.searchForBooks();
+        if (books != null) {
+            int input = takeInput(-1, books.size());
+            Book book = books.get(input);
+
+            if ("Librarian".equals(person.getClass().getSimpleName())) {
+                Borrower borrower = library.findBorrower();
+                if (borrower != null) book.makeHoldRequest(borrower);
+            } else {
+                book.makeHoldRequest((Borrower) person);
+            }
+        }
+    }
+
+    private static void handlePersonalInfo(Library library, Person person) throws IOException {
+        if ("Librarian".equals(person.getClass().getSimpleName())) {
+            Borrower borrower = library.findBorrower();
+            if (borrower != null) borrower.printInfo();
+        } else {
+            person.printInfo();
+        }
+    }
+
+    private static void handleFineCheck(Library library, Person person) throws IOException {
+        if ("Librarian".equals(person.getClass().getSimpleName())) {
+            Borrower borrower = library.findBorrower();
+            if (borrower != null) {
+                double totalFine = library.computeFine(borrower);
+                System.out.println("\nYour Total Fine is : Rs " + totalFine);
+            }
+        } else {
+            double totalFine = library.computeFine((Borrower) person);
+            System.out.println("\nYour Total Fine is : Rs " + totalFine);
+        }
+    }
+
+    private static void handleHoldRequestQueue(Library library) throws IOException {
+        ArrayList<Book> books = library.searchForBooks();
+        if (books != null) {
+            int input = takeInput(-1, books.size());
+            books.get(input).printHoldRequests();
+        }
+    }
+
+    private static void handleBookIssue(Library library, Person person) throws IOException {
+        ArrayList<Book> books = library.searchForBooks();
+        if (books != null) {
+            int input = takeInput(-1, books.size());
+            Book book = books.get(input);
+
+            Borrower borrower = library.findBorrower();
+            if (borrower != null) {
+                book.issueBook(borrower, (Librarian) person);
+            }
+        }
+    }
+
+    private static void handleBookReturn(Library library, Person person) throws IOException {
+        Borrower borrower = library.findBorrower();
+        if (borrower != null) {
+            borrower.printBorrowedBooks();
+            ArrayList<Loan> loans = borrower.getBorrowedBooks();
+            if (!loans.isEmpty()) {
+                int input = takeInput(-1, loans.size());
+                Loan l = loans.get(input);
+                l.getBook().returnBook(borrower, l, (Librarian) person);
+            } else {
+                System.out.println("\nThis borrower " + borrower.getName() + " has no book to return.");
+            }
+        }
+    }
+
+    private static void handleBookRenewal(Library library, Person person) throws IOException {
+        Borrower borrower = library.findBorrower();
+        if (borrower != null) {
+            borrower.printBorrowedBooks();
+            ArrayList<Loan> loans = borrower.getBorrowedBooks();
+            if (!loans.isEmpty()) {
+                int input = takeInput(-1, loans.size());
+                loans.get(input).renewIssuedBook(new java.util.Date());
+            } else {
+                System.out.println("\nThis borrower " + borrower.getName() + " has no issued book which can be renewed.");
+            }
+        }
+    }
+
+    private static void handleBorrowerInfoUpdate(Library library) throws IOException {
+        Borrower borrower = library.findBorrower();
+        if (borrower != null) borrower.updateBorrowerInfo();
+    }
+
+    private static void handleBookCreation(Library library) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("\nEnter Title:");
+        String title = reader.readLine();
+        System.out.println("\nEnter Subject:");
+        String subject = reader.readLine();
+        System.out.println("\nEnter Author:");
+        String author = reader.readLine();
+        library.createBook(title, subject, author);
+    }
+
+    private static void handleBookRemoval(Library library) throws IOException {
+        ArrayList<Book> books = library.searchForBooks();
+        if (books != null) {
+            int input = takeInput(-1, books.size());
+            library.removeBookfromLibrary(books.get(input));
+        }
+    }
+
+    private static void handleBookInfoChange(Library library) throws IOException {
+        ArrayList<Book> books = library.searchForBooks();
+        if (books != null) {
+            int input = takeInput(-1, books.size());
+            books.get(input).changeBookInfo();
+        }
     }
 }

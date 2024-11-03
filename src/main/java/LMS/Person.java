@@ -167,6 +167,7 @@ public abstract class Person {
      * Iterates through the list of notifications and prints each one to the console.
      */
     public void printNotifications() {
+        System.out.println("\nNotifications: ");
         for (String s : notifications) {
             System.out.println(s);
         }

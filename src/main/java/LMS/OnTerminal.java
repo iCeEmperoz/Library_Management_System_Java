@@ -1,6 +1,5 @@
 package LMS;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
@@ -12,11 +11,20 @@ import java.util.Scanner;
  */
 public class OnTerminal {
     public static final int lineOnScreen = 20;
-    private static final Scanner scanner = new Scanner(System.in); // Single Scanner instance
+    private static final Scanner scanner = new Scanner(System.in);
     private static Library library;
+    private static Boolean onTest = false;
+
+    public static Scanner getScanner() {
+        return scanner;
+    }
 
     public static void setLibrary(Library library) {
         OnTerminal.library = library;
+    }
+
+    public static void setOnTest(boolean onTest) {
+        OnTerminal.onTest = onTest;
     }
 
     /**
@@ -26,7 +34,8 @@ public class OnTerminal {
      */
     public static void main(String[] args) {
         try {
-            Library library = Library.getInstance();
+            library = Library.getInstance();
+
             setupLibrary(library);
 
             Connection connection = library.makeConnection();
@@ -42,14 +51,17 @@ public class OnTerminal {
                 // Do not close the scanner here
             }
 
-            library.fillItBack(connection);
+            if (!onTest) {
+                library.fillItBack(connection);
+            }
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println("\nExiting...\n");
         }
     }
 
-    private static void setupLibrary(Library library) {
+    static void setupLibrary(Library library) {
         library.setFine(20);
         library.setRequestExpiry(7);
         library.setReturnDeadline(5);
@@ -62,7 +74,6 @@ public class OnTerminal {
             clearScreen();
             displayMainMenu();
             int choice = takeInput(0, 4);
-//            int choice = 3;
 
             switch (choice) {
                 case 1:
@@ -203,6 +214,7 @@ public class OnTerminal {
         while (true) {
             System.out.print("Please enter your choice: ");
             String choice = scanner.next();
+            scanner.nextLine();
 
             try {
                 int intChoice = Integer.parseInt(choice);
@@ -376,13 +388,12 @@ public class OnTerminal {
     }
 
     private static void handleBookCreation(Library library) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("\nEnter Title:");
-        String title = reader.readLine();
+        String title = scanner.nextLine();
         System.out.println("\nEnter Subject:");
-        String subject = reader.readLine();
+        String subject = scanner.nextLine();
         System.out.println("\nEnter Author:");
-        String author = reader.readLine();
+        String author = scanner.nextLine();
         library.createBook(title, subject, author);
     }
 

@@ -2,11 +2,15 @@
   -fx-background-color: #EAEEF4;
 }
 
-.side_ankerpane {
-  -fx-background-color: linear-gradient(to bottom right, #3fa182, #2a827b);
-  -fx-border-color: #3fa182;
+.side_vbox_anchorpane {
+  -fx-background-color: #ffffff;
+  -fx-border-color: #ffffff;
   -fx-border-width: 2px 2px 2px 2px;
   -fx-border-style: solid;
+}
+
+.side_anchorpane {
+  -fx-background-color: #fafafa;
 }
 
 .inner_pane {
@@ -68,4 +72,12 @@
   -fx-background-color: #12acbe;
   -fx-border-color: #4a90e2; /* Đổi màu viền khi được chọn */
   -fx-effect: dropshadow(gaussian, rgba(74, 144, 226, 0.4), 10, 0.5, 0, 2);
+}
+
+.white-background {
+  -fx-background-color: #ffff;
+}
+
+.transparent {
+  -fx-background-color: rgba(0, 0, 0, 0);
 }

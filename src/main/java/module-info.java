@@ -14,6 +14,7 @@ module group {
     requires java.sql;
   requires java.desktop;
   requires com.h2database;
+  requires java.smartcardio;
 
   opens LMS to javafx.fxml;
   exports LMS;

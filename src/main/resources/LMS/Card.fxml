@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" spacing="15.0" style="-fx-background-radius: 15;" styleClass="shadow" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LMS.CardController">
+   <children>
+      <ImageView fitHeight="186.0" fitWidth="408.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/FORTRESS%20BLOOD.jpeg" />
+         </image>
+      </ImageView>
+      <VBox prefHeight="200.0" prefWidth="230.0">
+         <children>
+            <Label fx:id="bookTitle" prefHeight="54.0" prefWidth="230.0" text="FORTRESS BLOOD">
+               <font>
+                  <Font name="Berlin Sans FB Bold" size="24.0" />
+               </font>
+            </Label>
+            <Label fx:id="bookSubject" prefHeight="30.0" prefWidth="230.0" text="Subject">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="bookAuthor" layoutX="10.0" layoutY="90.0" prefHeight="30.0" prefWidth="230.0" text="Author">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+   </children>
+</HBox>

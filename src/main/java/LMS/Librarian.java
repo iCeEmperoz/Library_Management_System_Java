@@ -50,20 +50,34 @@ public class Librarian extends Person {
         return salary;
     }
 
+    /**
+     * Compares this Librarian object to the specified object for equality.
+     * Two Librarian objects are considered equal if they have the same name,
+     * email, and phone number.
+     *
+     * @param o the object to compare with this Librarian
+     * @return true if the specified object is equal to this Librarian; false otherwise
+     */
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Librarian && o != null) {
-            Librarian librarian = (Librarian) o;
+        if (o instanceof Librarian librarian) {
             return Objects.equals(getName(), librarian.getName())
                     && Objects.equals(getEmail(), librarian.getEmail())
                     && Objects.equals(getPhoneNo(), librarian.getPhoneNo());
         }
-
         return false;
     }
 
+    /**
+     * Returns a hash code value for this Librarian object.
+     * The hash code is computed based on the name, email, and phone number
+     * of the Librarian.
+     *
+     * @return a hash code value for this Librarian
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getName(), getEmail(), getPhoneNo());
     }
+
 }

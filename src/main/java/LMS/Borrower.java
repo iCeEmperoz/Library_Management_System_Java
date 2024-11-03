@@ -227,25 +227,45 @@ public class Borrower extends Person implements Observer {
         return new ArrayList<>(onHoldBooks);
     }
 
+    /**
+     * Compares this Borrower object to the specified object for equality.
+     * Two Borrower objects are considered equal if they have the same name,
+     * email, and phone number.
+     *
+     * @param o the object to compare with this Borrower
+     * @return true if the specified object is equal to this Borrower; false otherwise
+     */
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Borrower && o != null) {
-            Borrower borrower = (Borrower) o;
+        if (o instanceof Borrower borrower) {
             return borrower.getName().equals(getName())
                     && borrower.getEmail().equals(getEmail())
                     && borrower.getPhoneNo() == getPhoneNo();
         }
-
         return false;
     }
 
+    /**
+     * Returns a hash code value for this Borrower object.
+     * The hash code is computed based on the name, email, and phone number
+     * of the Borrower.
+     *
+     * @return a hash code value for this Borrower
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getName(), getEmail(), getPhoneNo());
     }
 
+    /**
+     * Updates this Borrower with the specified message.
+     * This method adds the message to the notifications list for this Borrower.
+     *
+     * @param message the message to be added to the notifications
+     */
     @Override
     public void update(String message) {
         notifications.add(message);
     }
+
 }

@@ -205,6 +205,7 @@ public class Library {
      * Adds a borrower to the list of borrowers.
      *
      * @param borrower the borrower to be added
+     * @return true if the borrower was added successfully, false otherwise
      */
     public boolean addBorrower(Borrower borrower) {
         if (!borrowers.contains(borrower)) {
@@ -220,6 +221,7 @@ public class Library {
      * Adds a new librarian to the list of librarians.
      *
      * @param librarian the Librarian object to be added
+     * @return true if the librarian was added successfully, false otherwise
      */
     public static boolean addLibrarian(Librarian librarian) {
         if (!librarians.contains(librarian)) {
@@ -409,13 +411,13 @@ public class Library {
         //Retrieving all the books which matched the user's search query
         for (Book book : booksInLibrary) {
             if (choice.equals("1")) {
-                if (book.getTitle().equals(title))
+                if (book.getTitle().contains(title))
                     matchedBooks.add(book);
             } else if (choice.equals("2")) {
-                if (book.getSubject().equals(subject))
+                if (book.getSubject().contains(subject))
                     matchedBooks.add(book);
             } else {
-                if (book.getAuthor().equals(author))
+                if (book.getAuthor().contains(author))
                     matchedBooks.add(book);
             }
         }
@@ -429,7 +431,7 @@ public class Library {
             System.out.println("------------------------------------------------------------------------------");
 
             for (int i = 0; i < matchedBooks.size(); i++) {
-                System.out.printf("%-5d ", i + 1);
+                System.out.printf("%-5d ", i);
                 matchedBooks.get(i).printInfo();
                 System.out.print("\n");
             }
@@ -584,7 +586,6 @@ public class Library {
         Scanner scanner = OnTerminal.getScanner();
 
         System.out.println("\nEnter Name: ");
-        scanner.nextLine();
         String name = scanner.nextLine();
 
         System.out.println("\nEnter Password: ");
@@ -678,7 +679,7 @@ public class Library {
 
         for (Librarian librarian : librarians) {
             if (librarian.getEmail().equals(email) && librarian.getPassword().equals(password)) {
-                System.out.println("\n[Librarian] Login Successful");
+                System.out.println("\n[Librarian] Login Successful.");
                 return librarian;
             }
         }

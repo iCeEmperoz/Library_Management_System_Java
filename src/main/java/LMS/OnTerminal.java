@@ -11,9 +11,13 @@ import java.util.Scanner;
  */
 public class OnTerminal {
     public static final int lineOnScreen = 20;
-    private static final Scanner scanner = new Scanner(System.in);
-    private static Library library;
+    private static Scanner scanner = new Scanner(System.in);
+    private static Library library = Library.getInstance();
     private static Boolean onTest = false;
+
+    public static void setScanner(Scanner scanner) {
+        OnTerminal.scanner = scanner;
+    }
 
     public static Scanner getScanner() {
         return scanner;
@@ -33,23 +37,14 @@ public class OnTerminal {
      * @param args The command line arguments.
      */
     public static void main(String[] args) {
+        Connection connection = initialize(library);
+        if (connection == null) {
+            System.out.println("\nError connecting to Database. Exiting.");
+            return;
+        }
+
         try {
-            library = Library.getInstance();
-
-            setupLibrary(library);
-
-            Connection connection = library.makeConnection();
-            if (connection == null) {
-                System.out.println("\nError connecting to Database. Exiting.");
-                return;
-            }
-
-            try {
-                library.populateLibrary(connection);
-                runMainLoop(library);
-            } finally {
-                // Do not close the scanner here
-            }
+            runMainLoop(library);
 
             if (!onTest) {
                 library.fillItBack(connection);
@@ -58,16 +53,66 @@ public class OnTerminal {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println("\nExiting...\n");
+        } finally {
+            cleanup(connection);
         }
     }
 
-    static void setupLibrary(Library library) {
+    /**
+     * Initializes the library and establishes a database connection.
+     *
+     * @param lib The library instance.
+     * @return The database connection.
+     */
+    public static Connection initialize(Library lib) {
+        try {
+            setupLibrary(lib);
+            Connection connection = lib.makeConnection();
+            if (connection == null) {
+                System.out.println("\nError connecting to Database. Exiting.");
+                return null;
+            }
+            lib.populateLibrary(connection);
+            return connection;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Cleans up resources by closing the database connection.
+     *
+     * @param connection The database connection to close.
+     */
+    public static void cleanup(Connection connection) {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (Exception e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Sets up the library with initial configurations.
+     *
+     * @param library The library instance.
+     */
+    private static void setupLibrary(Library library) {
         library.setFine(20);
         library.setRequestExpiry(7);
         library.setReturnDeadline(5);
         library.setName("Library");
     }
 
+    /**
+     * Runs the main loop of the terminal application.
+     *
+     * @param library The library instance.
+     * @throws IOException If an input or output exception occurred.
+     */
     private static void runMainLoop(Library library) throws IOException {
         boolean stop = false;
         while (!stop) {
@@ -89,10 +134,13 @@ public class OnTerminal {
             }
 
             System.out.println("\nPress any key to continue..\n");
-            scanner.next();
+            scanner.nextLine();
         }
     }
 
+    /**
+     * Displays the main menu of the terminal application.
+     */
     private static void displayMainMenu() {
         System.out.println("--------------------------------------------------------");
         System.out.println("\tWelcome to Library Management System");
@@ -104,6 +152,12 @@ public class OnTerminal {
         System.out.println("-----------------------------------------\n");
     }
 
+    /**
+     * Handles the login process for the user.
+     *
+     * @param library The library instance.
+     * @throws IOException If an input or output exception occurred.
+     */
     private static void handleLogin(Library library) throws IOException {
         Person user = library.Login();
         if (user instanceof Borrower) {
@@ -113,6 +167,12 @@ public class OnTerminal {
         }
     }
 
+    /**
+     * Runs the borrower portal.
+     *
+     * @param user The borrower user.
+     * @throws IOException If an input or output exception occurred.
+     */
     private static void runBorrowerPortal(Person user) throws IOException {
         while (true) {
             clearScreen();
@@ -123,6 +183,9 @@ public class OnTerminal {
         }
     }
 
+    /**
+     * Displays the borrower menu.
+     */
     private static void displayBorrowerMenu() {
         System.out.println("--------------------------------------------------------");
         System.out.println("\tWelcome to Borrower's Portal");
@@ -138,6 +201,12 @@ public class OnTerminal {
         System.out.println("--------------------------------------------------------");
     }
 
+    /**
+     * Runs the librarian portal.
+     *
+     * @param user The librarian user.
+     * @throws IOException If an input or output exception occurred.
+     */
     private static void runLibrarianPortal(Person user) throws IOException {
         while (true) {
             clearScreen();
@@ -148,6 +217,9 @@ public class OnTerminal {
         }
     }
 
+    /**
+     * Displays the librarian menu.
+     */
     private static void displayLibrarianMenu() {
         System.out.println("--------------------------------------------------------");
         System.out.println("\tWelcome to Librarian's Portal");
@@ -173,7 +245,13 @@ public class OnTerminal {
         System.out.println("--------------------------------------------------------");
     }
 
-    private static void handleAccountCreation(Library library) throws IOException {
+    /**
+     * Handles the account creation process.
+     *
+     * @param library The library instance.
+     * @throws IOException If an input or output exception occurred.
+     */
+    static void handleAccountCreation(Library library) throws IOException {
         System.out.println("Choose work session: ");
         System.out.println("1- Borrower.");
         System.out.println("2- Librarian.");
@@ -186,6 +264,7 @@ public class OnTerminal {
             String lPassword = "LMS_Password";
             System.out.print("Please enter system's password: ");
             String pass = scanner.next();
+            scanner.nextLine();
             if (pass.equals(lPassword)) {
                 library.createLibrarian();
             } else {
@@ -238,11 +317,10 @@ public class OnTerminal {
      */
     public static void allFunctionalities(Person person, int choice) throws IOException {
         Library library = Library.getInstance();
-        int input;
 
         switch (choice) {
             case 0:
-                person.printNotifications();
+                handleNotifications(person);
                 break;
             case 1:
                 library.searchForBooks();
@@ -292,10 +370,38 @@ public class OnTerminal {
         }
 
         System.out.println("\nPress Q and Enter to continue!\n");
-        scanner.next();
+        scanner.nextLine();
     }
 
-    private static void handleHoldRequest(Library library, Person person) throws IOException {
+    /**
+     * Handles the notifications for a person.
+     * Prints notifications and optionally clears them.
+     *
+     * @param person The person whose notifications are to be handled.
+     */
+    private static void handleNotifications(Person person) {
+        person.printNotifications();
+        System.out.println("Do you want to clear notifications? (y/n)");
+        String choice = scanner.next();
+        scanner.nextLine();
+
+        if (choice.equals("y") || choice.equals("Y")) {
+            person.clearNotifications();
+            clearScreen();
+            System.out.println("Notifications cleared.");
+            System.out.println("\nPress any key to continue..\n");
+            scanner.nextLine();
+        }
+    }
+
+    /**
+     * Handles the hold request for a book.
+     *
+     * @param library The library instance.
+     * @param person The person making the hold request.
+     * @throws IOException If an input or output exception occurred.
+     */
+    static void handleHoldRequest(Library library, Person person) throws IOException {
         ArrayList<Book> books = library.searchForBooks();
         if (books != null) {
             int input = takeInput(-1, books.size());
@@ -310,7 +416,14 @@ public class OnTerminal {
         }
     }
 
-    private static void handlePersonalInfo(Library library, Person person) throws IOException {
+    /**
+     * Handles the display of personal information.
+     *
+     * @param library The library instance.
+     * @param person The person whose information is to be displayed.
+     * @throws IOException If an input or output exception occurred.
+     */
+    static void handlePersonalInfo(Library library, Person person) throws IOException {
         if ("Librarian".equals(person.getClass().getSimpleName())) {
             Borrower borrower = library.findBorrower();
             if (borrower != null) borrower.printInfo();
@@ -319,7 +432,14 @@ public class OnTerminal {
         }
     }
 
-    private static void handleFineCheck(Library library, Person person) throws IOException {
+    /**
+     * Handles the fine check for a person.
+     *
+     * @param library The library instance.
+     * @param person The person whose fine is to be checked.
+     * @throws IOException If an input or output exception occurred.
+     */
+    static void handleFineCheck(Library library, Person person) throws IOException {
         if ("Librarian".equals(person.getClass().getSimpleName())) {
             Borrower borrower = library.findBorrower();
             if (borrower != null) {
@@ -332,7 +452,13 @@ public class OnTerminal {
         }
     }
 
-    private static void handleHoldRequestQueue(Library library) throws IOException {
+    /**
+     * Handles the display of hold request queue for a book.
+     *
+     * @param library The library instance.
+     * @throws IOException If an input or output exception occurred.
+     */
+    static void handleHoldRequestQueue(Library library) throws IOException {
         ArrayList<Book> books = library.searchForBooks();
         if (books != null) {
             int input = takeInput(-1, books.size());
@@ -340,7 +466,14 @@ public class OnTerminal {
         }
     }
 
-    private static void handleBookIssue(Library library, Person person) throws IOException {
+    /**
+     * Handles the book issue process.
+     *
+     * @param library The library instance.
+     * @param person The librarian issuing the book.
+     * @throws IOException If an input or output exception occurred.
+     */
+    static void handleBookIssue(Library library, Person person) throws IOException {
         ArrayList<Book> books = library.searchForBooks();
         if (books != null) {
             int input = takeInput(-1, books.size());
@@ -353,7 +486,14 @@ public class OnTerminal {
         }
     }
 
-    private static void handleBookReturn(Library library, Person person) throws IOException {
+    /**
+     * Handles the book return process.
+     *
+     * @param library The library instance.
+     * @param person The librarian handling the return.
+     * @throws IOException If an input or output exception occurred.
+     */
+    static void handleBookReturn(Library library, Person person) throws IOException {
         Borrower borrower = library.findBorrower();
         if (borrower != null) {
             borrower.printBorrowedBooks();
@@ -368,7 +508,14 @@ public class OnTerminal {
         }
     }
 
-    private static void handleBookRenewal(Library library, Person person) throws IOException {
+    /**
+     * Handles the book renewal process.
+     *
+     * @param library The library instance.
+     * @param person The librarian handling the renewal.
+     * @throws IOException If an input or output exception occurred.
+     */
+    static void handleBookRenewal(Library library, Person person) throws IOException {
         Borrower borrower = library.findBorrower();
         if (borrower != null) {
             borrower.printBorrowedBooks();
@@ -382,22 +529,43 @@ public class OnTerminal {
         }
     }
 
-    private static void handleBorrowerInfoUpdate(Library library) throws IOException {
+    /**
+     * Handles the update of borrower information.
+     *
+     * @param library The library instance.
+     * @throws IOException If an input or output exception occurred.
+     */
+    static void handleBorrowerInfoUpdate(Library library) throws IOException {
         Borrower borrower = library.findBorrower();
         if (borrower != null) borrower.updateBorrowerInfo();
     }
 
-    private static void handleBookCreation(Library library) throws IOException {
+    /**
+     * Handles the creation of a new book.
+     *
+     * @param library The library instance.
+     * @throws IOException If an input or output exception occurred.
+     */
+    static void handleBookCreation(Library library) throws IOException {
         System.out.println("\nEnter Title:");
         String title = scanner.nextLine();
+
         System.out.println("\nEnter Subject:");
         String subject = scanner.nextLine();
+        
         System.out.println("\nEnter Author:");
         String author = scanner.nextLine();
+        
         library.createBook(title, subject, author);
     }
 
-    private static void handleBookRemoval(Library library) throws IOException {
+    /**
+     * Handles the removal of a book from the library.
+     *
+     * @param library The library instance.
+     * @throws IOException If an input or output exception occurred.
+     */
+    static void handleBookRemoval(Library library) throws IOException {
         ArrayList<Book> books = library.searchForBooks();
         if (books != null) {
             int input = takeInput(-1, books.size());
@@ -405,7 +573,13 @@ public class OnTerminal {
         }
     }
 
-    private static void handleBookInfoChange(Library library) throws IOException {
+    /**
+     * Handles the change of book information.
+     *
+     * @param library The library instance.
+     * @throws IOException If an input or output exception occurred.
+     */
+    static void handleBookInfoChange(Library library) throws IOException {
         ArrayList<Book> books = library.searchForBooks();
         if (books != null) {
             int input = takeInput(-1, books.size());

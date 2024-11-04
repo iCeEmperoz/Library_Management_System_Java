@@ -2,18 +2,17 @@ package LMS;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.apache.commons.io.output.TeeOutputStream;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.sql.Connection;
 import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class OnTerminalTest {
@@ -22,261 +21,434 @@ public class OnTerminalTest {
     private ByteArrayInputStream inputStream;
     private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
     private static String output;
-
-    public void setUp() {
-        System.setIn(inputStream);
-        TeeOutputStream teeStream = new TeeOutputStream(System.out, outputStreamCaptor);
-        System.setOut(new PrintStream(teeStream));
-        OnTerminal.setOnTest(true);
-        OnTerminal.setLibrary(libraryMock);
-    }
-
-    public void executeTest(String input) {
-        inputStream = new ByteArrayInputStream(input.getBytes());
-        setUp();
-        OnTerminal.main(new String[]{});
-        output = outputStreamCaptor.toString();
-    }
+    private static Connection connection = null;
+    private static final String PRESS_ANY_KEY = TC.PRESS_ANY_KEY + "\n";
+    private static final String EXIT = TC.MenuOption.EXIT + "\n" + PRESS_ANY_KEY;
+    private static final String CREATE_NEW_BORROWER = TC.MenuOption.CREATE_NEW_ACCOUNT + "\n" + TC.SignupOption.BORROWER + "\n"
+            + TC.Borrower.NAME + "\n" + TC.Borrower.PASS + "\n"
+            + TC.Borrower.ADDR + "\n" + TC.Borrower.PHONE + "\n"
+            + TC.Borrower.EMAIL + "\n" + PRESS_ANY_KEY;
+    private static final String CREATE_NEW_LIBRARIAN = TC.MenuOption.CREATE_NEW_ACCOUNT + "\n" + TC.SignupOption.LIBRARIAN + "\n"
+            + TC.LIBRARY_PASSWORD + "\n"
+            + TC.Librarian.NAME + "\n" + TC.Librarian.PASS + "\n"
+            + TC.Librarian.ADDR + "\n" + TC.Librarian.PHONE + "\n"
+            + TC.Librarian.EMAIL + "\n" + TC.Librarian.SALARY + "\n" + PRESS_ANY_KEY;
 
     @AfterEach
     public void tearDown() {
         System.setOut(System.out);
         System.setIn(System.in);
+        OnTerminal.cleanup(connection);
+        OnTerminal.setOnTest(false);
         OnTerminal.setLibrary(null);
+        connection = null;
+        output = null;
+        inputStream = null;
+        outputStreamCaptor.reset();
+    }
+
+    private void setup(String input) {
+        inputStream = new ByteArrayInputStream(input.getBytes());
+        OnTerminal.setScanner(new Scanner(inputStream));
+        System.setOut(new PrintStream(new TeeOutputStream(System.out, outputStreamCaptor)));
+        libraryMock = Library.getInstance();
+        connection = OnTerminal.initialize(libraryMock);
+    }
+
+    private void executeTest(String input) {
+        inputStream = new ByteArrayInputStream(input.getBytes());
+        System.setIn(inputStream);
+        System.setOut(new PrintStream(new TeeOutputStream(System.out, outputStreamCaptor)));
+        libraryMock = Library.getInstance();
+        OnTerminal.setOnTest(true);
+        OnTerminal.main(new String[]{});
+        output = outputStreamCaptor.toString();
+    }
+    
+    @Test
+    public void testInitialize() {
+        libraryMock = Library.getInstance();
+        Connection conn = OnTerminal.initialize(libraryMock);
+        assertTrue(conn != null, "Connection should be established");
+        OnTerminal.cleanup(conn);
+    }
+
+    @Test
+    public void testCleanup() {
+        libraryMock = Library.getInstance();
+        Connection conn = OnTerminal.initialize(libraryMock);
+        assertTrue(conn != null, "Connection should be established");
+        OnTerminal.cleanup(conn);
+        try {
+            assertTrue(conn.isClosed(), "Connection should be closed");
+        } catch (Exception e) {
+            assertTrue(false, "Exception should not be thrown");
+        }
     }
 
     @Test
     public void testExit() {
-        String input = TC.MenuOption.EXIT + "\n" + TC.PRESS_ANY_KEY + "\n";
-        executeTest(input);
+        executeTest(EXIT);
         assertTrue(output.contains("Exiting"));
     }
 
-    @ParameterizedTest
-    @CsvSource({
-        "Borrower, Borrower with name, created successfully.",
-        "Librarian, Librarian with name, created successfully."
-    })
-    public void testCreateNewAccount(String userType, String successMessage, String alreadyAddedMessage) {
-        String input = TC.MenuOption.CREATE_NEW_ACCOUNT + "\n" + (userType.equals("Borrower") ? TC.LoginOption.BORROWER : TC.LoginOption.LIBRARIAN) + "\n"
-                + (userType.equals("Librarian") ? TC.LIBRARY_PASSWORD + "\n" : "")
-                + (userType.equals("Borrower") ? TC.Borrower.NAME : TC.Librarian.NAME) + "\n"
-                + (userType.equals("Borrower") ? TC.Borrower.PASS : TC.Librarian.PASS) + "\n"
-                + (userType.equals("Borrower") ? TC.Borrower.ADDR : TC.Librarian.ADDR) + "\n"
-                + (userType.equals("Borrower") ? TC.Borrower.PHONE : TC.Librarian.PHONE) + "\n"
-                + (userType.equals("Borrower") ? TC.Borrower.EMAIL : TC.Librarian.EMAIL) + "\n"
-                + (userType.equals("Librarian") ? TC.Librarian.SALARY + "\n" : "")
-                + TC.PRESS_ANY_KEY + "\n"
-                + TC.MenuOption.EXIT + "\n" + TC.PRESS_ANY_KEY + "\n";
-        executeTest(input);
-        assertTrue((output.contains(successMessage) && output.contains("created successfully.")) || output.contains(alreadyAddedMessage));
+    @Test
+    public void testCreateNewBorrower() {
+        executeTest(CREATE_NEW_BORROWER + EXIT);
+        assertTrue((output.contains("Borrower with name") && output.contains("created successfully.")));
     }
 
-    @ParameterizedTest
-    @CsvSource({
-        "Borrower, [Borrower] Login Successful, Welcome to Borrower's Portal",
-        "Librarian, [Librarian] Login Successful, Welcome to Librarian's Portal"
-    })
-    public void testLogin(String userType, String successMessage, String welcomeMessage) {
-        String input = TC.MenuOption.LOGIN + "\n" + (userType.equals("Borrower") ? TC.Borrower.EMAIL : TC.Librarian.EMAIL) + "\n"
-                + (userType.equals("Borrower") ? TC.Borrower.PASS : TC.Librarian.PASS) + "\n"
-                + TC.PortalOption.B_LOG_OUT + "\n" + TC.PRESS_ANY_KEY + "\n"
-                + TC.MenuOption.EXIT + "\n" + TC.PRESS_ANY_KEY + "\n";
-        executeTest(input);
-        assertTrue(output.contains(successMessage));
-        assertTrue(output.contains(welcomeMessage));
+    @Test
+    public void testCreateAddedBorrower() {
+        executeTest(CREATE_NEW_BORROWER + CREATE_NEW_BORROWER + EXIT);
+        assertTrue((output.contains("This user was already added before.")));
+    }
+
+    @Test
+    public void testCreateNewLibrarian() {
+        executeTest(CREATE_NEW_LIBRARIAN + EXIT);
+        assertTrue((output.contains("Librarian with name") && output.contains("created successfully.")));
+    }
+
+    @Test
+    public void testCreateAddedLibrarian() {
+        executeTest(CREATE_NEW_LIBRARIAN + CREATE_NEW_LIBRARIAN + EXIT);
+        assertTrue((output.contains("This user was already added before.")));
+    }
+
+    @Test
+    public void testBorrowerLogin() {
+        String login = TC.MenuOption.LOGIN + "\n" + TC.Borrower.EMAIL + "\n" + TC.Borrower.PASS + "\n";
+        String exit = TC.PortalOption.B_LOG_OUT + "\n" + PRESS_ANY_KEY + EXIT;
+        executeTest(CREATE_NEW_BORROWER + login + exit);
+        assertTrue(output.contains("[Borrower] Login Successful."));
+    }
+
+    @Test
+    public void testLibrarianLogin() {
+        String login = TC.MenuOption.LOGIN + "\n" + TC.Librarian.EMAIL + "\n" + TC.Librarian.PASS + "\n";
+        String exit = TC.PortalOption.L_LOG_OUT + "\n" + PRESS_ANY_KEY + EXIT;
+        executeTest(CREATE_NEW_LIBRARIAN + login + exit);
+        assertTrue(output.contains("[Librarian] Login Successful."));
+    }
+
+    @Test
+    public void testWrongLogin() {
+        String login = TC.MenuOption.LOGIN + "\n" + TC.Librarian.EMAIL + "\n" + TC.Borrower.PASS + "\n";
+        executeTest(CREATE_NEW_LIBRARIAN + CREATE_NEW_BORROWER + login + EXIT);
+        assertTrue(output.contains("Sorry! Wrong ID or Password"));
     }
 
     @Test
     public void testPrintNotifications() {
-        String input = TC.MenuOption.LOGIN + "\n" + TC.Borrower.EMAIL + "\n" + TC.Borrower.PASS + "\n"
-                + TC.PortalOption.CHECK_NOTIFICATIONS + "\n" + TC.PRESS_ANY_KEY + "\n"
-                + TC.PortalOption.B_LOG_OUT + "\n" + TC.PRESS_ANY_KEY + "\n"
-                + TC.MenuOption.EXIT + "\n" + TC.PRESS_ANY_KEY + "\n";
-        executeTest(input);
-        assertTrue(output.contains("Notifications: "));
-    }
+        String createLibrarian = CREATE_NEW_LIBRARIAN;
+        String createFirstBorrower = CREATE_NEW_BORROWER;
+        String createSecondBorrower = TC.SignupOption.BORROWER + "\n"
+                + "Second " + TC.Borrower.NAME + "\n" + TC.Borrower.PASS + "\n"
+                + TC.Borrower.ADDR + "\n" + TC.Borrower.PHONE + "\n"
+                + TC.Borrower.EMAIL + "\n";
+        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n";
+        String searchBook = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";
+        String option = "0\n";
 
-    @ParameterizedTest
-    @CsvSource({
-        "SEARCH_BY_TITLE, BookFail.TITLE, Sorry. No Books were found related to your query.",
-        "SEARCH_BY_AUTHOR, BookFail.AUTHOR, Sorry. No Books were found related to your query.",
-        "SEARCH_BY_SUBJECT, BookFail.SUBJECT, Sorry. No Books were found related to your query."
-    })
-    public void testSearchBookFailed(String searchOption, String bookFail, String errorMessage) throws IOException {
-        String input = TC.MenuOption.LOGIN + "\n" + TC.Borrower.EMAIL + "\n" + TC.Borrower.PASS + "\n"
-                + TC.PortalOption.SEARCH_BOOK + "\n" + searchOption + "\n"
-                + bookFail + "\n" + TC.PRESS_ANY_KEY + "\n"
-                + TC.PortalOption.B_LOG_OUT + "\n" + TC.PRESS_ANY_KEY + "\n"
-                + TC.MenuOption.EXIT + "\n" + TC.PRESS_ANY_KEY + "\n";
-        executeTest(input);
-        assertTrue(output.contains(errorMessage));
-    }
+        setup(createLibrarian + createFirstBorrower + createSecondBorrower
+                + addBook + searchBook + option + "1\n" // Issue the book to the first borrower
+                + searchBook + option                   // Hold the book for the second borrower
+                + "1\n" + option);                      // Return the book
 
-    @ParameterizedTest
-    @CsvSource({
-        "SEARCH_BY_TITLE, Book.TITLE, These books are found: ",
-        "SEARCH_BY_AUTHOR, Book.AUTHOR, These books are found: ",
-        "SEARCH_BY_SUBJECT, Book.SUBJECT, These books are found: "
-    })
-    public void testSearchBookSuccessful(String searchOption, String book, String successMessage) throws IOException {
-        String input = TC.MenuOption.LOGIN + "\n" + TC.Borrower.EMAIL + "\n" + TC.Borrower.PASS + "\n"
-                + TC.PortalOption.SEARCH_BOOK + "\n" + searchOption + "\n"
-                + book + "\n" + TC.PRESS_ANY_KEY + "\n"
-                + TC.PortalOption.B_LOG_OUT + "\n" + TC.PRESS_ANY_KEY + "\n"
-                + TC.MenuOption.EXIT + "\n" + TC.PRESS_ANY_KEY + "\n";
-        executeTest(input);
-        assertTrue(output.contains(successMessage));
+        List<Borrower> borrowers = libraryMock.getBorrowers();
+        Borrower firstBorrower = borrowers.get(0);
+        Borrower secondBorrower = borrowers.get(1);
+        try {
+            // Create a new librarian and a new borrower for issuing the book
+            OnTerminal.handleAccountCreation(libraryMock);
+            OnTerminal.handleAccountCreation(libraryMock);
+            OnTerminal.handleAccountCreation(libraryMock);
+            // Create a new book for testing
+            OnTerminal.handleBookCreation(libraryMock);
+            OnTerminal.handleBookIssue(libraryMock, libraryMock.getLibrarians().get(0));
+            OnTerminal.handleHoldRequest(libraryMock, secondBorrower);
+            OnTerminal.handleBookReturn(libraryMock, libraryMock.getLibrarians().get(0));
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false, "IOException should not be thrown");
+        }
+        secondBorrower.printNotifications();
+        output = outputStreamCaptor.toString();
+        assertTrue(output.contains("is now available."));
     }
 
     @Test
-    public void testPlaceHoldRequest() throws IOException {
-        List<Book> booksMock = new ArrayList<>();
-        Book bookMock = mock(Book.class);
-        booksMock.add(bookMock);
-        when(libraryMock.searchForBooks()).thenReturn((ArrayList<Book>) booksMock);
-        Borrower borrowerMock = mock(Borrower.class);
-        when(libraryMock.findBorrower()).thenReturn(borrowerMock);
-        String input = "1\n2\n1\n6\n";
-        inputStream = new ByteArrayInputStream(input.getBytes());
-        setUp();
-        OnTerminal.main(new String[]{});
-        verify(libraryMock, times(1)).searchForBooks();
-        verify(libraryMock, times(1)).findBorrower();
-        verify(bookMock, times(1)).makeHoldRequest(borrowerMock);
+    public void testSearchForBook() {
+        setup(TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n");
+        try {
+            libraryMock.searchForBooks();
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false, "IOException should not be thrown");
+        }
+
+        output = outputStreamCaptor.toString();
+        assertTrue(output.contains("Sorry. No Books were found related to your query."));        
     }
 
     @Test
-    public void testIssueBook() throws IOException {
-        List<Book> booksMock = new ArrayList<>();
-        Book bookMock = mock(Book.class);
-        booksMock.add(bookMock);
-        when(libraryMock.searchForBooks()).thenReturn((ArrayList<Book>) booksMock);
-        Borrower borrowerMock = mock(Borrower.class);
-        when(libraryMock.findBorrower()).thenReturn(borrowerMock);
-        Librarian librarianMock = mock(Librarian.class);
-        String input = "1\n6\n1\n";
-        inputStream = new ByteArrayInputStream(input.getBytes());
-        setUp();
-        OnTerminal.main(new String[]{});
-        verify(libraryMock, times(1)).searchForBooks();
-        verify(libraryMock, times(1)).findBorrower();
-        verify(bookMock, times(1)).issueBook(borrowerMock, librarianMock);
+    public void testHandleHoldRequest() {
+        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n";
+        String searchBook = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";
+        String option = "0\n";
+        setup(addBook + searchBook + option);
+        List<Borrower> borrowers = libraryMock.getBorrowers();
+        Borrower borrower = borrowers.get(new Random().nextInt(borrowers.size()));
+        try {
+            OnTerminal.handleBookCreation(libraryMock);
+            OnTerminal.handleHoldRequest(libraryMock, borrower);
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false, "IOException should not be thrown");
+        }
+        output = outputStreamCaptor.toString();
+        assertTrue(output.contains("The book " + TC.Book.TITLE + " has been successfully placed on hold by borrower"));
     }
 
     @Test
-    public void testReturnBook() throws IOException {
-        Borrower borrowerMock = mock(Borrower.class);
-        when(libraryMock.findBorrower()).thenReturn(borrowerMock);
-        Loan loanMock = mock(Loan.class);
-        List<Loan> loansMock = new ArrayList<>();
-        loansMock.add(loanMock);
-        when(borrowerMock.getBorrowedBooks()).thenReturn((ArrayList<Loan>) loansMock);
-        String input = "1\n7\n1\n";
-        inputStream = new ByteArrayInputStream(input.getBytes());
-        setUp();
-        OnTerminal.main(new String[]{});
-        verify(libraryMock, times(1)).findBorrower();
-        verify(borrowerMock, times(1)).getBorrowedBooks();
-        verify(loanMock, times(1)).getBook();
+    public void testHandlePersonalInfo() {
+        setup(TC.SignupOption.BORROWER + "\n" + TC.Borrower.NAME + "\n" + TC.Borrower.PASS + "\n"
+            + TC.Borrower.ADDR + "\n" + TC.Borrower.PHONE + "\n" + TC.Borrower.EMAIL + "\n");
+        List<Borrower> borrowers = libraryMock.getBorrowers();
+        try {
+            // Create a new borrower for testing
+            OnTerminal.handleAccountCreation(libraryMock);
+            for (Borrower borrower : borrowers) {
+                OnTerminal.handlePersonalInfo(libraryMock, borrower);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false, "IOException should not be thrown");
+        }
+        output = outputStreamCaptor.toString();
+        assertTrue(output.contains("The details of the person are: ")
+                && output.contains("Name: " + TC.Borrower.NAME)
+                && output.contains("Address: " + TC.Borrower.ADDR)
+                && output.contains("Phone No: " + TC.Borrower.PHONE)
+                && output.contains("Email: " + TC.Borrower.EMAIL));
     }
 
     @Test
-    public void testRenewBook() throws IOException {
-        Borrower borrowerMock = mock(Borrower.class);
-        when(libraryMock.findBorrower()).thenReturn(borrowerMock);
-        Loan loanMock = mock(Loan.class);
-        List<Loan> loansMock = new ArrayList<>();
-        loansMock.add(loanMock);
-        when(borrowerMock.getBorrowedBooks()).thenReturn((ArrayList<Loan>) loansMock);
-        String input = "1\n8\n1\n";
-        inputStream = new ByteArrayInputStream(input.getBytes());
-        setUp();
-        OnTerminal.main(new String[]{});
-        verify(libraryMock, times(1)).findBorrower();
-        verify(borrowerMock, times(1)).getBorrowedBooks();
-        verify(loanMock, times(1)).renewIssuedBook(any());
+    public void testHandleFineCheck() {
+        setup(TC.SignupOption.BORROWER + "\n" + TC.Borrower.NAME + "\n" + TC.Borrower.PASS + "\n"
+            + TC.Borrower.ADDR + "\n" + TC.Borrower.PHONE + "\n" + TC.Borrower.EMAIL + "\n");
+        List<Borrower> borrowers = libraryMock.getBorrowers();
+        try {
+            // Create a new borrower for testing
+            OnTerminal.handleAccountCreation(libraryMock);
+            for (Borrower borrower : borrowers) {
+                OnTerminal.handleFineCheck(libraryMock, borrower);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false, "IOException should not be thrown");
+        }
+        output = outputStreamCaptor.toString();
+        assertTrue(output.contains("Your Total Fine is : Rs 0.0"));
     }
 
     @Test
-    public void testUpdateBorrowerInfo() throws IOException {
-        Borrower borrowerMock = mock(Borrower.class);
-        when(libraryMock.findBorrower()).thenReturn(borrowerMock);
-        String input = "1\n10\n";
-        inputStream = new ByteArrayInputStream(input.getBytes());
-        setUp();
-        OnTerminal.main(new String[]{});
-        verify(libraryMock, times(1)).findBorrower();
-        verify(borrowerMock, times(1)).updateBorrowerInfo();
+    public void testHandleHoldRequestQueue() {
+        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n";
+        String searchBook = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";
+        String option = "0\n";
+        setup(addBook + searchBook + option + searchBook + option);
+        List<Borrower> borrowers = libraryMock.getBorrowers();
+        Borrower borrower = borrowers.get(new Random().nextInt(borrowers.size()));
+        try {
+            // Create a new book for testing
+            OnTerminal.handleBookCreation(libraryMock);
+            OnTerminal.handleHoldRequest(libraryMock, borrower);
+            OnTerminal.handleHoldRequestQueue(libraryMock);
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false, "IOException should not be thrown");
+        }
+        output = outputStreamCaptor.toString();
+        assertTrue(output.contains("The book " + TC.Book.TITLE + " has been successfully placed on hold by borrower"));
+    
     }
 
     @Test
-    public void testAddNewBook() throws IOException {
-        String input = "1\n11\nTitle\nSubject\nAuthor\n";
-        inputStream = new ByteArrayInputStream(input.getBytes());
-        setUp();
-        OnTerminal.main(new String[]{});
-        verify(libraryMock, times(1)).createBook("Title", "Subject", "Author");
+    public void testHandleBookCheckout() {
+        String createLibrarian = TC.SignupOption.LIBRARIAN + "\n"
+                    + TC.LIBRARY_PASSWORD + "\n"
+                    + TC.Librarian.NAME + "\n" + TC.Librarian.PASS + "\n"
+                    + TC.Librarian.ADDR + "\n" + TC.Librarian.PHONE + "\n"
+                    + TC.Librarian.EMAIL + "\n" + TC.Librarian.SALARY + "\n";
+        String createBorrower = TC.SignupOption.BORROWER + "\n"
+                    + TC.Borrower.NAME + "\n" + TC.Borrower.PASS + "\n"
+                    + TC.Borrower.ADDR + "\n" + TC.Borrower.PHONE + "\n"
+                    + TC.Borrower.EMAIL + "\n" ;
+        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n";
+        String searchBook = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";
+        String option = "0\n";
+
+        setup(createLibrarian + createBorrower + addBook + searchBook + option + "1\n"); // Select the first borrower
+        Librarian librarian = libraryMock.getLibrarians().get(0); // Get the first librarian
+        Borrower borrower = libraryMock.getBorrowers().get(0); // Get the first borrower
+
+        try {
+            // Create a new librarian and a new borrower for issueing the book
+            OnTerminal.handleAccountCreation(libraryMock);
+            OnTerminal.handleAccountCreation(libraryMock);
+            // Create a new book for testing
+            OnTerminal.handleBookCreation(libraryMock);
+            OnTerminal.handleBookIssue(libraryMock, librarian);
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false, "IOException should not be thrown");
+        }
+        output = outputStreamCaptor.toString();
+        assertTrue(output.contains("The book " + TC.Book.TITLE + " is successfully issued to " + borrower.getName()));
     }
 
     @Test
-    public void testRemoveBook() throws IOException {
-        List<Book> booksMock = new ArrayList<>();
-        Book bookMock = mock(Book.class);
-        booksMock.add(bookMock);
-        when(libraryMock.searchForBooks()).thenReturn((ArrayList<Book>) booksMock);
-        String input = "1\n12\n1\n";
-        inputStream = new ByteArrayInputStream(input.getBytes());
-        setUp();
-        OnTerminal.main(new String[]{});
-        verify(libraryMock, times(1)).searchForBooks();
-        verify(libraryMock, times(1)).removeBookfromLibrary(bookMock);
+    public void testHandleBookCheckin() {
+        String createLibrarian = TC.SignupOption.LIBRARIAN + "\n"
+                    + TC.LIBRARY_PASSWORD + "\n"
+                    + TC.Librarian.NAME + "\n" + TC.Librarian.PASS + "\n"
+                    + TC.Librarian.ADDR + "\n" + TC.Librarian.PHONE + "\n"
+                    + TC.Librarian.EMAIL + "\n" + TC.Librarian.SALARY + "\n";
+        String createBorrower = TC.SignupOption.BORROWER + "\n"
+                    + TC.Borrower.NAME + "\n" + TC.Borrower.PASS + "\n"
+                    + TC.Borrower.ADDR + "\n" + TC.Borrower.PHONE + "\n"
+                    + TC.Borrower.EMAIL + "\n" ;
+        
+        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n";
+        String searchBook = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";
+        String option = "0\n";
+
+        setup(createLibrarian + createBorrower + addBook + searchBook + option + "1\n" + "1\n" + option); // Issue the book to and take it back from the first borrower
+        Librarian librarian = libraryMock.getLibrarians().get(0); // Get the first librarian
+        Borrower borrower = libraryMock.getBorrowers().get(0); // Get the first borrower
+
+        try {
+            // Create a new librarian and a new borrower for issueing the book
+            OnTerminal.handleAccountCreation(libraryMock);
+            OnTerminal.handleAccountCreation(libraryMock);
+            // Create a new book for testing
+            OnTerminal.handleBookCreation(libraryMock);
+            OnTerminal.handleBookIssue(libraryMock, librarian);
+            OnTerminal.handleBookReturn(libraryMock, librarian);
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false, "IOException should not be thrown");
+        }
+
+        output = outputStreamCaptor.toString();
+        assertTrue(output.contains("The book " + TC.Book.TITLE + " is successfully returned by " + borrower.getName() + ".")
+                && output.contains("Received by: " + librarian.getName()));
     }
 
     @Test
-    public void testChangeBookInfo() throws IOException {
-        List<Book> booksMock = new ArrayList<>();
-        Book bookMock = mock(Book.class);
-        booksMock.add(bookMock);
-        when(libraryMock.searchForBooks()).thenReturn((ArrayList<Book>) booksMock);
-        String input = "1\n13\n1\n";
-        inputStream = new ByteArrayInputStream(input.getBytes());
-        setUp();
-        OnTerminal.main(new String[]{});
-        verify(libraryMock, times(1)).searchForBooks();
-        verify(bookMock, times(1)).changeBookInfo();
+    public void testHandleBookRenewal() {
+        String createBorrower = TC.SignupOption.BORROWER + "\n"
+                    + TC.Borrower.NAME + "\n" + TC.Borrower.PASS + "\n"
+                    + TC.Borrower.ADDR + "\n" + TC.Borrower.PHONE + "\n"
+                    + TC.Borrower.EMAIL + "\n";
+        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n";
+        String searchBookString = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";
+        String option = "0\n";
+
+        setup(createBorrower + addBook + searchBookString + option + "1\n" // Issue the book to the first borrower
+            + "1\n" + option); // Renew the book
+        Borrower borrower = libraryMock.getBorrowers().get(0); // Get the first borrower
+
+        try {
+            // Create a new borrower for testing
+            OnTerminal.handleAccountCreation(libraryMock);
+            // Create a new book for testing
+            OnTerminal.handleBookCreation(libraryMock);
+            OnTerminal.handleBookIssue(libraryMock, libraryMock.getLibrarians().get(0));
+            OnTerminal.handleBookRenewal(libraryMock, borrower);
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false, "IOException should not be thrown");
+        }
+
+        output = outputStreamCaptor.toString();
+        assertTrue(output.contains("Issued Book is successfully renewed"));
     }
 
     @Test
-    public void testViewIssuedBooksHistory() {
-        String input = "1\n14\n";
-        inputStream = new ByteArrayInputStream(input.getBytes());
-        setUp();
-        OnTerminal.main(new String[]{});
-        verify(libraryMock, times(1)).viewHistory();
+    public void testHandleBorrowerUpdate() {
+        String createBorrower = TC.SignupOption.BORROWER + "\n"
+                    + TC.Borrower.NAME + "\n" + TC.Borrower.PASS + "\n"
+                    + TC.Borrower.ADDR + "\n" + TC.Borrower.PHONE + "\n"
+                    + TC.Borrower.EMAIL + "\n";
+        setup(createBorrower + "1\n"                    // Update the first borrower
+             + "y\n" + "new" + TC.Borrower.NAME + "\n"  // Update the name
+             + "y\n" + "new" + TC.Borrower.ADDR + "\n"  // Update the address
+             + "y\n" + "new" + TC.Borrower.EMAIL + "\n" // Update the email
+             + "y\n" + TC.Borrower.PHONE + "\n");       // Update the phone number 
+        try {
+            // Create a new borrower for testing
+            OnTerminal.handleAccountCreation(libraryMock);
+            OnTerminal.handleBorrowerInfoUpdate(libraryMock);
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false, "IOException should not be thrown");
+        }
+        output = outputStreamCaptor.toString();
+        assertTrue(output.contains("Borrower is successfully updated."));
     }
 
     @Test
-    public void testViewAllBooks() {
-        testLogin("Librarian", "[Librarian] Login Successful", "Welcome to Librarian's Portal");
-        String input = "1\n15\n";
-        inputStream = new ByteArrayInputStream(input.getBytes());
-        setUp();
-        OnTerminal.main(new String[]{});
-        verify(libraryMock, times(1)).viewAllBooks();
+    public void testHandleBookCreation() {
+        setup(TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n");
+        try {
+            OnTerminal.handleBookCreation(libraryMock);
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false, "IOException should not be thrown");
+        }
+        output = outputStreamCaptor.toString();
+        assertTrue(output.contains("Book with Title " + TC.Book.TITLE + " is successfully created."));
+    }   
+
+    @Test
+    public void testHandleBookRemoval() {
+        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n";
+        String searchBook = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";
+        String option = "0\n";
+        setup(addBook + searchBook + option);
+        try {
+            OnTerminal.handleBookCreation(libraryMock);
+            OnTerminal.handleBookRemoval(libraryMock);
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false, "IOException should not be thrown");
+        }
+        output = outputStreamCaptor.toString();
+        assertTrue(output.contains("The book is successfully removed."));
     }
 
     @Test
-    public void testLoginMethod() {
-        String input = "test@example.com\npassword\n";
-        inputStream = new ByteArrayInputStream(input.getBytes());
-        System.setIn(inputStream);
-        OnTerminal.setLibrary(libraryMock);
-
-        when(libraryMock.Login()).thenCallRealMethod();
-
-        Person user = libraryMock.Login();
-
-        assertTrue(user instanceof Borrower || user instanceof Librarian);
+    public void testHandleBookUpdate() {
+        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n";
+        String searchBook = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";
+        String option = "0\n";
+        setup(addBook + searchBook + option
+            + "y\n" + "new " + TC.Book.AUTHOR + "\n" // Update the author
+            + "y\n" + "new " + TC.Book.SUBJECT + "\n"// Update the subject
+            + "y\n" + "new " + TC.Book.TITLE + "\n"  // Update the title
+            + searchBook);
+        try {
+            OnTerminal.handleBookCreation(libraryMock);
+            OnTerminal.handleBookInfoChange(libraryMock);
+            libraryMock.searchForBooks();
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false, "IOException should not be thrown");
+        }
+        output = outputStreamCaptor.toString();
+        assertTrue(output.contains("Book is successfully updated."));
     }
 }

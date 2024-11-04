@@ -50,6 +50,12 @@ public class Librarian extends Person {
         return salary;
     }
 
+    /**
+     * Checks if this librarian is equal to another object.
+     *
+     * @param o the object to compare with
+     * @return true if the objects are equal, false otherwise
+     */
     @Override
     public boolean equals(Object o) {
         if (o instanceof Librarian && o != null) {
@@ -62,6 +68,11 @@ public class Librarian extends Person {
         return false;
     }
 
+    /**
+     * Returns the hash code value for this librarian.
+     *
+     * @return the hash code value
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getName(), getEmail(), getPhoneNo());

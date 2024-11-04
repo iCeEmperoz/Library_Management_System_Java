@@ -54,7 +54,7 @@ public abstract class Person {
         System.out.println("ID: " + id);
         System.out.println("Name: " + name);
         System.out.println("Address: " + address);
-        System.out.println("Phone No: " + phoneNo + "\n");
+        System.out.println("Phone No: " + phoneNo);
         System.out.println("Email: " + email);
     }
 
@@ -167,10 +167,21 @@ public abstract class Person {
      * Iterates through the list of notifications and prints each one to the console.
      */
     public void printNotifications() {
-        System.out.println("\nNotifications: ");
-        for (String s : notifications) {
-            System.out.println(s);
+        if (notifications.size() == 0 ) {
+            System.out.println("\nThere is no notification.");
+        } else {
+            System.out.println("\nNotifications: ");
+            for (String s : notifications) {
+                System.out.println(s);
+            }            
         }
+    }
+
+    /**
+     * Clears all notifications for the person.
+     */
+    public void clearNotifications() {
+        notifications.clear();
     }
 
     /**

@@ -88,13 +88,13 @@ public class Borrower extends Person implements Observer {
      * Updates the borrower's name if the user chooses to do so.
      *
      * @param choice the user's input for whether to update the name.
-     * @param reader BufferedReader to read input from the user.
      * @throws IOException if an I/O error occurs.
      */
-    private void updateBorrowerName(String choice, BufferedReader reader) throws IOException {
+    private void updateBorrowerName(String choice) throws IOException {
+        Scanner scanner = OnTerminal.getScanner();
         if (choice.equals("y")) {
             System.out.println("\nType New Name: ");
-            setName(reader.readLine());
+            setName(scanner.nextLine());
             System.out.println("\nThe name is successfully updated.");
         }
     }
@@ -103,13 +103,13 @@ public class Borrower extends Person implements Observer {
      * Updates the borrower's address if the user chooses to do so.
      *
      * @param choice the user's input for whether to update the address.
-     * @param reader BufferedReader to read input from the user.
      * @throws IOException if an I/O error occurs.
      */
-    private void updateBorrowerAddress(String choice, BufferedReader reader) throws IOException {
+    private void updateBorrowerAddress(String choice) throws IOException {
+        Scanner scanner = OnTerminal.getScanner();
         if (choice.equals("y")) {
             System.out.println("\nType New Address: ");
-            setAddress(reader.readLine());
+            setAddress(scanner.nextLine());
             System.out.println("\nThe address is successfully updated.");
         }
     }
@@ -118,13 +118,13 @@ public class Borrower extends Person implements Observer {
      * Updates the borrower's email if the user chooses to do so.
      *
      * @param choice the user's input for whether to update the email.
-     * @param reader BufferedReader to read input from the user.
      * @throws IOException if an I/O error occurs.
      */
-    private void updateBorrowerEmail(String choice, BufferedReader reader) throws IOException {
+    private void updateBorrowerEmail(String choice) throws IOException {
+        Scanner scanner = OnTerminal.getScanner();
         if (choice.equals("y")) {
             System.out.println("\nType New Email: ");
-            setEmail(reader.readLine());
+            setEmail(scanner.nextLine());
             System.out.println("\nThe email is successfully updated.");
         }
     }
@@ -133,12 +133,12 @@ public class Borrower extends Person implements Observer {
      * Updates the borrower's phone number if the user chooses to do so.
      *
      * @param choice the user's input for whether to update the phone number.
-     * @param sc     Scanner object to read input from the user.
      */
-    private void updateBorrowerPhoneNumber(String choice, Scanner sc) {
+    private void updateBorrowerPhoneNumber(String choice) {
+        Scanner scanner = OnTerminal.getScanner();
         if (choice.equals("y")) {
             System.out.println("\nType New Phone Number: ");
-            setPhoneNo(sc.nextInt());
+            setPhoneNo(scanner.nextInt());
             System.out.println("\nThe phone number is successfully updated.");
         }
     }
@@ -151,24 +151,27 @@ public class Borrower extends Person implements Observer {
     public void updateBorrowerInfo() throws IOException {
         String choice;
 
-        Scanner sc = new Scanner(System.in);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        Scanner sc = OnTerminal.getScanner();
 
         System.out.println("\nDo you want to update " + getName() + "'s Name ? (y/n)");
         choice = sc.next();
-        updateBorrowerName(choice, reader);
+        sc.nextLine();
+        updateBorrowerName(choice);
 
         System.out.println("\nDo you want to update " + getName() + "'s Address ? (y/n)");
         choice = sc.next();
-        updateBorrowerAddress(choice, reader);
+        sc.nextLine();
+        updateBorrowerAddress(choice);
 
         System.out.println("\nDo you want to update " + getName() + "'s Email ? (y/n)");
         choice = sc.next();
-        updateBorrowerEmail(choice, reader);
+        sc.nextLine();
+        updateBorrowerEmail(choice);
 
         System.out.println("\nDo you want to update " + getName() + "'s Phone Number ? (y/n)");
         choice = sc.next();
-        updateBorrowerPhoneNumber(choice, sc);
+        sc.nextLine();
+        updateBorrowerPhoneNumber(choice);
 
         System.out.println("\nBorrower is successfully updated.");
     }

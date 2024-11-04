@@ -410,59 +410,59 @@ public class FXMLDocument {
   @FXML
   void initialize() {
     assert changePass_backBtn
-        != null : "fx:id=\"changePass_backBtn\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"changePass_backBtn\" was not injected: check your FXML file 'Login.fxml'.";
     assert changePass_cPassword
-        != null : "fx:id=\"changePass_cPassword\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"changePass_cPassword\" was not injected: check your FXML file 'Login.fxml'.";
     assert changePass_form
-        != null : "fx:id=\"changePass_form\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"changePass_form\" was not injected: check your FXML file 'Login.fxml'.";
     assert changePass_password
-        != null : "fx:id=\"changePass_password\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"changePass_password\" was not injected: check your FXML file 'Login.fxml'.";
     assert changePass_proceedBtn
-        != null : "fx:id=\"changePass_proceedBtn\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"changePass_proceedBtn\" was not injected: check your FXML file 'Login.fxml'.";
     assert forgot_answer
-        != null : "fx:id=\"forgot_answer\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"forgot_answer\" was not injected: check your FXML file 'Login.fxml'.";
     assert forgot_backBtn
-        != null : "fx:id=\"forgot_backBtn\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"forgot_backBtn\" was not injected: check your FXML file 'Login.fxml'.";
     assert forgot_form
-        != null : "fx:id=\"forgot_form\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"forgot_form\" was not injected: check your FXML file 'Login.fxml'.";
     assert forgot_proceedBtn
-        != null : "fx:id=\"forgot_proceedBtn\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"forgot_proceedBtn\" was not injected: check your FXML file 'Login.fxml'.";
     assert forgot_selectQuestion
-        != null : "fx:id=\"forgot_selectQuestion\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"forgot_selectQuestion\" was not injected: check your FXML file 'Login.fxml'.";
     assert forgot_username
-        != null : "fx:id=\"forgot_username\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"forgot_username\" was not injected: check your FXML file 'Login.fxml'.";
     assert login_btn
-        != null : "fx:id=\"login_btn\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"login_btn\" was not injected: check your FXML file 'Login.fxml'.";
     assert login_createAccount
-        != null : "fx:id=\"login_createAccount\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"login_createAccount\" was not injected: check your FXML file 'Login.fxml'.";
     assert login_forgotPassword
-        != null : "fx:id=\"login_forgotPassword\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"login_forgotPassword\" was not injected: check your FXML file 'Login.fxml'.";
     assert login_form
-        != null : "fx:id=\"login_form\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"login_form\" was not injected: check your FXML file 'Login.fxml'.";
     assert login_password
-        != null : "fx:id=\"login_password\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"login_password\" was not injected: check your FXML file 'Login.fxml'.";
     assert login_selectShowPassword
-        != null : "fx:id=\"login_selectShowPassword\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"login_selectShowPassword\" was not injected: check your FXML file 'Login.fxml'.";
     assert login_username
-        != null : "fx:id=\"login_username\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"login_username\" was not injected: check your FXML file 'Login.fxml'.";
     assert main_form
-        != null : "fx:id=\"main_form\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"main_form\" was not injected: check your FXML file 'Login.fxml'.";
     assert signup_answer
-        != null : "fx:id=\"signup_answer\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"signup_answer\" was not injected: check your FXML file 'Login.fxml'.";
     assert signup_btn
-        != null : "fx:id=\"signup_btn\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"signup_btn\" was not injected: check your FXML file 'Login.fxml'.";
     assert signup_email
-        != null : "fx:id=\"signup_email\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"signup_email\" was not injected: check your FXML file 'Login.fxml'.";
     assert signup_form
-        != null : "fx:id=\"signup_form\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"signup_form\" was not injected: check your FXML file 'Login.fxml'.";
     assert signup_loginAccount
-        != null : "fx:id=\"signup_loginAccount\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"signup_loginAccount\" was not injected: check your FXML file 'Login.fxml'.";
     assert signup_password
-        != null : "fx:id=\"signup_password\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"signup_password\" was not injected: check your FXML file 'Login.fxml'.";
     assert signup_selectQuestion
-        != null : "fx:id=\"signup_selectQuestion\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"signup_selectQuestion\" was not injected: check your FXML file 'Login.fxml'.";
     assert signup_username
-        != null : "fx:id=\"signup_username\" was not injected: check your FXML file 'FXMLDocument.fxml'.";
+        != null : "fx:id=\"signup_username\" was not injected: check your FXML file 'Login.fxml'.";
     forgot_selectQuestion.getItems()
         .addAll("What is your childhood nickname?", "What is the name of your first pet?",
             "What is your favorite food?", "What was the name of your elementary school?",

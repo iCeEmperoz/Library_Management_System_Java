@@ -25,7 +25,7 @@ public class Main extends Application {
 
         primaryStage.getIcons().add(icon);
 
-        FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/LMS/FXMLDocument.fxml"));
+        FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/LMS/Login.fxml"));
 
         Scene loginScene = new Scene(loginLoader.load(), 393, 614);
 

@@ -73,34 +73,33 @@ public class Book implements Subject {
      * @throws IOException If an input or output exception occurred
      */
     public void changeBookInfo() throws IOException {
-        Scanner scanner = OnTerminal.getScanner();
+        Scanner scanner = new Scanner(System.in);
         String input;
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         System.out.println("\nUpdate Author? (y/n)");
         input = scanner.next();
-        scanner.nextLine();
 
         if (input.equals("y")) {
             System.out.println("\nEnter new Author: ");
-            author = scanner.nextLine();
+            author = reader.readLine();
         }
 
         System.out.println("\nUpdate Subject? (y/n)");
         input = scanner.next();
-        scanner.nextLine();
 
         if (input.equals("y")) {
             System.out.println("\nEnter new Subject: ");
-            subject = scanner.nextLine();
+            subject = reader.readLine();
         }
 
         System.out.println("\nUpdate Title? (y/n)");
         input = scanner.next();
-        scanner.nextLine();
 
         if (input.equals("y")) {
             System.out.println("\nEnter new Title: ");
-            title = scanner.nextLine();
+            title = reader.readLine();
         }
 
         System.out.println("\nBook is successfully updated.");
@@ -317,7 +316,7 @@ public class Book implements Subject {
             System.out.println("\nIssued by: " + librarian.getName());
 
             // Notify observers that the book is now issued
-            notifyObservers("(" + new Date() + ")\t" + "The book " + title + " has been issued to " + borrower.getName());
+            notifyObservers("The book " + title + " has been issued to " + borrower.getName());
         }
     }
 
@@ -341,12 +340,7 @@ public class Book implements Subject {
         System.out.println("\nReceived by: " + librarian.getName());
 
         // Notify observers that the book is now available
-        notifyObservers("(" + new Date() + ")\t" + "The book " + loan.getBook().getTitle() + " is now available.");
-        // Notify librarians that there is someone waiting for the book
-        for (Librarian lib : Library.getInstance().getLibrarians()) {
-            lib.notifications.add("There are someone waiting for the book " 
-            + loan.getBook().getTitle() + ". It is available now.");
-        }
+        notifyObservers("The book " + loan.getBook().getTitle() + " is now available.");
     }
 
     /**

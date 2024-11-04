@@ -2,6 +2,8 @@
 
 <?import com.gluonhq.charm.glisten.control.AutoCompleteTextField?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -14,60 +16,33 @@
    <children>
       <VBox prefHeight="207.0" prefWidth="240.0">
          <children>
-            <AnchorPane prefHeight="640.0" prefWidth="318.0" styleClass="side_ankerpane" stylesheets="@dashboard.css">
+            <AnchorPane prefHeight="640.0" prefWidth="320.0" styleClass="side_vbox_anchorpane" stylesheets="@dashboard.css">
                <children>
                   <Pane layoutX="10.0" layoutY="14.0" prefHeight="55.0" prefWidth="220.0" styleClass="inner_pane" stylesheets="@design.css">
                      <children>
-                        <ImageView fitHeight="39.0" fitWidth="44.0" layoutX="16.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true" />
-                        <Pane layoutX="179.0" layoutY="4.0" prefHeight="47.0" prefWidth="27.0" styleClass="most_inner_pane" stylesheets="@design.css">
-                           <children>
-                              <ImageView fitHeight="55.0" fitWidth="27.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/dots.png" />
-                                 </image>
-                              </ImageView>
-                           </children>
-                        </Pane>
+                        <ImageView fitHeight="55.0" fitWidth="55.0" layoutX="21.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/library2.png" />
+                           </image></ImageView>
+                        <Label layoutX="87.0" layoutY="1.0" prefHeight="53.0" prefWidth="119.0" text="Library">
+                           <font>
+                              <Font name="Roboto Bold" size="36.0" />
+                           </font>
+                        </Label>
                      </children>
                   </Pane>
-                  <Button layoutX="8.0" layoutY="104.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="220.0" styleClass="btn_dashboard" stylesheets="@dashboard.css" text="DASHBOARD" textFill="WHITE">
-                     <font>
-                        <Font name="Century Gothic Bold" size="15.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="addBook_btn" layoutX="8.0" layoutY="164.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="220.0" styleClass="btn_dashboard" stylesheets="@dashboard.css" text="ADD BOOK" textFill="WHITE">
-                     <font>
-                        <Font name="Century Gothic Bold" size="15.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="borrow_btn" layoutX="8.0" layoutY="225.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="220.0" styleClass="btn_dashboard" stylesheets="@dashboard.css" text="BORROW" textFill="WHITE">
-                     <font>
-                        <Font name="Century Gothic Bold" size="15.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="return_btn" layoutX="10.0" layoutY="286.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="220.0" styleClass="btn_dashboard" stylesheets="@dashboard.css" text="RETURN" textFill="WHITE">
-                     <font>
-                        <Font name="Century Gothic Bold" size="15.0" />
-                     </font>
-                  </Button>
-                  <Button layoutX="10.0" layoutY="348.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="220.0" styleClass="btn_dashboard" stylesheets="@dashboard.css" text="INVENTORY" textFill="WHITE">
-                     <font>
-                        <Font name="Century Gothic Bold" size="15.0" />
-                     </font>
-                  </Button>
-                  <ImageView fitHeight="55.0" fitWidth="54.0" layoutX="21.0" layoutY="113.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </AnchorPane>
          </children>
       </VBox>
-      <Pane prefHeight="640.0" prefWidth="722.0">
+      <Pane prefHeight="640.0" prefWidth="722.0" styleClass="side_anchorpane" stylesheets="@dashboard.css">
          <children>
-            <Pane prefHeight="78.0" prefWidth="722.0">
+            <Pane prefHeight="106.0" prefWidth="722.0" styleClass="white-background" stylesheets="@dashboard.css">
                <children>
-                  <AutoCompleteTextField floatText="Search:" layoutX="432.0" layoutY="10.0" styleClass="search-bar" stylesheets="@dashboard.css" />
+                  <AutoCompleteTextField floatText="Search:" layoutX="361.0" layoutY="14.0" prefHeight="44.0" prefWidth="156.0" styleClass="search-bar" stylesheets="@dashboard.css" />
                   <Button layoutX="660.0" layoutY="14.0" minWidth="44.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="44.0" styleClass="btn_icon" stylesheets="@dashboard.css">
                      <graphic>
-                        <ImageView fx:id="user" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="user_btn" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/user.png" />
                            </image>
@@ -76,25 +51,35 @@
                   </Button>
                   <Button layoutX="595.0" layoutY="13.0" minWidth="44.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="44.0" styleClass="btn_icon" stylesheets="@dashboard.css">
                      <graphic>
-                        <ImageView fx:id="settings" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="settings_btn" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../images/settings.png" />
+                              <Image url="@../images/setting.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button layoutX="370.0" layoutY="10.0" minWidth="44.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="44.0" styleClass="btn_icon" stylesheets="@dashboard.css">
+                  <Button layoutX="528.0" layoutY="14.0" minWidth="44.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="44.0" styleClass="btn_icon" stylesheets="@dashboard.css">
                      <graphic>
-                        <ImageView fitHeight="47.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="search_btn" fitHeight="47.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/search.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
+                  <Label layoutX="14.0" layoutY="6.0" prefHeight="53.0" prefWidth="156.0" text="Welcome">
+                     <font>
+                        <Font name="Roboto Black" size="36.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="name_Welcome" layoutX="22.0" layoutY="62.0" prefHeight="39.0" prefWidth="141.0" text="Name">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
                </children>
             </Pane>
-            <Pane fx:id="pane_1" layoutX="74.0" layoutY="142.0" prefHeight="200.0" prefWidth="200.0" styleClass="pane_1" stylesheets="@dashboard.css" />
+            <ScrollPane layoutY="106.0" prefHeight="540.0" prefWidth="722.0" />
          </children>
       </Pane>
    </children>

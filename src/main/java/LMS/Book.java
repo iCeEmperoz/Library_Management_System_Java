@@ -16,6 +16,7 @@ public class Book implements Subject {
     private HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
     private List<Observer> observers = new ArrayList<>();
     static int currentIdNumber = 0;
+    private String isbn;
 
     /**
      * Constructor to initialize a Book object.
@@ -38,6 +39,9 @@ public class Book implements Subject {
         this.subject = subject;
         this.author = author;
         isIssued = issued;
+    }
+
+    public Book(String s, String title, String subject, String author) {
     }
 
     /**
@@ -400,4 +404,34 @@ public class Book implements Subject {
             observer.update(message);
         }
     }
+
+
+    public Book() {}
+
+    public void setTitle(String title) {
+        this.title = title.replaceAll("^\"|\"$", "");
+    }
+
+    public void setAuthor(String author) {
+        this.author = author.replaceAll("^\"|\"$", "");
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn.replaceAll("^\"|\"$", "");
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setDescription(String description) {
+        this.subject = description.replaceAll("^\"|\"$", "");
+    }
+
+    @Override
+    public String toString() {
+        return "Title: " + title + "\nAuthor: " + author + "\nISBN: " + isbn + "\nDescription: " + subject;
+    }
+
+
 }

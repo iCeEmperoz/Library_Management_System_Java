@@ -9,8 +9,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
@@ -202,7 +203,7 @@
             </Label>
             <ScrollPane prefHeight="200.0" prefWidth="200.0" styleClass="transparent" stylesheets="@styles.css">
                <content>
-                  <HBox fx:id="CardLayout" prefHeight="200.0" prefWidth="1200.0" styleClass="transparent" stylesheets="@styles.css" />
+                  <HBox fx:id="cardLayout" prefHeight="200.0" prefWidth="1200.0" styleClass="transparent" stylesheets="@styles.css" />
                </content>
             </ScrollPane>
             <Label prefHeight="41.0" prefWidth="162.0" text="Recently Added">
@@ -214,9 +215,14 @@
                </padding>
             </Label>
             <ScrollPane prefHeight="200.0" prefWidth="200.0" styleClass="transparent" stylesheets="@styles.css" VBox.vgrow="ALWAYS">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-              </content>
+               <content>
+                  <GridPane fx:id="bookContainer">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                  </GridPane>
+               </content>
             </ScrollPane>
          </children>
       </VBox>

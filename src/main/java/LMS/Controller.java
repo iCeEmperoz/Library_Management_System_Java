@@ -68,7 +68,7 @@ public class Controller implements Initializable {
     Book book = new Book();
     book.setTitle("FORTRESSBLOOD");
     book.setAuthor("L.D. GOFFIGAN");
-    book.setSubject("nov");
+    book.setDescription("nov");
     ls.add(book);
 
 //    book = new Book();
@@ -91,7 +91,7 @@ public class Controller implements Initializable {
     Book book = new Book();
     book.setTitle("FORTRESSBLOOD");
     book.setAuthor("L.D. GOFFIGAN");
-    book.setSubject("nov");
+    book.setDescription("nov");
     ls.add(book);
 
 //    book = new Book();

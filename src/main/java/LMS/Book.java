@@ -10,7 +10,7 @@ import java.util.*;
 public class Book implements Subject {
     private int bookID;
     private String title;
-    private String subject;
+    private String subtitle;
     private String author;
     private boolean isIssued;
     private HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
@@ -23,11 +23,11 @@ public class Book implements Subject {
      *
      * @param id      ID for the book, if -1 is passed, an ID will be auto-generated
      * @param title   Title of the book
-     * @param subject Subject of the book
+     * @param subtitle Subtitle of the book
      * @param author  Author of the book
      * @param issued  Issued status of the book
      */
-    public Book(int id, String title, String subject, String author, boolean issued) {
+    public Book(int id, String title, String subtitle, String author, boolean issued) {
         currentIdNumber++;
         if (id == -1) {
             bookID = currentIdNumber;
@@ -36,12 +36,12 @@ public class Book implements Subject {
         }
 
         this.title = title;
-        this.subject = subject;
+        this.subtitle = subtitle;
         this.author = author;
         isIssued = issued;
     }
 
-    public Book(String s, String title, String subject, String author) {
+    public Book(String s, String title, String subtitle, String author) {
     }
 
     /**
@@ -68,7 +68,7 @@ public class Book implements Subject {
      * Prints the information of the book.
      */
     public void printInfo() {
-        System.out.printf("%-30s %-30s %-30s%n", title, author, subject);
+        System.out.printf("%-30s %-30s %-30s%n", title, author, subtitle);
     }
 
     /**
@@ -88,12 +88,12 @@ public class Book implements Subject {
             author = scanner.nextLine();
         }
 
-        System.out.println("\nUpdate Subject? (y/n)");
+        System.out.println("\nUpdate Subtitle? (y/n)");
         input = scanner.next();
 
         if (input.equals("y")) {
-            System.out.println("\nEnter new Subject: ");
-            subject = scanner.nextLine();
+            System.out.println("\nEnter new Subtitle: ");
+            subtitle = scanner.nextLine();
         }
 
         System.out.println("\nUpdate Title? (y/n)");
@@ -117,12 +117,12 @@ public class Book implements Subject {
     }
 
     /**
-     * Gets the subject of the book.
+     * Gets the subtitle of the book.
      *
-     * @return The subject of the book
+     * @return The subtitle of the book
      */
-    public String getSubject() {
-        return subject;
+    public String getSubtitle() {
+        return subtitle;
     }
 
     /**
@@ -190,7 +190,7 @@ public class Book implements Subject {
 
         holdRequestsOperations.addHoldRequest(holdRequest);
         borrower.addHoldRequest(holdRequest);
-        
+
         attach(borrower);
 
         System.out.println("\nThe book " + title + " has been successfully placed on hold by borrower " + borrower.getName() + ".\n");
@@ -349,7 +349,7 @@ public class Book implements Subject {
     /**
      * Compares this book to the specified object. The result is true if and only if
      * the argument is not null and is a Book object that has the same title, author,
-     * and subject as this book.
+     * and subtitle as this book.
      *
      * @param object the object to compare this Book against
      * @return true if the given object represents a Book equivalent to this book, false otherwise
@@ -357,19 +357,19 @@ public class Book implements Subject {
     public boolean equals(Object object) {
         if (object instanceof Book && object != null) {
             Book book = (Book) object;
-            return book.title.equals(getTitle()) && book.author.equals(getSubject()) && book.subject.equals(getAuthor());
+            return book.title.equals(getTitle()) && book.author.equals(getSubtitle()) && book.subtitle.equals(getAuthor());
         }
         return false;
     }
 
     /**
-     * Generates a hash code for this book based on its title, subject, and author.
+     * Generates a hash code for this book based on its title, subtitle, and author.
      * This method is used to support hash tables.
      *
      * @return a hash code value for this book.
      */
     public int hashCode() {
-        return Objects.hash(title, subject, author);
+        return Objects.hash(title, subtitle, author);
     }
 
     /**
@@ -379,9 +379,7 @@ public class Book implements Subject {
      */
     @Override
     public void attach(Observer observer) {
-        observers.add(observer);
-        System.out.println("Observer attached: " + observer + " to " + this);
-    }
+        observers.add(observer);}
 
     /**
      * Detaches an observer from the book.
@@ -391,7 +389,6 @@ public class Book implements Subject {
     @Override
     public void detach(Observer observer) {
         observers.remove(observer);
-        System.out.println("Observer detached: " + observer);
     }
 
     /**
@@ -401,11 +398,8 @@ public class Book implements Subject {
      */
     @Override
     public void notifyObservers(String message) {
-        System.out.println("Notifying all observers...");
-        System.out.println(observers.size() + " observers attached to " + this);
         for (Observer observer : observers) {
             observer.update(message);
-            System.out.println("Notified observer: " + observer);
         }
     }
 
@@ -428,13 +422,13 @@ public class Book implements Subject {
         return isbn;
     }
 
-    public void setDescription(String description) {
-        this.subject = description.replaceAll("^\"|\"$", "");
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle.replaceAll("^\"|\"$", "");
     }
 
     @Override
     public String toString() {
-        return "Title: " + title + "\nAuthor: " + author + "\nISBN: " + isbn + "\nDescription: " + subject;
+        return "Title: " + title + "\nAuthor: " + author + "\nISBN: " + isbn + "\nSubtitle: " + subtitle;
     }
 
 

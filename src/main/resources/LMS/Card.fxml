@@ -7,11 +7,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" spacing="15.0" style="-fx-background-radius: 15;" styleClass="shadow" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LMS.CardController">
+<HBox fx:id="box" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="180.0" prefWidth="380.0" spacing="15.0" style="-fx-background-radius: 15;" styleClass="shadow" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LMS.CardController">
    <children>
-      <ImageView fitHeight="186.0" fitWidth="408.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="bookImage" fitHeight="170.0" fitWidth="408.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/FORTRESS%20BLOOD.jpeg" />
+            <Image url="@../images/FORTRESSBLOOD.jpeg" />
          </image>
       </ImageView>
       <VBox prefHeight="200.0" prefWidth="230.0">
@@ -21,7 +21,7 @@
                   <Font name="Berlin Sans FB Bold" size="24.0" />
                </font>
             </Label>
-            <Label fx:id="bookSubject" prefHeight="30.0" prefWidth="230.0" text="Subject">
+            <Label fx:id="bookSubtitle" prefHeight="30.0" prefWidth="230.0" text="Subtitle">
                <font>
                   <Font size="18.0" />
                </font>

@@ -51,7 +51,7 @@ public class Borrower extends Person implements Observer {
         if (!borrowedBooks.isEmpty()) {
             System.out.println("\nBorrowed Books are: ");
             System.out.println("-----------------------------------------------------");
-            System.out.printf("%-5s %-30s %-20s %-20s%n", "No.", "Title", "Author", "Subject");
+            System.out.printf("%-5s %-30s %-20s %-20s%n", "No.", "Title", "Author", "Subtitle");
             System.out.println("-----------------------------------------------------");
 
             for (int i = 0; i < borrowedBooks.size(); i++) {
@@ -71,7 +71,7 @@ public class Borrower extends Person implements Observer {
         if (!onHoldBooks.isEmpty()) {
             System.out.println("\nOn Hold Books are: ");
             System.out.println("-----------------------------------------------------");
-            System.out.printf("%-5s %-30s %-20s %-20s%n", "No.", "Title", "Author", "Subject");
+            System.out.printf("%-5s %-30s %-20s %-20s%n", "No.", "Title", "Author", "Subtitle");
             System.out.println("-----------------------------------------------------");
 
             for (int i = 0; i < onHoldBooks.size(); i++) {

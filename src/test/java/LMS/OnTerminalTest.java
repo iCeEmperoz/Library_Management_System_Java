@@ -185,7 +185,7 @@ public class OnTerminalTest {
             Method handleBookIssue = OnTerminal.class.getDeclaredMethod("handleBookIssue", Library.class, Person.class);
             handleBookIssue.setAccessible(true);
             handleBookIssue.invoke(OnTerminal.class, libraryMock, libraryMock.getLibrarians().get(0));
-            
+
             Method handleHoldRequest = OnTerminal.class.getDeclaredMethod("handleHoldRequest", Library.class, Person.class);
             handleHoldRequest.setAccessible(true);
             handleHoldRequest.invoke(OnTerminal.class, libraryMock, secondBorrower);
@@ -193,7 +193,7 @@ public class OnTerminalTest {
             Method handleBookReturn = OnTerminal.class.getDeclaredMethod("handleBookReturn", Library.class, Person.class);
             handleBookReturn.setAccessible(true);
             handleBookReturn.invoke(OnTerminal.class, libraryMock, libraryMock.getLibrarians().get(0));
-            
+
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
             fail("NoSuchMethodException should not be thrown: " + e.getMessage());
@@ -221,7 +221,7 @@ public class OnTerminalTest {
         }
 
         output = outputStreamCaptor.toString();
-        // assertTrue(output.contains("Sorry. No Books were found related to your query."));        
+        // assertTrue(output.contains("Sorry. No Books were found related to your query."));
         assertTrue(output.contains("These books are found: "));
     }
 
@@ -270,7 +270,7 @@ public class OnTerminalTest {
             handleAccountCreation.invoke(OnTerminal.class, libraryMock);
 
             for (Borrower borrower : borrowers) {
-                Method handlePersonalInfo = OnTerminal.class.getDeclaredMethod("handlePersonalInfo", Library.class, Person.class);  
+                Method handlePersonalInfo = OnTerminal.class.getDeclaredMethod("handlePersonalInfo", Library.class, Person.class);
                 handlePersonalInfo.setAccessible(true);
                 handlePersonalInfo.invoke(OnTerminal.class, libraryMock, borrower);
             }
@@ -344,7 +344,7 @@ public class OnTerminalTest {
             Method handleHoldRequestQueue = OnTerminal.class.getDeclaredMethod("handleHoldRequestQueue", Library.class);
             handleHoldRequestQueue.setAccessible(true);
             handleHoldRequestQueue.invoke(OnTerminal.class, libraryMock);
-        
+
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
             fail("NoSuchMethodException should not be thrown: " + e.getMessage());
@@ -395,7 +395,7 @@ public class OnTerminalTest {
             Method handleBookIssue = OnTerminal.class.getDeclaredMethod("handleBookIssue", Library.class, Person.class);
             handleBookIssue.setAccessible(true);
             handleBookIssue.invoke(OnTerminal.class, libraryMock, librarian);
-        
+
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
             fail("NoSuchMethodException should not be thrown: " + e.getMessage());
@@ -449,7 +449,7 @@ public class OnTerminalTest {
             Method handleBookReturn = OnTerminal.class.getDeclaredMethod("handleBookReturn", Library.class, Person.class);
             handleBookReturn.setAccessible(true);
             handleBookReturn.invoke(OnTerminal.class, libraryMock, libraryMock.getLibrarians().get(0));
-            
+
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
             fail("NoSuchMethodException should not be thrown: " + e.getMessage());
@@ -490,15 +490,15 @@ public class OnTerminalTest {
             Method handleBookCreation = OnTerminal.class.getDeclaredMethod("handleBookCreation", Library.class);
             handleBookCreation.setAccessible(true);
             handleBookCreation.invoke(OnTerminal.class, libraryMock);
-    
+
             Method handleBookIssue = OnTerminal.class.getDeclaredMethod("handleBookIssue", Library.class, Person.class);
             handleBookIssue.setAccessible(true);
             handleBookIssue.invoke(OnTerminal.class, libraryMock, libraryMock.getLibrarians().get(0));
-    
+
             Method handleBookRenewal = OnTerminal.class.getDeclaredMethod("handleBookRenewal", Library.class, Person.class);
             handleBookRenewal.setAccessible(true);
             handleBookRenewal.invoke(OnTerminal.class, libraryMock, libraryMock.getLibrarians().get(0));
-        
+
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
             fail("NoSuchMethodException should not be thrown: " + e.getMessage());
@@ -534,7 +534,7 @@ public class OnTerminalTest {
             Method handleBorrowerInfoUpdate = OnTerminal.class.getDeclaredMethod("handleBorrowerInfoUpdate", Library.class);
             handleBorrowerInfoUpdate.setAccessible(true);
             handleBorrowerInfoUpdate.invoke(OnTerminal.class, libraryMock);
-            
+
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
             fail("NoSuchMethodException should not be thrown: " + e.getMessage());
@@ -589,7 +589,7 @@ public class OnTerminalTest {
             Method handleBookRemoval = OnTerminal.class.getDeclaredMethod("handleBookRemoval", Library.class);
             handleBookRemoval.setAccessible(true);
             handleBookRemoval.invoke(OnTerminal.class, libraryMock);
-            
+
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
             fail("NoSuchMethodException should not be thrown: " + e.getMessage());
@@ -626,7 +626,7 @@ public class OnTerminalTest {
             handleBookInfoChange.invoke(OnTerminal.class, libraryMock);
 
             libraryMock.searchForBooks();
-        
+
         } catch (IOException e) {
             e.printStackTrace();
             fail("NoSuchMethodException should not be thrown: " + e.getMessage());

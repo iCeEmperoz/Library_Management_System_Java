@@ -61,7 +61,7 @@ public class TC {
     }
 
     public static class Book {
-        public static final String TITLE = "Harry Potter and Secret Chamber";
+        public static final String TITLE = "Harry Potter and the Chamber of Secrets";
         public static final String AUTHOR = "J.K Rowling";
         public static final String SUBJECT = "Fiction";
     }

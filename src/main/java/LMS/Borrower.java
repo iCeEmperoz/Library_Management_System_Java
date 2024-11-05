@@ -268,6 +268,7 @@ public class Borrower extends Person implements Observer {
      */
     @Override
     public void update(String message) {
+        System.out.println("Received notification: " + message);
         notifications.add(message);
     }
 

@@ -1,7 +1,6 @@
 package LMS;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -251,7 +250,7 @@ public class OnTerminal {
      * @param library The library instance.
      * @throws IOException If an input or output exception occurred.
      */
-    static void handleAccountCreation(Library library) throws IOException {
+    private static void handleAccountCreation(Library library) throws IOException {
         System.out.println("Choose work session: ");
         System.out.println("1- Borrower.");
         System.out.println("2- Librarian.");
@@ -401,7 +400,7 @@ public class OnTerminal {
      * @param person The person making the hold request.
      * @throws IOException If an input or output exception occurred.
      */
-    static void handleHoldRequest(Library library, Person person) throws IOException {
+    private static void handleHoldRequest(Library library, Person person) throws IOException {
         ArrayList<Book> books = library.searchForBooks();
         if (books != null) {
             int input = takeInput(-1, books.size());
@@ -423,7 +422,7 @@ public class OnTerminal {
      * @param person The person whose information is to be displayed.
      * @throws IOException If an input or output exception occurred.
      */
-    static void handlePersonalInfo(Library library, Person person) throws IOException {
+    private static void handlePersonalInfo(Library library, Person person) throws IOException {
         if ("Librarian".equals(person.getClass().getSimpleName())) {
             Borrower borrower = library.findBorrower();
             if (borrower != null) borrower.printInfo();
@@ -439,7 +438,7 @@ public class OnTerminal {
      * @param person The person whose fine is to be checked.
      * @throws IOException If an input or output exception occurred.
      */
-    static void handleFineCheck(Library library, Person person) throws IOException {
+    private static void handleFineCheck(Library library, Person person) throws IOException {
         if ("Librarian".equals(person.getClass().getSimpleName())) {
             Borrower borrower = library.findBorrower();
             if (borrower != null) {
@@ -458,7 +457,7 @@ public class OnTerminal {
      * @param library The library instance.
      * @throws IOException If an input or output exception occurred.
      */
-    static void handleHoldRequestQueue(Library library) throws IOException {
+    private static void handleHoldRequestQueue(Library library) throws IOException {
         ArrayList<Book> books = library.searchForBooks();
         if (books != null) {
             int input = takeInput(-1, books.size());
@@ -473,7 +472,7 @@ public class OnTerminal {
      * @param person The librarian issuing the book.
      * @throws IOException If an input or output exception occurred.
      */
-    static void handleBookIssue(Library library, Person person) throws IOException {
+    private static void handleBookIssue(Library library, Person person) throws IOException {
         ArrayList<Book> books = library.searchForBooks();
         if (books != null) {
             int input = takeInput(-1, books.size());
@@ -493,7 +492,7 @@ public class OnTerminal {
      * @param person The librarian handling the return.
      * @throws IOException If an input or output exception occurred.
      */
-    static void handleBookReturn(Library library, Person person) throws IOException {
+    private static void handleBookReturn(Library library, Person person) throws IOException {
         Borrower borrower = library.findBorrower();
         if (borrower != null) {
             borrower.printBorrowedBooks();
@@ -515,7 +514,7 @@ public class OnTerminal {
      * @param person The librarian handling the renewal.
      * @throws IOException If an input or output exception occurred.
      */
-    static void handleBookRenewal(Library library, Person person) throws IOException {
+    private static void handleBookRenewal(Library library, Person person) throws IOException {
         Borrower borrower = library.findBorrower();
         if (borrower != null) {
             borrower.printBorrowedBooks();
@@ -535,7 +534,7 @@ public class OnTerminal {
      * @param library The library instance.
      * @throws IOException If an input or output exception occurred.
      */
-    static void handleBorrowerInfoUpdate(Library library) throws IOException {
+    private static void handleBorrowerInfoUpdate(Library library) throws IOException {
         Borrower borrower = library.findBorrower();
         if (borrower != null) borrower.updateBorrowerInfo();
     }
@@ -546,7 +545,7 @@ public class OnTerminal {
      * @param library The library instance.
      * @throws IOException If an input or output exception occurred.
      */
-    static void handleBookCreation(Library library) throws IOException {
+    private static void handleBookCreation(Library library) throws IOException {
         System.out.println("\nEnter Title:");
         String title = scanner.nextLine();
 
@@ -565,7 +564,7 @@ public class OnTerminal {
      * @param library The library instance.
      * @throws IOException If an input or output exception occurred.
      */
-    static void handleBookRemoval(Library library) throws IOException {
+    private static void handleBookRemoval(Library library) throws IOException {
         ArrayList<Book> books = library.searchForBooks();
         if (books != null) {
             int input = takeInput(-1, books.size());
@@ -579,7 +578,7 @@ public class OnTerminal {
      * @param library The library instance.
      * @throws IOException If an input or output exception occurred.
      */
-    static void handleBookInfoChange(Library library) throws IOException {
+    private static void handleBookInfoChange(Library library) throws IOException {
         ArrayList<Book> books = library.searchForBooks();
         if (books != null) {
             int input = takeInput(-1, books.size());

@@ -77,17 +77,15 @@ public class Book implements Subject {
      * @throws IOException If an input or output exception occurred
      */
     public void changeBookInfo() throws IOException {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = OnTerminal.getScanner();
         String input;
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         System.out.println("\nUpdate Author? (y/n)");
         input = scanner.next();
 
         if (input.equals("y")) {
             System.out.println("\nEnter new Author: ");
-            author = reader.readLine();
+            author = scanner.nextLine();
         }
 
         System.out.println("\nUpdate Subject? (y/n)");
@@ -95,7 +93,7 @@ public class Book implements Subject {
 
         if (input.equals("y")) {
             System.out.println("\nEnter new Subject: ");
-            subject = reader.readLine();
+            subject = scanner.nextLine();
         }
 
         System.out.println("\nUpdate Title? (y/n)");
@@ -103,7 +101,7 @@ public class Book implements Subject {
 
         if (input.equals("y")) {
             System.out.println("\nEnter new Title: ");
-            title = reader.readLine();
+            title = scanner.nextLine();
         }
 
         System.out.println("\nBook is successfully updated.");
@@ -192,6 +190,7 @@ public class Book implements Subject {
 
         holdRequestsOperations.addHoldRequest(holdRequest);
         borrower.addHoldRequest(holdRequest);
+        
         attach(borrower);
 
         System.out.println("\nThe book " + title + " has been successfully placed on hold by borrower " + borrower.getName() + ".\n");
@@ -381,6 +380,7 @@ public class Book implements Subject {
     @Override
     public void attach(Observer observer) {
         observers.add(observer);
+        System.out.println("Observer attached: " + observer + " to " + this);
     }
 
     /**
@@ -391,6 +391,7 @@ public class Book implements Subject {
     @Override
     public void detach(Observer observer) {
         observers.remove(observer);
+        System.out.println("Observer detached: " + observer);
     }
 
     /**
@@ -400,8 +401,11 @@ public class Book implements Subject {
      */
     @Override
     public void notifyObservers(String message) {
+        System.out.println("Notifying all observers...");
+        System.out.println(observers.size() + " observers attached to " + this);
         for (Observer observer : observers) {
             observer.update(message);
+            System.out.println("Notified observer: " + observer);
         }
     }
 

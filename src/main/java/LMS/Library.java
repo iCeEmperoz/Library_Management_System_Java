@@ -380,71 +380,6 @@ public class Library {
      *                     and collects those that match the search term. If matching books are found, they are printed and
      *                     returned. If no books match the search criteria, a message is displayed and null is returned.
      */
-//    public ArrayList<Book> searchForBooks() throws IOException {
-//        String choice;
-//        String title = "", subject = "", author = "";
-//        Scanner scanner = OnTerminal.getScanner();
-//
-//        while (true) {
-//            System.out.println("\nEnter either '1' or '2' or '3' for search by Title, Subject or Author of Book respectively: ");
-//            choice = scanner.next();
-//            scanner.nextLine();
-//
-//            if (choice.equals("1") || choice.equals("2") || choice.equals("3")) {
-//                break;
-//            }
-//            else {
-//                System.out.println("\nWrong Input!");
-//            }
-//        }
-//
-//        if (choice.equals("1")) {
-//            System.out.println("\nEnter the Title of the Book: ");
-//            title = scanner.nextLine();
-//        } else if (choice.equals("2")) {
-//            System.out.println("\nEnter the Subject of the Book: ");
-//            subject = scanner.nextLine();
-//        } else {
-//            System.out.println("\nEnter the Author of the Book: ");
-//            author = scanner.nextLine();
-//        }
-//        ArrayList<Book> matchedBooks = new ArrayList<>();
-//
-//        //Retrieving all the books which matched the user's search query
-//        for (Book book : booksInLibrary) {
-//            if (choice.equals("1")) {
-//                if (book.getTitle().contains(title))
-//                    matchedBooks.add(book);
-//            } else if (choice.equals("2")) {
-//                if (book.getSubject().contains(subject))
-//                    matchedBooks.add(book);
-//            } else {
-//                if (book.getAuthor().contains(author))
-//                    matchedBooks.add(book);
-//            }
-//        }
-//
-//        //Printing all the matched Books
-//        if (!matchedBooks.isEmpty()) {
-//            System.out.println("\nThese books are found: \n");
-//
-//            System.out.println("------------------------------------------------------------------------------");
-//            System.out.printf("%-5s %-30s %-30s %-30s\n", "No.", "Title", "Author", "Subject");
-//            System.out.println("------------------------------------------------------------------------------");
-//
-//            for (int i = 0; i < matchedBooks.size(); i++) {
-//                System.out.printf("%-5d ", i);
-//                matchedBooks.get(i).printInfo();
-//                System.out.print("\n");
-//            }
-//
-//            return matchedBooks;
-//        } else {
-//            System.out.println("\nSorry. No Books were found related to your query.");
-//            return null;
-//        }
-//    }
-
     public ArrayList<Book> searchForBooks() throws IOException {
         String choice;
         String title = "", subject = "", author = "";
@@ -472,39 +407,33 @@ public class Library {
             System.out.println("\nEnter the Author of the Book: ");
             author = scanner.nextLine();
         }
-
         ArrayList<Book> matchedBooks = new ArrayList<>();
 
-        // Tạo URL tìm kiếm theo tiêu chí
-        String api = "https://www.googleapis.com/books/v1/volumes?q=";
-        String query;
-
-        // Tạo truy vấn tùy theo lựa chọn của người dùng
-        if (choice.equals("1")) {
-            query = "intitle:" + title.replace(" ", "+");
-        } else if (choice.equals("2")) {
-            query = "subject:" + subject.replace(" ", "+");
-        } else {
-            query = "inauthor:" + author.replace(" ", "+");
+        //Retrieving all the books which matched the user's search query
+        for (Book book : booksInLibrary) {
+            if (choice.equals("1")) {
+                if (book.getTitle().contains(title))
+                    matchedBooks.add(book);
+            } else if (choice.equals("2")) {
+                if (book.getSubject().contains(subject))
+                    matchedBooks.add(book);
+            } else {
+                if (book.getAuthor().contains(author))
+                    matchedBooks.add(book);
+            }
         }
 
-        // Gọi API Google Books
-        String jsonResponse = googleAPI.getHttpResponse(api + query);
-
-        if (jsonResponse != null) {
-            matchedBooks.addAll(googleAPI.getBooksFromJson(jsonResponse)); // Giả sử bạn có phương thức này
-        }
-
-        // In thông tin sách tìm được
+        //Printing all the matched Books
         if (!matchedBooks.isEmpty()) {
             System.out.println("\nThese books are found: \n");
+
             System.out.println("------------------------------------------------------------------------------");
             System.out.printf("%-5s %-30s %-30s %-30s\n", "No.", "Title", "Author", "Subject");
             System.out.println("------------------------------------------------------------------------------");
 
             for (int i = 0; i < matchedBooks.size(); i++) {
                 System.out.printf("%-5d ", i);
-                matchedBooks.get(i).printInfo(); // Giả sử bạn có phương thức này
+                matchedBooks.get(i).printInfo();
                 System.out.print("\n");
             }
 
@@ -514,6 +443,76 @@ public class Library {
             return null;
         }
     }
+
+    // public ArrayList<Book> searchForBooks() throws IOException {
+    //     String choice;
+    //     String title = "", subject = "", author = "";
+    //     Scanner scanner = OnTerminal.getScanner();
+
+    //     while (true) {
+    //         System.out.println("\nEnter either '1' or '2' or '3' for search by Title, Subject or Author of Book respectively: ");
+    //         choice = scanner.next();
+    //         scanner.nextLine();
+
+    //         if (choice.equals("1") || choice.equals("2") || choice.equals("3")) {
+    //             break;
+    //         } else {
+    //             System.out.println("\nWrong Input!");
+    //         }
+    //     }
+
+    //     if (choice.equals("1")) {
+    //         System.out.println("\nEnter the Title of the Book: ");
+    //         title = scanner.nextLine();
+    //     } else if (choice.equals("2")) {
+    //         System.out.println("\nEnter the Subject of the Book: ");
+    //         subject = scanner.nextLine();
+    //     } else {
+    //         System.out.println("\nEnter the Author of the Book: ");
+    //         author = scanner.nextLine();
+    //     }
+
+    //     ArrayList<Book> matchedBooks = new ArrayList<>();
+
+    //     // Tạo URL tìm kiếm theo tiêu chí
+    //     String api = "https://www.googleapis.com/books/v1/volumes?q=";
+    //     String query;
+
+    //     // Tạo truy vấn tùy theo lựa chọn của người dùng
+    //     if (choice.equals("1")) {
+    //         query = "intitle:" + title.replace(" ", "+");
+    //     } else if (choice.equals("2")) {
+    //         query = "subject:" + subject.replace(" ", "+");
+    //     } else {
+    //         query = "inauthor:" + author.replace(" ", "+");
+    //     }
+
+    //     // Gọi API Google Books
+    //     String jsonResponse = googleAPI.getHttpResponse(api + query);
+
+    //     if (jsonResponse != null) {
+    //         matchedBooks.addAll(googleAPI.getBooksFromJson(jsonResponse)); // Giả sử bạn có phương thức này
+    //     }
+
+    //     // In thông tin sách tìm được
+    //     if (!matchedBooks.isEmpty()) {
+    //         System.out.println("\nThese books are found: \n");
+    //         System.out.println("------------------------------------------------------------------------------");
+    //         System.out.printf("%-5s %-30s %-30s %-30s\n", "No.", "Title", "Author", "Subject");
+    //         System.out.println("------------------------------------------------------------------------------");
+
+    //         for (int i = 0; i < matchedBooks.size(); i++) {
+    //             System.out.printf("%-5d ", i);
+    //             matchedBooks.get(i).printInfo(); // Giả sử bạn có phương thức này
+    //             System.out.print("\n");
+    //         }
+
+    //         return matchedBooks;
+    //     } else {
+    //         System.out.println("\nSorry. No Books were found related to your query.");
+    //         return null;
+    //     }
+    // }
 
     /**
      * Displays all the books available in the library.

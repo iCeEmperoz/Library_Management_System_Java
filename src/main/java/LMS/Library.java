@@ -48,11 +48,11 @@ import java.util.Scanner;
  *   <li>findBorrower(): Finds a borrower by their ID.</li>
  *   <li>addBookInLibrary(Book book): Adds a book to the library.</li>
  *   <li>removeBookFromLibrary(Book book): Removes a book from the library.</li>
- *   <li>searchForBooks(): Searches for books by title, subject, or author.</li>
+ *   <li>searchForBooks(): Searches for books by title, subtitle, or author.</li>
  *   <li>viewAllBooks(): Displays information about all books in the library.</li>
  *   <li>computeFine(Borrower borrower): Computes the total fine for all loans of a borrower.</li>
  *   <li>createBorrower(): Creates a new borrower and adds them to the library.</li>
- *   <li>createBook(String title, String subject, String author): Creates a new book and adds it to the library.</li>
+ *   <li>createBook(String title, String subtitle, String author): Creates a new book and adds it to the library.</li>
  *   <li>Login(): Authenticates a user by their email and password.</li>
  *   <li>viewHistory(): Displays the history of issued and returned books.</li>
  *   <li>makeConnection(): Establishes a connection to the database.</li>
@@ -370,23 +370,23 @@ public class Library {
     }
 
     /**
-     * Searches for books in the library based on the user's input criteria (Title, Subject, or Author).
+     * Searches for books in the library based on the user's input criteria (Title, Subtitle, or Author).
      *
      * @return An ArrayList of Book objects that match the search criteria. If no books are found, returns null.
      * @throws IOException If an input or output exception occurs.
      *                     <p>
-     *                     The method prompts the user to choose a search criterion (Title, Subject, or Author) and then
+     *                     The method prompts the user to choose a search criterion (Title, Subtitle, or Author) and then
      *                     asks for the corresponding search term. It then iterates through the list of books in the library
      *                     and collects those that match the search term. If matching books are found, they are printed and
      *                     returned. If no books match the search criteria, a message is displayed and null is returned.
      */
 //    public ArrayList<Book> searchForBooks() throws IOException {
 //        String choice;
-//        String title = "", subject = "", author = "";
+//        String title = "", subtitle = "", author = "";
 //        Scanner scanner = OnTerminal.getScanner();
 //
 //        while (true) {
-//            System.out.println("\nEnter either '1' or '2' or '3' for search by Title, Subject or Author of Book respectively: ");
+//            System.out.println("\nEnter either '1' or '2' or '3' for search by Title, Subtitle or Author of Book respectively: ");
 //            choice = scanner.next();
 //            scanner.nextLine();
 //
@@ -402,8 +402,8 @@ public class Library {
 //            System.out.println("\nEnter the Title of the Book: ");
 //            title = scanner.nextLine();
 //        } else if (choice.equals("2")) {
-//            System.out.println("\nEnter the Subject of the Book: ");
-//            subject = scanner.nextLine();
+//            System.out.println("\nEnter the Subtitle of the Book: ");
+//            subtitle = scanner.nextLine();
 //        } else {
 //            System.out.println("\nEnter the Author of the Book: ");
 //            author = scanner.nextLine();
@@ -416,7 +416,7 @@ public class Library {
 //                if (book.getTitle().contains(title))
 //                    matchedBooks.add(book);
 //            } else if (choice.equals("2")) {
-//                if (book.getSubject().contains(subject))
+//                if (book.getSubtitle().contains(subtitle))
 //                    matchedBooks.add(book);
 //            } else {
 //                if (book.getAuthor().contains(author))
@@ -429,7 +429,7 @@ public class Library {
 //            System.out.println("\nThese books are found: \n");
 //
 //            System.out.println("------------------------------------------------------------------------------");
-//            System.out.printf("%-5s %-30s %-30s %-30s\n", "No.", "Title", "Author", "Subject");
+//            System.out.printf("%-5s %-30s %-30s %-30s\n", "No.", "Title", "Author", "Subtitle");
 //            System.out.println("------------------------------------------------------------------------------");
 //
 //            for (int i = 0; i < matchedBooks.size(); i++) {
@@ -447,11 +447,11 @@ public class Library {
 
     public ArrayList<Book> searchForBooks() throws IOException {
         String choice;
-        String title = "", subject = "", author = "";
+        String title = "", subtitle = "", author = "";
         Scanner scanner = OnTerminal.getScanner();
 
         while (true) {
-            System.out.println("\nEnter either '1' or '2' or '3' for search by Title, Subject or Author of Book respectively: ");
+            System.out.println("\nEnter either '1' or '2' or '3' for search by Title, Subtitle or Author of Book respectively: ");
             choice = scanner.next();
             scanner.nextLine();
 
@@ -466,8 +466,8 @@ public class Library {
             System.out.println("\nEnter the Title of the Book: ");
             title = scanner.nextLine();
         } else if (choice.equals("2")) {
-            System.out.println("\nEnter the Subject of the Book: ");
-            subject = scanner.nextLine();
+            System.out.println("\nEnter the Subtitle of the Book: ");
+            subtitle = scanner.nextLine();
         } else {
             System.out.println("\nEnter the Author of the Book: ");
             author = scanner.nextLine();
@@ -483,7 +483,7 @@ public class Library {
         if (choice.equals("1")) {
             query = "intitle:" + title.replace(" ", "+");
         } else if (choice.equals("2")) {
-            query = "subject:" + subject.replace(" ", "+");
+            query = "subtitle:" + subtitle.replace(" ", "+");
         } else {
             query = "inauthor:" + author.replace(" ", "+");
         }
@@ -499,7 +499,7 @@ public class Library {
         if (!matchedBooks.isEmpty()) {
             System.out.println("\nThese books are found: \n");
             System.out.println("------------------------------------------------------------------------------");
-            System.out.printf("%-5s %-30s %-30s %-30s\n", "No.", "Title", "Author", "Subject");
+            System.out.printf("%-5s %-30s %-30s %-30s\n", "No.", "Title", "Author", "Subtitle");
             System.out.println("------------------------------------------------------------------------------");
 
             for (int i = 0; i < matchedBooks.size(); i++) {
@@ -518,7 +518,7 @@ public class Library {
     /**
      * Displays all the books available in the library.
      * If the library has books, it prints the list of books with their details
-     * including the index number, title, author, and subject.
+     * including the index number, title, author, and subtitle.
      * If the library is empty, it informs the user that there are no books currently.
      */
     public void viewAllBooks() {
@@ -526,7 +526,7 @@ public class Library {
             System.out.println("\nBooks are: ");
 
             System.out.println("------------------------------------------------------------------------------");
-            System.out.printf("%-5s %-30s %-30s %-30s\n", "No.", "Title", "Author", "Subject");
+            System.out.printf("%-5s %-30s %-30s %-30s\n", "No.", "Title", "Author", "Subtitle");
             System.out.println("------------------------------------------------------------------------------");
 
             for (int i = 0; i < booksInLibrary.size(); i++) {
@@ -706,14 +706,14 @@ public class Library {
     }
 
     /**
-     * Creates a new book with the given title, subject, and author, and adds it to the library.
+     * Creates a new book with the given title, subtitle, and author, and adds it to the library.
      *
      * @param title   the title of the book
-     * @param subject the subject of the book
+     * @param subtitle the subtitle of the book
      * @param author  the author of the book
      */
-    public void createBook(String title, String subject, String author) {
-        Book book = new Book(-1, title, subject, author, false);
+    public void createBook(String title, String subtitle, String author) {
+        Book book = new Book(-1, title, subtitle, author, false);
 
         if (addBookinLibrary(book)) {
             System.out.println("\nBook with Title " + book.getTitle() + " is successfully created.");
@@ -853,13 +853,13 @@ public class Library {
             int maxID = 0;
 
             do {
-                if (resultSet.getInt("BOOK_ID") != 0 && resultSet.getString("TITLE") != null && resultSet.getString("AUTHOR") != null && resultSet.getString("SUBJECT") != null) {
+                if (resultSet.getInt("BOOK_ID") != 0 && resultSet.getString("TITLE") != null && resultSet.getString("AUTHOR") != null && resultSet.getString("SUBTITLE") != null) {
                     int id = resultSet.getInt("BOOK_ID");
                     String title = resultSet.getString("TITLE");
                     String author = resultSet.getString("AUTHOR");
-                    String subject = resultSet.getString("SUBJECT");
+                    String subtitle = resultSet.getString("SUBTITLE");
                     boolean issue = resultSet.getBoolean("IS_ISSUED");
-                    Book book = new Book(id, title, subject, author, issue);
+                    Book book = new Book(id, title, subtitle, author, issue);
                     addBookinLibrary(book);
 
                     if (maxID < id)
@@ -1175,12 +1175,12 @@ public class Library {
 
         // Filling Book's Table
         for (Book book : library.getBooks()) {
-            String template = "INSERT INTO BOOK (BOOK_ID, TITLE, AUTHOR, SUBJECT, IS_ISSUED) values (?, ?, ?, ?, ?)";
+            String template = "INSERT INTO BOOK (BOOK_ID, TITLE, AUTHOR, SUBTITLE, IS_ISSUED) values (?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = connection.prepareStatement(template)) {
                 stmt.setInt(1, book.getID());
                 stmt.setString(2, book.getTitle());
                 stmt.setString(3, book.getAuthor());
-                stmt.setString(4, book.getSubject());
+                stmt.setString(4, book.getSubtitle());
                 stmt.setBoolean(5, book.getIssuedStatus());
                 stmt.executeUpdate();
             }
@@ -1212,6 +1212,7 @@ public class Library {
         int x = 1;
         for (Book book : library.getBooks()) {
             for (HoldRequest holdRequest : book.getHoldRequests()) {
+                //String template = "INSERT INTO HOLD_REQUEST (REQ_ID, BOOK, BORROWER, REQ_DATE) values (?, ?, ?, ?)";
                 String template = "INSERT INTO HOLD_REQUEST (REQ_ID, BOOK, BORROWER, REQ_DATE) values (?, ?, ?, ?)";
                 try (PreparedStatement stmt = connection.prepareStatement(template)) {
                     stmt.setInt(1, x++);

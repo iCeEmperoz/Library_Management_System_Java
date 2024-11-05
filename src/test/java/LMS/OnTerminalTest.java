@@ -147,7 +147,7 @@ public class OnTerminalTest {
                 + "Second " + TC.Borrower.NAME + "\n" + TC.Borrower.PASS + "\n"
                 + TC.Borrower.ADDR + "\n" + TC.Borrower.PHONE + "\n"
                 + TC.Borrower.EMAIL + "\n";
-        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n";
+        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBTITLE + "\n" + TC.Book.AUTHOR + "\n";
         String searchBook = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";
         String option = "0\n";
 
@@ -194,7 +194,7 @@ public class OnTerminalTest {
 
     @Test
     public void testHandleHoldRequest() {
-        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n";
+        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBTITLE + "\n" + TC.Book.AUTHOR + "\n";
         String searchBook = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";
         String option = "0\n";
         setup(addBook + searchBook + option);
@@ -255,7 +255,7 @@ public class OnTerminalTest {
 
     @Test
     public void testHandleHoldRequestQueue() {
-        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n";
+        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBTITLE + "\n" + TC.Book.AUTHOR + "\n";
         String searchBook = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";
         String option = "0\n";
         setup(addBook + searchBook + option + searchBook + option);
@@ -286,7 +286,7 @@ public class OnTerminalTest {
                     + TC.Borrower.NAME + "\n" + TC.Borrower.PASS + "\n"
                     + TC.Borrower.ADDR + "\n" + TC.Borrower.PHONE + "\n"
                     + TC.Borrower.EMAIL + "\n" ;
-        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n";
+        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBTITLE + "\n" + TC.Book.AUTHOR + "\n";
         String searchBook = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";
         String option = "0\n";
 
@@ -321,7 +321,7 @@ public class OnTerminalTest {
                     + TC.Borrower.ADDR + "\n" + TC.Borrower.PHONE + "\n"
                     + TC.Borrower.EMAIL + "\n" ;
         
-        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n";
+        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBTITLE + "\n" + TC.Book.AUTHOR + "\n";
         String searchBook = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";
         String option = "0\n";
 
@@ -353,7 +353,7 @@ public class OnTerminalTest {
                     + TC.Borrower.NAME + "\n" + TC.Borrower.PASS + "\n"
                     + TC.Borrower.ADDR + "\n" + TC.Borrower.PHONE + "\n"
                     + TC.Borrower.EMAIL + "\n";
-        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n";
+        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBTITLE + "\n" + TC.Book.AUTHOR + "\n";
         String searchBookString = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";
         String option = "0\n";
 
@@ -402,7 +402,7 @@ public class OnTerminalTest {
 
     @Test
     public void testHandleBookCreation() {
-        setup(TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n");
+        setup(TC.Book.TITLE + "\n" + TC.Book.SUBTITLE + "\n" + TC.Book.AUTHOR + "\n");
         try {
             OnTerminal.handleBookCreation(libraryMock);
         } catch (IOException e) {
@@ -415,7 +415,7 @@ public class OnTerminalTest {
 
     @Test
     public void testHandleBookRemoval() {
-        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n";
+        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBTITLE + "\n" + TC.Book.AUTHOR + "\n";
         String searchBook = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";
         String option = "0\n";
         setup(addBook + searchBook + option);
@@ -432,12 +432,12 @@ public class OnTerminalTest {
 
     @Test
     public void testHandleBookUpdate() {
-        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBJECT + "\n" + TC.Book.AUTHOR + "\n";
+        String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBTITLE + "\n" + TC.Book.AUTHOR + "\n";
         String searchBook = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";
         String option = "0\n";
         setup(addBook + searchBook + option
             + "y\n" + "new " + TC.Book.AUTHOR + "\n" // Update the author
-            + "y\n" + "new " + TC.Book.SUBJECT + "\n"// Update the subject
+            + "y\n" + "new " + TC.Book.SUBTITLE + "\n"// Update the SUBTITLE
             + "y\n" + "new " + TC.Book.TITLE + "\n"  // Update the title
             + searchBook);
         try {

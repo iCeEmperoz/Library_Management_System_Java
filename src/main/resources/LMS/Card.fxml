@@ -21,7 +21,7 @@
                   <Font name="Berlin Sans FB Bold" size="24.0" />
                </font>
             </Label>
-            <Label fx:id="bookSubject" prefHeight="30.0" prefWidth="230.0" text="Subject">
+            <Label fx:id="bookSubtitle" prefHeight="30.0" prefWidth="230.0" text="Subtitle">
                <font>
                   <Font size="18.0" />
                </font>

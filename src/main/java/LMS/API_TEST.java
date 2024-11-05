@@ -43,7 +43,7 @@ public class API_TEST {
                     book.setAuthor(volumeInfo.has("authors") ? volumeInfo.get("authors").get(0).asText() : "Unknown");
                     book.setIsbn(volumeInfo.has("industryIdentifiers") && volumeInfo.get("industryIdentifiers").size() > 0
                             ? volumeInfo.get("industryIdentifiers").get(0).get("identifier").asText() : "Unknown");
-                    book.setDescription(volumeInfo.has("description") ? volumeInfo.get("description").asText() : "No description available");
+                    book.setSubtitle(volumeInfo.has("subtitle") ? volumeInfo.get("subtitle").asText() : "No subtitle available"); // Thay đổi sang subtitle
                     books.add(book);
                 }
             }
@@ -52,4 +52,5 @@ public class API_TEST {
         }
         return books; // Trả về danh sách sách
     }
+
 }

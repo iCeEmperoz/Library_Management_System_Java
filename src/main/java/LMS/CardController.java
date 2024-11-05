@@ -16,7 +16,7 @@ public class CardController {
   private Label bookAuthor;
 
   @FXML
-  private Label bookSubject;
+  private Label bookSubtitle;
 
   @FXML
   private Label bookTitle;
@@ -33,7 +33,7 @@ public class CardController {
     bookImage.setImage(image);
     bookTitle.setText(book.getTitle());
     bookAuthor.setText(book.getAuthor());
-    bookSubject.setText(book.getSubject());
+    bookSubtitle.setText(book.getSubtitle());
 
     box.setStyle("-fx-background-color: #" + colors[(int) (Math.random() * colors.length)] + "; "
         + "-fx-background-radius: 15; "

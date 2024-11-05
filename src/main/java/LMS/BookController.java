@@ -12,7 +12,7 @@ public class BookController {
   private Label bookAuthor;
 
   @FXML
-  private Label bookSubject;
+  private Label bookSubtitle;
 
   @FXML
   private Label bookTitle;
@@ -27,7 +27,7 @@ public class BookController {
 
     bookTitle.setText(book.getTitle());
     bookAuthor.setText(book.getAuthor());
-    bookSubject.setText(book.getSubject());
+    bookSubtitle.setText(book.getSubtitle());
 
   }
 }

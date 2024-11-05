@@ -550,13 +550,13 @@ public class OnTerminal {
         System.out.println("\nEnter Title:");
         String title = scanner.nextLine();
 
-        System.out.println("\nEnter Subject:");
-        String subject = scanner.nextLine();
+        System.out.println("\nEnter Subtitle:");
+        String subtitle = scanner.nextLine();
         
         System.out.println("\nEnter Author:");
         String author = scanner.nextLine();
         
-        library.createBook(title, subject, author);
+        library.createBook(title, subtitle, author);
     }
 
     /**

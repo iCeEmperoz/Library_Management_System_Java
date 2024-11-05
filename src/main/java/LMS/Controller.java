@@ -68,19 +68,19 @@ public class Controller implements Initializable {
     Book book = new Book();
     book.setTitle("FORTRESSBLOOD");
     book.setAuthor("L.D. GOFFIGAN");
-    book.setDescription("nov");
+    book.setSubtitle("nov");
     ls.add(book);
 
 //    book = new Book();
 //    book.setTitle("FROST ARCH");
 //    book.setAuthor("KATE BLOOMFIELD");
-//    book.setSubject("nov");
+//    book.setSubtitle("nov");
 //    ls.add(book);
 //
 //    book = new Book();
 //    book.setTitle("THE LAST FOR THINGS");
 //    book.setAuthor("PAUL HOFFMAN");
-//    book.setSubject("nov");
+//    book.setSubtitle("nov");
 //    ls.add(book);
     return ls;
   }
@@ -91,19 +91,19 @@ public class Controller implements Initializable {
     Book book = new Book();
     book.setTitle("FORTRESSBLOOD");
     book.setAuthor("L.D. GOFFIGAN");
-    book.setDescription("nov");
+    book.setSubtitle("nov");
     ls.add(book);
 
 //    book = new Book();
 //    book.setTitle("FROST ARCH");
 //    book.setAuthor("KATE BLOOMFIELD");
-//    book.setSubject("nov");
+//    book.setSubtitle("nov");
 //    ls.add(book);
 //
 //    book = new Book();
 //    book.setTitle("THE LAST FOR THINGS");
 //    book.setAuthor("PAUL HOFFMAN");
-//    book.setSubject("nov");
+//    book.setSubtitle("nov");
 //    ls.add(book);
     return ls;
   }

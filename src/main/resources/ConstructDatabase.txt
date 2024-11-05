@@ -23,7 +23,7 @@ CREATE TABLE Book (
     book_id INT PRIMARY KEY,
     title VARCHAR(255),
     author VARCHAR(255),
-    subject VARCHAR(255),
+    subtitle VARCHAR(255),
     is_issued BOOLEAN
 );
 

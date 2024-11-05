@@ -15,14 +15,16 @@ public class HoldRequestOperations {
     }
 
     /**
-     * Adding a hold request.
+     * Adds a hold request to the list.
+     *
+     * @param holdRequest the hold request to be added
      */
     public void addHoldRequest(HoldRequest holdRequest) {
         holdRequests.add(holdRequest);
     }
 
     /**
-     * Removing a hold request.
+     * Removes the first hold request from the list if the list is not empty.
      */
     public void removeHoldRequest() {
         if (!holdRequests.isEmpty()) {

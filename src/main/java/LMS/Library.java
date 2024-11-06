@@ -4,9 +4,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Paths;
 import java.sql.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Date;
-import java.util.Scanner;
 
 /**
  * The Library class represents a library in the Library Management System.
@@ -1109,9 +1108,9 @@ public class Library {
     public void fillItBack(Connection connection) throws SQLException {
         // Clear Tables
         String[] tables = {
+                "HOLD_REQUEST", //xoa hold_request truoc de tranh tham chieu den !!
                 "BOOK",
                 "BORROWER",
-                "HOLD_REQUEST",
                 "LIBRARIAN",
                 "LOAN",
                 "PERSON"
@@ -1208,19 +1207,56 @@ public class Library {
         }
 
         // Filling Hold Request Table
+//        int x = 1;
+//        for (Book book : library.getBooks()) {
+//            for (HoldRequest holdRequest : book.getHoldRequests()) {
+//                String template = "INSERT INTO HOLD_REQUEST (REQ_ID, BOOK, BORROWER, REQ_DATE) values (?, ?, ?, ?)";
+//                try (PreparedStatement stmt = connection.prepareStatement(template)) {
+//                    stmt.setInt(1, x++);
+//                    stmt.setInt(2, holdRequest.getBook().getID());
+//                    stmt.setInt(3, holdRequest.getBorrower().getID());
+//                    stmt.setDate(4, new java.sql.Date(holdRequest.getRequestDate().getTime()));
+//                    stmt.executeUpdate();
+//                }
+//            }
+//        }
+        Set<String> processedRequests = new HashSet<>();
         int x = 1;
         for (Book book : library.getBooks()) {
             for (HoldRequest holdRequest : book.getHoldRequests()) {
-                String template = "INSERT INTO HOLD_REQUEST (REQ_ID, BOOK, BORROWER, REQ_DATE) values (?, ?, ?, ?)";
-                try (PreparedStatement stmt = connection.prepareStatement(template)) {
-                    stmt.setInt(1, x++);
-                    stmt.setInt(2, holdRequest.getBook().getID());
-                    stmt.setInt(3, holdRequest.getBorrower().getID());
-                    stmt.setDate(4, new java.sql.Date(holdRequest.getRequestDate().getTime()));
-                    stmt.executeUpdate();
+                String key = book.getID() + "-" + holdRequest.getBorrower().getID();
+
+                if (!processedRequests.contains(key)) {
+                    String checkIdTemplate = "SELECT COUNT(*) FROM HOLD_REQUEST WHERE BOOK_ID = ? AND BORROWER_ID = ?";
+                    try (PreparedStatement checkStmt = connection.prepareStatement(checkIdTemplate)) {
+                        checkStmt.setInt(1, holdRequest.getBook().getID());
+                        checkStmt.setInt(2, holdRequest.getBorrower().getID());
+
+                        try (ResultSet rs = checkStmt.executeQuery()) {
+                            if (rs.next() && rs.getInt(1) == 0) {
+                                String insertTemplate = "INSERT INTO HOLD_REQUEST (HOLD_REQUEST_ID, BOOK_ID, BORROWER_ID, REQUEST_DATE) values (?, ?, ?, ?)";
+                                try (PreparedStatement insertStmt = connection.prepareStatement(insertTemplate)) {
+                                    insertStmt.setInt(1, x);
+                                    insertStmt.setInt(2, holdRequest.getBook().getID());
+                                    insertStmt.setInt(3, holdRequest.getBorrower().getID());
+                                    insertStmt.setDate(4, new java.sql.Date(holdRequest.getRequestDate().getTime()));
+
+                                    insertStmt.executeUpdate();
+
+                                    processedRequests.add(key);
+
+                                    x++;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
+
+
+
+
 
         // Filling Borrowed Book Table
         for (Book book : library.getBooks()) {

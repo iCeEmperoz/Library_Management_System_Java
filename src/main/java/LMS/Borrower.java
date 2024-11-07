@@ -241,9 +241,7 @@ public class Borrower extends Person implements Observer {
     @Override
     public boolean equals(Object o) {
         if (o instanceof Borrower borrower) {
-            return borrower.getName().equals(getName())
-                    && borrower.getEmail().equals(getEmail())
-                    && borrower.getPhoneNo() == getPhoneNo();
+            return borrower.getEmail().equals(getEmail());
         }
         return false;
     }
@@ -257,7 +255,7 @@ public class Borrower extends Person implements Observer {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getEmail(), getPhoneNo());
+        return Objects.hash(getEmail());
     }
 
     /**
@@ -268,7 +266,6 @@ public class Borrower extends Person implements Observer {
      */
     @Override
     public void update(String message) {
-        System.out.println("Received notification: " + message);
         notifications.add(message);
     }
 

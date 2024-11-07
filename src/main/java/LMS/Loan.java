@@ -162,7 +162,7 @@ public class Loan {
             System.out.println("\nTotal Fine generated: Rs " + totalFine);
             System.out.println("Do you want to pay? (y/n)");
 
-            Scanner input = new Scanner(System.in);
+            Scanner input = OnTerminal.getScanner();
             String choice = input.next();
 
             if (choice.equals("y") || choice.equals("Y"))

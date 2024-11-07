@@ -60,9 +60,7 @@ public class Librarian extends Person {
     public boolean equals(Object o) {
         if (o instanceof Librarian && o != null) {
             Librarian librarian = (Librarian) o;
-            return Objects.equals(getName(), librarian.getName())
-                    && Objects.equals(getEmail(), librarian.getEmail())
-                    && Objects.equals(getPhoneNo(), librarian.getPhoneNo());
+            return Objects.equals(getEmail(), librarian.getEmail());
         }
 
         return false;
@@ -75,7 +73,7 @@ public class Librarian extends Person {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getEmail(), getPhoneNo());
+        return Objects.hash(getEmail());
     }
 
 }

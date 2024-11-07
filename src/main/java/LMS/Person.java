@@ -173,8 +173,31 @@ public abstract class Person {
             System.out.println("\nNotifications: ");
             for (String s : notifications) {
                 System.out.println(s);
-            }            
+            }
         }
+    }
+
+    /**
+     * @return notifications
+     */
+    public ArrayList<String> getNotifications() {
+        return notifications;
+    }
+
+    /**
+     * @param notifications set notifications for person
+     */
+    public void setNotifications(ArrayList<String> notifications) {
+        this.notifications = notifications;
+    }
+
+    /**
+     * Adds a notification for the person.
+     *
+     * @param notification The notification to be added
+     */
+    public void addNotification(String notification) {
+        notifications.add(notification);
     }
 
     /**

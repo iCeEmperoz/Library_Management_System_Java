@@ -51,9 +51,9 @@ public class Book implements Subject {
         if (!holdRequestsOperations.getHoldRequests().isEmpty()) {
             System.out.println("\nHold Requests are:");
 
-            System.out.println("-----------------------------------------------------------------------");
-            System.out.printf("%-5s %-30s %-30s %-20s%n", "No.", "Book's Title", "Borrower's Name", "Request Date");
-            System.out.println("-----------------------------------------------------------------------");
+            System.out.println("----------------------------------------------------------------------------------------------------");
+            System.out.printf("%-5s %-40s %-30s %-20s%n", "No.", "Book's Title", "Borrower's Name", "Request Date");
+            System.out.println("----------------------------------------------------------------------------------------------------");
 
             for (int i = 0; i < holdRequestsOperations.getHoldRequests().size(); i++) {
                 System.out.printf("%-5d ", i + 1);
@@ -68,7 +68,7 @@ public class Book implements Subject {
      * Prints the information of the book.
      */
     public void printInfo() {
-        System.out.printf("%-30s %-30s %-30s%n", title, author, subtitle);
+        System.out.printf("%40s %-30s %-30s%n", title, author, subtitle);
     }
 
     /**
@@ -214,7 +214,8 @@ public class Book implements Subject {
 
         // If that borrower has already requested for that particular book. Then he isn't allowed to make the same request again.
         for (int i = 0; i < holdRequestsOperations.getHoldRequests().size(); i++) {
-            if ((holdRequestsOperations.getHoldRequests().get(i).getBorrower() == borrower)) {
+            HoldRequest holdRequest = holdRequestsOperations.getHoldRequests().get(i);
+            if (holdRequest.getBorrower() == borrower && this.getTitle().equals(holdRequest.getBook().getTitle())) {
                 makeRequest = false;
                 break;
             }
@@ -268,7 +269,7 @@ public class Book implements Subject {
             System.out.println("\nThe book " + title + " is already issued.");
             System.out.println("Would you like to place the book on hold? (y/n)");
 
-            Scanner scanner = new Scanner(System.in);
+            Scanner scanner = OnTerminal.getScanner();
             String choice = scanner.next();
 
             if (choice.equals("y")) {
@@ -289,15 +290,15 @@ public class Book implements Subject {
                     if (holdRequestsOperations.getHoldRequests().getFirst().getBorrower() == borrower) {
                         serviceHoldRequest(holdRequestsOperations.getHoldRequests().getFirst());
                     } else {
-                        System.out.println("\nSorry some other users have requested for this book earlier than you. So you have to wait until their hold requests are processed.");
+                        System.out.println("\nSorry some other users have requested for this book earlier. So you have to wait until their hold requests are processed.");
                         return;
                     }
                 } else {
-                    System.out.println("\nSome users have already placed this book on request and you haven't, so the book can't be issued to you.");
+                    System.out.println("\nSome users have already placed this book on request, so the book can't be issued to the others.");
 
                     System.out.println("Would you like to place the book on hold? (y/n)");
 
-                    Scanner scanner = new Scanner(System.in);
+                    Scanner scanner = OnTerminal.getScanner();
                     String choice = scanner.next();
 
                     if (choice.equals("y")) {

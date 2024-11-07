@@ -380,16 +380,16 @@ public class OnTerminal {
      */
     private static void handleNotifications(Person person) {
         person.printNotifications();
-        System.out.println("Do you want to clear notifications? (y/n)");
-        String choice = scanner.next();
-        scanner.nextLine();
-
-        if (choice.equals("y") || choice.equals("Y")) {
-            person.clearNotifications();
-            clearScreen();
-            System.out.println("Notifications cleared.");
-            System.out.println("\nPress any key to continue..\n");
+        if (!person.notifications.isEmpty()) {
+            System.out.println("Do you want to clear notifications? (y/n)");
+            String choice = scanner.next();
             scanner.nextLine();
+
+            if (choice.equals("y") || choice.equals("Y")) {
+                person.clearNotifications();
+                clearScreen();
+                System.out.println("Notifications cleared.");
+            }
         }
     }
 
@@ -408,7 +408,9 @@ public class OnTerminal {
 
             if ("Librarian".equals(person.getClass().getSimpleName())) {
                 Borrower borrower = library.findBorrower();
-                if (borrower != null) book.makeHoldRequest(borrower);
+                if (borrower != null) {
+                    book.makeHoldRequest(borrower);
+                }
             } else {
                 book.makeHoldRequest((Borrower) person);
             }

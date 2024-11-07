@@ -22,3 +22,10 @@
 .shadow {
   -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0), 10, 0, 0, 10);
 }
+
+.pane_image {
+  -fx-border-width: 2px;
+  -fx-border-color: #12b4a6;
+  -fx-background-radius: 100;
+  -fx-border-radius: 100;
+}

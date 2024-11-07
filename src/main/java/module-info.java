@@ -10,13 +10,13 @@ module group {
   requires org.kordamp.bootstrapfx.core;
   requires eu.hansolo.tilesfx;
   requires com.almasb.fxgl.all;
-    requires javafx.graphics;
-    requires com.h2database;
+  requires com.h2database;
   requires java.smartcardio;
     requires com.fasterxml.jackson.databind;
     requires java.net.http;
     requires java.sql;
+  requires javafx.swing;
 
-    opens LMS to javafx.fxml;
+  opens LMS to javafx.fxml;
   exports LMS;
 }

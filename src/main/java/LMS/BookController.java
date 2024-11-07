@@ -21,10 +21,10 @@ public class BookController {
   private ImageView bookImage;
 
   public void setData(Book book) {
-    Image image = new Image(
-        Objects.requireNonNull(getClass().getResource(("/images/" + book.getTitle() + ".jpeg"))).toString());
+//    Image image = new Image(
+//        Objects.requireNonNull(getClass().getResource(("/images/" + book.getTitle() + ".jpeg"))).toString());
+    Image image = new Image("https://th.bing.com/th/id/OIP.Sb3bVfKu5y_jlon2oldTDwHaLH?rs=1&pid=ImgDetMain");
     bookImage.setImage(image);
-
     bookTitle.setText(book.getTitle());
     bookAuthor.setText(book.getAuthor());
     bookSubtitle.setText(book.getSubtitle());

@@ -89,7 +89,7 @@ import javafx.scene.layout.AnchorPane;
  * and content.
  * </p>
  */
-public class FXMLDocument {
+public class LoginController {
 
   @FXML
   private ResourceBundle resources;

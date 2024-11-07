@@ -15,7 +15,7 @@ public abstract class Person {
     protected String email;     // Email address of the person
     protected String address;   // Address of the person
     protected int phoneNo;      // Phone number of the person
-
+    
     static int currentIdNumber = 0; // Static counter to assign unique IDs automatically
 
     /**

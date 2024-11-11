@@ -16,20 +16,22 @@
       </ImageView>
       <VBox prefHeight="200.0" prefWidth="230.0">
          <children>
-            <Label fx:id="bookTitle" prefHeight="54.0" prefWidth="230.0" text="FORTRESS BLOOD">
+            <Label fx:id="bookTitle" prefHeight="154.0" prefWidth="230.0" text="FORTRESS BLOOD" wrapText="true">
                <font>
                   <Font name="Berlin Sans FB Bold" size="24.0" />
                </font>
             </Label>
-            <Label fx:id="bookSubtitle" prefHeight="30.0" prefWidth="230.0" text="Subtitle">
+            <Label fx:id="bookAuthor" graphicTextGap="10.0" layoutX="10.0" layoutY="90.0" prefHeight="30.0" prefWidth="230.0" text="Author">
                <font>
                   <Font size="18.0" />
                </font>
-            </Label>
-            <Label fx:id="bookAuthor" layoutX="10.0" layoutY="90.0" prefHeight="30.0" prefWidth="230.0" text="Author">
-               <font>
-                  <Font size="18.0" />
-               </font>
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/author24.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </Label>
          </children>
       </VBox>

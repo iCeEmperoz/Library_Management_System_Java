@@ -27,7 +27,7 @@ public class BookController {
     bookImage.setImage(image);
     bookTitle.setText(book.getTitle());
     bookAuthor.setText(book.getAuthor());
-    bookSubtitle.setText(book.getSubtitle());
+//    bookSubtitle.setText(book.getSubtitle());
 
   }
 }

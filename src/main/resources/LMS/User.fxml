@@ -45,7 +45,7 @@
                   </HBox>
                   <Pane prefHeight="50.0" prefWidth="676.0">
                      <children>
-                        <Button fx:id="user_btn" layoutX="604.0" layoutY="1.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-border-width: 2;" stylesheets="@styles.css">
+                        <Button fx:id="user_btn" layoutX="604.0" layoutY="1.0" mnemonicParsing="false" onAction="#chooseImageButtonPushed" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-border-width: 2;" stylesheets="@styles.css">
                            <graphic>
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

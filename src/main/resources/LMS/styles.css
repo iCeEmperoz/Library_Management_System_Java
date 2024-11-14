@@ -29,3 +29,12 @@
   -fx-background-radius: 100;
   -fx-border-radius: 100;
 }
+
+.btn {
+  -fx-background-color: rgba(0, 0, 0, 0);
+  -fx-cursor: hand;
+}
+
+.btn:hover {
+  -fx-background-color: #F3F3F3;
+}

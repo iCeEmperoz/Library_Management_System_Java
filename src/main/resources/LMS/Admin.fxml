@@ -22,7 +22,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1096.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LMS.AdminController">
    <children>
-      <BorderPane fx:id="home_form" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1096.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BorderPane fx:id="formHome" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1096.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
             <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0" styleClass="white-background" stylesheets="@styles.css" BorderPane.alignment="CENTER">
                <children>
@@ -32,7 +32,7 @@
                      </font></Label>
                   <Pane prefHeight="50.0" prefWidth="870.0">
                      <children>
-                        <Button fx:id="btnUser" layoutX="800.0" layoutY="1.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0">
+                        <Button fx:id="btnUser" layoutX="800.0" layoutY="1.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 50; -fx-border-radius: 50;" styleClass="btn" stylesheets="@styles.css">
                            <graphic>
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -56,7 +56,7 @@
                <children>
                   <VBox layoutX="10.0" layoutY="10.0" prefHeight="298.0" prefWidth="210.0" spacing="5.0">
                      <children>
-                        <Button fx:id="btnDashboard" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" styleClass="transparent" stylesheets="@styles.css" text="Dashboard">
+                        <Button fx:id="btnDashboard" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleDashBoard" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Dashboard">
                            <graphic>
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -68,7 +68,7 @@
                               <Font name="Roboto Condensed Black" size="18.0" />
                            </font>
                         </Button>
-                        <Button fx:id="btnBooks" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" styleClass="transparent" stylesheets="@styles.css" text="Books">
+                        <Button fx:id="btnBooks" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleBooks" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Books">
                            <graphic>
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -80,7 +80,7 @@
                               <Font name="Roboto Condensed Black" size="18.0" />
                            </font>
                         </Button>
-                        <Button fx:id="btnUsers" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" styleClass="transparent" stylesheets="@styles.css" text="Users">
+                        <Button fx:id="btnUsers" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleUsers" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Users">
                            <graphic>
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -92,7 +92,7 @@
                               <Font name="Roboto Condensed Black" size="18.0" />
                            </font>
                         </Button>
-                        <Button fx:id="btnHistory" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" styleClass="transparent" stylesheets="@styles.css" text="History">
+                        <Button fx:id="btnHistory" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleHistory" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="History">
                            <graphic>
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -112,59 +112,62 @@
          <center>
             <AnchorPane prefHeight="590.0" prefWidth="886.0" BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane fx:id="paneUsers" layoutX="-1.0" layoutY="-1.0" prefHeight="590.0" prefWidth="886.0" visible="false">
+                  <AnchorPane fx:id="paneDashboard" prefHeight="590.0" prefWidth="886.0">
                      <children>
-                        <GridPane layoutX="4.0" layoutY="52.0" prefHeight="538.0" prefWidth="878.0">
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints maxHeight="160.19998779296876" minHeight="10.0" prefHeight="99.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="439.20000000000005" minHeight="10.0" prefHeight="439.20000000000005" vgrow="SOMETIMES" />
-                           </rowConstraints>
+                        <Separator layoutX="446.0" layoutY="2.0" orientation="VERTICAL" prefHeight="586.0" prefWidth="0.0" />
+                        <VBox alignment="CENTER" prefHeight="590.0" prefWidth="446.0">
                            <children>
-                              <TableView fx:id="tableUsers" prefHeight="302.0" prefWidth="878.0" styleClass="white-background" stylesheets="@styles.css" GridPane.rowIndex="1">
-                                 <columns>
-                                    <TableColumn prefWidth="75.0" text="ID" />
-                                    <TableColumn prefWidth="118.40003204345703" text="Name" />
-                                    <TableColumn prefWidth="166.4000244140625" text="Password" />
-                                    <TableColumn minWidth="0.0" prefWidth="129.5999755859375" text="Email" />
-                                    <TableColumn minWidth="0.0" prefWidth="91.99996948242188" text="Address" />
-                                    <TableColumn minWidth="8.800048828125" prefWidth="116.79998779296875" text="Phone" />
-                                 </columns>
-                                 <columnResizePolicy>
-                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                                 </columnResizePolicy>
-                              </TableView>
-                              <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="35.0" prefWidth="200.0" spacing="10.0" styleClass="round-layout">
+                              <HBox alignment="CENTER" prefHeight="150.0" prefWidth="394.0">
                                  <children>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/search.png" />
+                                          <Image url="@../images/books100.png" />
                                        </image>
                                     </ImageView>
-                                    <TextField fx:id="searchUsers" prefHeight="30.0" prefWidth="297.0" promptText="Search" stylesheets="@styles.css">
-                                       <styleClass>
-                                          <String fx:value="transparent" />
-                                          <String fx:value="round-layout" />
-                                       </styleClass>
-                                    </TextField>
-                                    <Button fx:id="btnAddUser" graphicTextGap="10.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="219.0" style="-fx-background-color: #5dbdb4;" text="Add " textAlignment="CENTER">
-                                       <graphic>
-                                          <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../images/add.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Button>
+                                    <VBox prefHeight="150.0" prefWidth="158.0">
+                                       <children>
+                                          <Label alignment="CENTER" prefHeight="68.0" prefWidth="158.0" text="Total Books">
+                                             <font>
+                                                <Font name="Roboto Condensed Black" size="18.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="labelTotalBooks" alignment="CENTER" prefHeight="81.0" prefWidth="165.0" text="0">
+                                             <font>
+                                                <Font size="36.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="150.0" prefWidth="394.0">
+                                 <children>
+                                    <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/user100.png" />
+                                       </image>
+                                    </ImageView>
+                                    <VBox prefHeight="150.0" prefWidth="158.0">
+                                       <children>
+                                          <Label alignment="CENTER" prefHeight="68.0" prefWidth="158.0" text="Total Users">
+                                             <font>
+                                                <Font name="Roboto Condensed Black" size="18.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="labelTotalUsers" alignment="CENTER" prefHeight="81.0" prefWidth="165.0" text="0">
+                                             <font>
+                                                <Font size="36.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
                                  </children>
                               </HBox>
                            </children>
-                        </GridPane>
+                        </VBox>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="paneBooks" prefHeight="590.0" prefWidth="886.0">
+                  <AnchorPane fx:id="paneBooks" prefHeight="590.0" prefWidth="886.0" visible="false">
                      <children>
                         <Separator layoutX="440.0" orientation="VERTICAL" prefHeight="590.0" prefWidth="10.0" />
                         <GridPane layoutX="14.0" layoutY="31.0" prefHeight="538.0" prefWidth="409.0">
@@ -178,10 +181,10 @@
                            <children>
                               <TableView fx:id="tableBooks" prefHeight="439.0" prefWidth="406.0" styleClass="white-background" stylesheets="@styles.css" GridPane.rowIndex="1">
                                  <columns>
-                                    <TableColumn prefWidth="75.0" text="ID" />
-                                    <TableColumn prefWidth="118.40003204345703" text="Title" />
-                                    <TableColumn prefWidth="118.40008544921875" text="Author" />
-                                    <TableColumn prefWidth="111.99993896484375" text="Issued" />
+                                    <TableColumn fx:id="bookIdColumn" prefWidth="75.0" text="ID" />
+                                    <TableColumn fx:id="bookTilteColumn" prefWidth="118.40003204345703" text="Title" />
+                                    <TableColumn fx:id="bookAuthorColumn" prefWidth="118.40008544921875" text="Author" />
+                                    <TableColumn fx:id="bookIsIssuedColumn" prefWidth="111.99993896484375" text="Is Issued" />
                                  </columns>
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -194,7 +197,7 @@
                                           <Image url="@../images/search.png" />
                                        </image>
                                     </ImageView>
-                                    <TextField fx:id="searchBooks" prefHeight="30.0" prefWidth="297.0" promptText="Search" stylesheets="@styles.css">
+                                    <TextField fx:id="bookSearchTextField" prefHeight="30.0" prefWidth="297.0" promptText="Search" stylesheets="@styles.css">
                                        <styleClass>
                                           <String fx:value="transparent" />
                                           <String fx:value="round-layout" />
@@ -247,15 +250,69 @@
                               </VBox>
                            </children>
                         </HBox>
-                        <Button layoutX="767.0" layoutY="255.0" mnemonicParsing="false" text="Borrow" />
-                        <Button layoutX="508.0" layoutY="255.0" mnemonicParsing="false" text="Add Favorite" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="paneUsers" prefHeight="590.0" prefWidth="886.0" visible="false">
+                     <children>
+                        <GridPane layoutX="4.0" layoutY="52.0" prefHeight="538.0" prefWidth="878.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="160.19998779296876" minHeight="10.0" prefHeight="99.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="439.20000000000005" minHeight="10.0" prefHeight="439.20000000000005" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <TableView fx:id="tableUsers" prefHeight="302.0" prefWidth="878.0" styleClass="white-background" stylesheets="@styles.css" GridPane.rowIndex="1">
+                                 <columns>
+                                    <TableColumn fx:id="userIdColumn" prefWidth="75.0" text="ID" />
+                                    <TableColumn fx:id="userNameColumn" prefWidth="118.40003204345703" text="Name" />
+                                    <TableColumn fx:id="userEmailColumn" minWidth="0.0" prefWidth="129.5999755859375" text="Email" />
+                                    <TableColumn fx:id="userAdressColumn" minWidth="0.0" prefWidth="91.99996948242188" text="Address" />
+                                    <TableColumn fx:id="userPhoneColumn" minWidth="8.800048828125" prefWidth="116.79998779296875" text="Phone" />
+                                 </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </TableView>
+                              <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="35.0" prefWidth="200.0" spacing="10.0" styleClass="round-layout">
+                                 <children>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/search.png" />
+                                       </image>
+                                    </ImageView>
+                                    <TextField fx:id="userSearchTextField" prefHeight="30.0" prefWidth="297.0" promptText="Search" stylesheets="@styles.css">
+                                       <styleClass>
+                                          <String fx:value="transparent" />
+                                          <String fx:value="round-layout" />
+                                       </styleClass>
+                                    </TextField>
+                                    <Button fx:id="btnAddUser" graphicTextGap="10.0" mnemonicParsing="false" onAction="#handleAddUser" prefHeight="30.0" prefWidth="219.0" style="-fx-background-color: #5dbdb4;" text="Add " textAlignment="CENTER">
+                                       <graphic>
+                                          <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../images/add.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="paneHistory" prefHeight="590.0" prefWidth="886.0" visible="false">
+                     <children>
+                        <Label layoutX="127.0" layoutY="39.0" text="History" />
                      </children>
                   </AnchorPane>
                </children>
             </AnchorPane>
          </center>
       </BorderPane>
-      <VBox fx:id="user_form" prefHeight="640.0" prefWidth="1096.0" visible="false">
+      <VBox fx:id="formUser" prefHeight="640.0" prefWidth="1096.0" visible="false">
          <children>
             <HBox prefHeight="50.0" prefWidth="200.0" styleClass="transparent" stylesheets="@styles.css">
                <children>

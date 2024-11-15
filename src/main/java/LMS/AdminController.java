@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.ResourceBundle;
+
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -34,6 +37,8 @@ public class AdminController implements Initializable {
   private final ArrayList<Book> books = library.getBooks();
 
   private final ArrayList<Borrower> users = library.getBorrowers();
+
+  private final ArrayList<Librarian> librarians = library.getLibrarians();
 
   @FXML
   private Button backButton;
@@ -86,7 +91,7 @@ public class AdminController implements Initializable {
   @FXML
   private TableView<Book> tableBooks;
   @FXML
-  private TableView<Borrower> tableUsers;
+  private TableView<Person> tableUsers;
   @FXML
   private Label textSubTiltle;
   @FXML
@@ -248,12 +253,25 @@ public class AdminController implements Initializable {
   }
 
   private void initializeTableUsers() {
-    // Thiết lập các cột với thuộc tính của lớp Borrower
+    // Thiết lập các cột với thuộc tính của lớp Person (là lớp cha của Borrower và Librarian)
     userIdColumn.setCellValueFactory(new PropertyValueFactory<>("ID"));
     userEmailColumn.setCellValueFactory(new PropertyValueFactory<>("Email"));
     userNameColumn.setCellValueFactory(new PropertyValueFactory<>("Name"));
     userPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("PhoneNo"));
     userAddressColumn.setCellValueFactory(new PropertyValueFactory<>("Address"));
+
+    // Tạo thêm cột is_Librarian
+    TableColumn<Person, String> isLibrarianColumn = new TableColumn<>("Is Librarian");
+    isLibrarianColumn.setCellValueFactory(person -> {
+      if (person.getValue() instanceof Librarian) {
+        return new SimpleStringProperty("True");
+      } else {
+        return new SimpleStringProperty("False");
+      }
+    });
+
+    // Thêm cột isLibrarian vào bảng
+    tableUsers.getColumns().add(isLibrarianColumn);
 
     // Thiết lập bảng để có thể chỉnh sửa
     tableUsers.setEditable(true);
@@ -267,43 +285,46 @@ public class AdminController implements Initializable {
 
     // Xử lý sự kiện khi chỉnh sửa từng cột
     userIdColumn.setOnEditCommit(event -> {
-      Borrower borrower = event.getRowValue();
-      borrower.setID(event.getNewValue());
+      Person person = event.getRowValue();
+      person.setID(event.getNewValue());
     });
 
     userEmailColumn.setOnEditCommit(event -> {
-      Borrower borrower = event.getRowValue();
-      borrower.setEmail(event.getNewValue());
+      Person person = event.getRowValue();
+      person.setEmail(event.getNewValue());
     });
 
     userNameColumn.setOnEditCommit(event -> {
-      Borrower borrower = event.getRowValue();
-      borrower.setName(event.getNewValue());
+      Person person = event.getRowValue();
+      person.setName(event.getNewValue());
     });
 
     userPhoneColumn.setOnEditCommit(event -> {
-      Borrower borrower = event.getRowValue();
-      borrower.setPhoneNo(event.getNewValue());
+      Person person = event.getRowValue();
+      person.setPhoneNo(event.getNewValue());
     });
 
     userAddressColumn.setOnEditCommit(event -> {
-      Borrower borrower = event.getRowValue();
-      borrower.setAddress(event.getNewValue());
+      Person person = event.getRowValue();
+      person.setAddress(event.getNewValue());
     });
 
-    // Chuyển đổi ArrayList<Borrower> sang ObservableList<Borrower>
-    ObservableList<Borrower> borrowerList = FXCollections.observableArrayList(users);
+    ArrayList<Person> combinedPersons = new ArrayList<>();
+    combinedPersons.addAll(users);
+    combinedPersons.addAll(librarians);
 
-    // Tạo FilteredList để hỗ trợ tìm kiếm
-    FilteredList<Borrower> filteredData = new FilteredList<>(borrowerList, b -> true);
 
-    // Thiết lập dữ liệu cho bảng
+    combinedPersons.sort(Comparator.comparingInt(Person::getID));
+
+    ObservableList<Person> personList = FXCollections.observableArrayList(combinedPersons);
+
+    FilteredList<Person> filteredData = new FilteredList<>(personList, p -> true);
+
     tableUsers.setItems(filteredData);
 
-    // Lắng nghe sự thay đổi của thanh tìm kiếm
     userSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-      filteredData.setPredicate(borrower -> {
-        // Nếu thanh tìm kiếm trống, hiển thị tất cả người mượn
+      filteredData.setPredicate(person -> {
+        // Nếu thanh tìm kiếm trống, hiển thị tất cả người dùng
         if (newValue == null || newValue.isEmpty()) {
           return true;
         }
@@ -311,21 +332,28 @@ public class AdminController implements Initializable {
         // So khớp từ khóa (không phân biệt chữ hoa/thường)
         String lowerCaseFilter = newValue.toLowerCase();
 
-        if (String.valueOf(borrower.getID()).contains(lowerCaseFilter)) {
+        if (String.valueOf(person.getID()).contains(lowerCaseFilter)) {
           return true; // Khớp với ID
-        } else if (borrower.getEmail().toLowerCase().contains(lowerCaseFilter)) {
+        } else if (person.getEmail().toLowerCase().contains(lowerCaseFilter)) {
           return true; // Khớp với email
-        } else if (borrower.getName().toLowerCase().contains(lowerCaseFilter)) {
+        } else if (person.getName().toLowerCase().contains(lowerCaseFilter)) {
           return true; // Khớp với tên
-        } else if (String.valueOf(borrower.getPhoneNo()).contains(lowerCaseFilter)) {
+        } else if (String.valueOf(person.getPhoneNo()).contains(lowerCaseFilter)) {
           return true; // Khớp với số điện thoại
-        } else if (borrower.getAddress().toLowerCase().contains(lowerCaseFilter)) {
+        } else if (person.getAddress().toLowerCase().contains(lowerCaseFilter)) {
           return true; // Khớp với địa chỉ
+        } else if (person instanceof Librarian && "true".contains(lowerCaseFilter)) {
+          return true; // Khớp với is_Librarian là True
+        } else if (!(person instanceof Librarian) && "false".contains(lowerCaseFilter)) {
+          return true; // Khớp với is_Librarian là False
         }
+
         return false; // Không khớp
       });
     });
   }
+
+
 
   private void showPane(AnchorPane paneToShow) {
     paneBooks.setVisible(false);

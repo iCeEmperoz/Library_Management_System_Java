@@ -22,7 +22,7 @@
                         <Font name="Gill Sans MT" size="25.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="login_username" layoutX="50.0" layoutY="206.0" prefHeight="45.0" prefWidth="272.0" promptText="Username" styleClass="textfield" />
+                  <TextField fx:id="login_username" layoutX="50.0" layoutY="206.0" prefHeight="45.0" prefWidth="272.0" promptText="Email" styleClass="textfield" />
                   <PasswordField fx:id="login_password" layoutX="50.0" layoutY="274.0" prefHeight="46.0" prefWidth="272.0" promptText="Password" styleClass="textfield" />
                   <CheckBox fx:id="login_selectShowPassword" layoutX="50.0" layoutY="344.0" mnemonicParsing="false" onAction="#togglePasswordVisibility" text="Show password" />
                   <Button fx:id="login_btn" layoutX="50.0" layoutY="377.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="46.0" prefWidth="272.0" styleClass="btn" text="Login">
@@ -60,7 +60,7 @@
                   </Button>
                   <PasswordField fx:id="signup_password" layoutX="50.0" layoutY="215.0" prefHeight="39.0" prefWidth="272.0" promptText="Password" styleClass="textfield" />
                   <TextField fx:id="signup_phone" layoutX="50.0" layoutY="325.0" prefHeight="39.0" prefWidth="272.0" promptText="Phone" styleClass="textfield" />
-                  <TextField fx:id="signup_username" layoutX="50.0" layoutY="160.0" prefHeight="39.0" prefWidth="272.0" promptText="Username" styleClass="textfield" />
+                  <TextField fx:id="signup_username" layoutX="50.0" layoutY="160.0" prefHeight="39.0" prefWidth="272.0" promptText="Name" styleClass="textfield" />
                   <TextField fx:id="signup_address" layoutX="50.0" layoutY="270.0" prefHeight="39.0" prefWidth="272.0" promptText="Address" styleClass="textfield" />
                   <CheckBox fx:id="signup_librarian" layoutX="50.0" layoutY="375.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="89.0" text="Librarian" />
                   <TextField fx:id="signup_phone1" layoutX="50.0" layoutY="410.0" prefHeight="39.0" prefWidth="272.0" promptText="System Password" styleClass="textfield" visible="false" />
@@ -92,7 +92,7 @@
                   <Button fx:id="forgot_backBtn" layoutX="50.0" layoutY="545.0" mnemonicParsing="false" onAction="#handleBack" prefHeight="30.0" prefWidth="272.0" styleClass="btn" text="Back" />
                   <ComboBox fx:id="forgot_selectQuestion" layoutX="51.0" layoutY="247.0" prefHeight="39.0" prefWidth="272.0" promptText="Select Question" />
                   <TextField fx:id="forgot_answer" layoutX="50.0" layoutY="308.0" prefHeight="39.0" prefWidth="272.0" promptText="Answer" styleClass="textfield" />
-                  <TextField fx:id="forgot_username" layoutX="51.0" layoutY="182.0" prefHeight="39.0" prefWidth="272.0" promptText="Username" styleClass="textfield" />
+                  <TextField fx:id="forgot_username" layoutX="51.0" layoutY="182.0" prefHeight="39.0" prefWidth="272.0" promptText="Name" styleClass="textfield" />
                </children>
             </AnchorPane>
             <AnchorPane fx:id="changePass_form" layoutX="11.0" layoutY="14.0" prefHeight="594.0" prefWidth="372.0" visible="false">

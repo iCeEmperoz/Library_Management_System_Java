@@ -351,11 +351,9 @@ public class LoginController {
 
   /**
    * Handles the sign-up action triggered by the user.
-   * 
    * This method retrieves the input values from the sign-up form fields, 
    * including email, username, password, security question, and answer. 
    * It then attempts to register a new account with these details.
-   * 
    * If the registration is successful, a success alert is shown, the sign-up 
    * form is hidden, and the login form is made visible. If the registration 
    * fails, an error alert is displayed.

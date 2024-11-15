@@ -11,7 +11,7 @@
    <children>
       <ImageView fx:id="bookImage" fitHeight="170.0" fitWidth="408.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/FORTRESSBLOOD.jpeg" />
+            <Image url="@../images/FORTRESS BLOOD.jpeg" />
          </image>
       </ImageView>
       <VBox prefHeight="200.0" prefWidth="230.0">

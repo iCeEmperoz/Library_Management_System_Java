@@ -29,7 +29,7 @@ public class CardController {
 
   public void setData(Book book) {
     Image image = new Image(
-        Objects.requireNonNull(getClass().getResource("/images/" + book.getTitle() + ".jpeg"))
+        Objects.requireNonNull(getClass().getResource("/images/" + book.getTitle() + ".jpg"))
             .toString());
     bookImage.setImage(image);
     bookTitle.setText(book.getTitle());

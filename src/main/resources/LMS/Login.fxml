@@ -37,8 +37,8 @@
                   </Label>
                   <Button fx:id="login_createAccount" layoutX="50.0" layoutY="545.0" mnemonicParsing="false" onAction="#handleCreateAccount" prefHeight="30.0" prefWidth="272.0" styleClass="btn" text="Create Account" visible="false" />
                   <Hyperlink fx:id="login_forgotPassword" layoutX="221.0" layoutY="341.0" onAction="#handleForgotPassword" text="Forgot Password?" />
-                  <TextField fx:id="login_showPassword" layoutX="50.0" layoutY="274.0" prefHeight="45.0" prefWidth="272.0" promptText="Password" styleClass="textfield" />
-                  <Hyperlink fx:id="hyperlink_createAccount" layoutX="236.0" layoutY="511.0" onAction="#handleSignUp" text="Create one." >
+                  <TextField fx:id="login_showPassword" layoutX="50.0" layoutY="274.0" prefHeight="45.0" prefWidth="272.0" promptText="Password" styleClass="textfield" visible="false" />
+                  <Hyperlink fx:id="hyperlink_createAccount" layoutX="236.0" layoutY="511.0" onAction="#handleSignUp" text="Create one.">
                      <font>
                         <Font size="15.0" />
                      </font>

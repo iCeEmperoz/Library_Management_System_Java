@@ -26,7 +26,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 
-public class Controller implements Initializable {
+public class UserController implements Initializable {
 
   @FXML
   private HBox cardLayout;
@@ -130,7 +130,7 @@ public class Controller implements Initializable {
     List<Book> ls = new ArrayList<>();
 
     Book book = new Book();
-    book.setTitle("FORTRESSBLOOD");
+    book.setTitle("FORTRESS BLOOD");
     book.setAuthor("L.D. GOFFIGAN");
     ls.add(book);
     return ls;
@@ -140,7 +140,7 @@ public class Controller implements Initializable {
     List<Book> ls = new ArrayList<>();
 
     Book book = new Book();
-    book.setTitle("FORTRESSBLOOD");
+    book.setTitle("FORTRESS BLOOD");
     book.setAuthor("L.D. GOFFIGAN");
     ls.add(book);
     return ls;

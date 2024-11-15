@@ -176,10 +176,11 @@
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints maxHeight="160.19998779296876" minHeight="10.0" prefHeight="99.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="160.19998779296876" minHeight="10.0" prefHeight="99.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="439.20000000000005" minHeight="10.0" prefHeight="439.20000000000005" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <TableView fx:id="tableBooks" editable="true" prefHeight="439.0" prefWidth="406.0" styleClass="white-background" stylesheets="@styles.css" GridPane.rowIndex="1">
+                              <TableView fx:id="tableBooks" editable="true" prefHeight="439.0" prefWidth="406.0" styleClass="white-background" stylesheets="@styles.css" GridPane.rowIndex="2">
                                  <columns>
                                     <TableColumn fx:id="bookIdColumn" prefWidth="75.0" text="ID" />
                                     <TableColumn fx:id="bookTitleColumn" prefWidth="118.40003204345703" text="Title" />
@@ -203,7 +204,11 @@
                                           <String fx:value="round-layout" />
                                        </styleClass>
                                     </TextField>
-                                    <Button fx:id="btnAddBook" graphicTextGap="10.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="219.0" style="-fx-background-color: #5dbdb4;" text="Add " textAlignment="CENTER">
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.rowIndex="1">
+                                 <children>
+                                    <Button fx:id="btnAddBook" graphicTextGap="10.0" mnemonicParsing="false" onAction="#handleAddBook" prefHeight="38.0" prefWidth="135.0" style="-fx-background-color: #5dbdb4;" styleClass="btn" stylesheets="@styles.css" text="Add " textAlignment="CENTER">
                                        <graphic>
                                           <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
@@ -212,7 +217,11 @@
                                           </ImageView>
                                        </graphic>
                                     </Button>
+                                    <TextField fx:id="ibsnTextField" prefHeight="43.0" prefWidth="150.0" promptText="IBSN:" />
                                  </children>
+                                 <GridPane.margin>
+                                    <Insets left="20.0" />
+                                 </GridPane.margin>
                               </HBox>
                            </children>
                         </GridPane>

@@ -108,6 +108,8 @@ public class AdminController implements Initializable {
   @FXML
   private Label labelTotalUsers;
 
+  private ObservableList<Book> bookList;
+
   public static Connection initialize(Library lib) {
     try {
       setupLibrary(lib);
@@ -214,7 +216,7 @@ public class AdminController implements Initializable {
     });
 
     // Chuyển đổi ArrayList<Book> sang ObservableList<Book>
-    ObservableList<Book> bookList = FXCollections.observableArrayList(books);
+    bookList = FXCollections.observableArrayList(books);
 
     // Tạo FilteredList để hỗ trợ tìm kiếm
     FilteredList<Book> filteredData = new FilteredList<>(bookList, b -> true);
@@ -337,6 +339,15 @@ public class AdminController implements Initializable {
   void handleAddUser(ActionEvent event) {
 
   }
+
+  @FXML
+    void handleAddBook(ActionEvent event) {
+      Book newBook = new Book(5, "nov", "Tiêu đề mới", "Tác giả mới", false);
+
+  // Thêm hàng mới vào TableView
+      bookList.add(newBook);
+
+    }
 
   @FXML
   void handleBooks(ActionEvent event) {

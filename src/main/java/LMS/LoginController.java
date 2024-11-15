@@ -1,9 +1,13 @@
 package LMS;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -15,6 +19,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import static LMS.HandleAlertOperations.showAlert;
 
@@ -319,7 +324,7 @@ public class LoginController {
    * If the login is successful, it makes the main form visible and hides the login form.
    */
   @FXML
-  void handleLogin(Event event) {
+  void handleLogin(Event event) throws IOException {
     String username = login_username.getText();
     String password = login_password.getText();
 
@@ -328,6 +333,17 @@ public class LoginController {
       showAlert("Success", "Login successful for user: " + username);
       main_form.setVisible(true);
       login_form.setVisible(false);
+      Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+      // Tải file FXML của dashboard
+      FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/LMS/Admin.fxml"));
+
+      Scene adminScene = new Scene(adminLoader.load(), 1096,640);
+
+      primaryStage.setTitle("Dashboard");
+
+      // Chuyển sang Scene của dashboard
+      primaryStage.setScene(adminScene);
     } else {
       showAlert("Error", "Invalid username or password.");
     }

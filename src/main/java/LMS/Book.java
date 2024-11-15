@@ -78,14 +78,14 @@ public class Book implements Subject {
      */
     public void changeBookInfo() throws IOException {
         Scanner scanner = OnTerminal.getScanner();
-        String input;
+        String input, newAuthor = "", newSubtitle = "", newTitle = "";
 
         System.out.println("\nUpdate Author? (y/n)");
         input = scanner.next();
 
         if (input.equals("y")) {
             System.out.println("\nEnter new Author: ");
-            author = scanner.nextLine();
+            newAuthor = scanner.nextLine();
         }
 
         System.out.println("\nUpdate Subtitle? (y/n)");
@@ -93,7 +93,7 @@ public class Book implements Subject {
 
         if (input.equals("y")) {
             System.out.println("\nEnter new Subtitle: ");
-            subtitle = scanner.nextLine();
+            newSubtitle = scanner.nextLine();
         }
 
         System.out.println("\nUpdate Title? (y/n)");
@@ -101,10 +101,33 @@ public class Book implements Subject {
 
         if (input.equals("y")) {
             System.out.println("\nEnter new Title: ");
-            title = scanner.nextLine();
+            newTitle = scanner.nextLine();
         }
 
+        logicalChangeBookInfo(newTitle, newAuthor, newSubtitle);
+
         System.out.println("\nBook is successfully updated.");
+    }
+
+    /**
+     * Updates the book information with the provided new values if they are not empty.
+     * 
+     * @param newTitle    The new title of the book. If empty, the title will not be changed.
+     * @param newAuthor   The new author of the book. If empty, the author will not be changed.
+     * @param newSubtitle The new subtitle of the book. If empty, the subtitle will not be changed.
+     */
+    public void logicalChangeBookInfo(String newTitle, String newAuthor, String newSubtitle) {
+        if (!newTitle.equals("")) {
+            setTitle(newTitle);
+        }
+
+        if (!newAuthor.equals("")) {
+            setAuthor(newAuthor);
+        }
+
+        if (!newSubtitle.equals("")) {
+            setSubtitle(newSubtitle);
+        }
     }
 
     /**

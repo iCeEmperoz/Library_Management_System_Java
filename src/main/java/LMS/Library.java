@@ -19,7 +19,7 @@ public class Library {
     private static ArrayList<Librarian> librarians;
     private static ArrayList<Borrower> borrowers;
     private final ArrayList<Book> booksInLibrary;
-    private final ArrayList<Loan> loans;
+    private static final ArrayList<Loan> loans = new ArrayList<>();
     public int bookReturnDeadline;
     public double perDayFine;
     public int holdRequestExpiry;
@@ -27,6 +27,7 @@ public class Library {
     private static final String JDBC_URL = "jdbc:h2:file:";
     private static final String USER = "sa";
     private static final String PASSWORD = "";
+    public static final String LMS_PASSWORD = "LMS_Password";
     private static Library obj;
     private API_TEST googleAPI; // Khai báo đối tượng GoogleAPI
 
@@ -59,7 +60,7 @@ public class Library {
         librarians = new ArrayList<>();
         borrowers = new ArrayList<>();
         booksInLibrary = new ArrayList<>();
-        loans = new ArrayList<>();
+//        loans = new ArrayList<>();
         this.googleAPI = new API_TEST();
     }
 
@@ -220,17 +221,33 @@ public class Library {
         try {
             id = scanner.nextInt();
             scanner.nextLine();
-        } catch (java.util.InputMismatchException e) {
+        } catch (InputMismatchException e) {
             System.out.println("\nInvalid Input");
             scanner.next();
         }
 
+        Borrower borrower = logicalFindBorrower(id);
+
+        if (borrower == null) {
+            System.out.println("\nSorry this ID didn't match any Borrower's ID.");
+        }
+
+        return borrower;
+    }
+
+    /** Logical method for finding a borrower by their ID.
+    * This method iterates through the list of borrowers and returns the borrower
+    * with the matching ID. If no borrower with the specified ID is found, it returns null.
+    *
+    * @param id the ID of the borrower to find
+    * @return the borrower with the specified ID, or null if no such borrower exists
+    */
+    public Borrower logicalFindBorrower(int id) {
         for (Borrower borrower : borrowers) {
             if (borrower.getID() == id)
                 return borrower;
         }
 
-        System.out.println("\nSorry this ID didn't match any Borrower's ID.");
         return null;
     }
 
@@ -249,78 +266,45 @@ public class Library {
 
     /**
      * Removes a book from the library if it is not currently borrowed by any borrower.
-     * If the book is on hold by any borrower, prompts the user for confirmation before deleting.
+     * If the book is on hold by any borrower, prompts the user for deleting holdrequests existed first.
      *
      * @param book The book to be removed from the library.
-     *
-     *             <p>Steps:</p>
-     *             <ol>
-     *               <li>Checks if the book is currently borrowed by any borrower. If it is, the book cannot be deleted.</li>
-     *               <li>If the book is not borrowed, checks if there are any hold requests for the book.</li>
-     *               <li>If there are hold requests, prompts the user for confirmation to delete the book and the associated hold requests.</li>
-     *               <li>If the user confirms, removes the hold requests and deletes the book from the library.</li>
-     *               <li>If the book is successfully removed, prints a success message. Otherwise, prints a failure message.</li>
-     *             </ol>
-     *
-     *             <p>Note:</p>
-     *             <ul>
-     *               <li>If the book is currently borrowed, it cannot be deleted.</li>
-     *               <li>If the book has hold requests, user confirmation is required to delete the book and the hold requests.</li>
-     *             </ul>
      */
     public void removeBookfromLibrary(Book book) {
-        boolean delete = true;
+        boolean isIssued = book.getIssuedStatus();
 
         //Checking if this book is currently borrowed by some borrower
-        for (int i = 0; i < borrowers.size() && delete; i++) {
-            if (borrowers.get(i).getClass().getSimpleName().equals("Borrower")) {
-                ArrayList<Loan> borBooks = (borrowers.get(i)).getBorrowedBooks();
-
-                for (int j = 0; j < borBooks.size() && delete; j++) {
-                    if (borBooks.get(j).getBook() == book) {
-                        delete = false;
-                        System.out.println("This particular book is currently borrowed by some borrower.");
-                    }
-                }
-            }
-        }
-
-        if (delete) {
+        if (isIssued) {
+            System.out.println("This particular book is currently borrowed by some borrower.");
+            System.out.println("\nDelete Unsuccessful.");
+        } else {
             System.out.println("\nCurrently this book is not borrowed by anyone.");
             ArrayList<HoldRequest> hRequests = book.getHoldRequests();
 
-            if (!hRequests.isEmpty()) {
-                System.out.println("\nThis book might be on hold requests by some borrowers. Deleting this book will delete the relevant hold requests too.");
-                System.out.println("Do you still want to delete the book? (y/n)");
-                Scanner scanner = OnTerminal.getScanner();
+            if (!logicalRemoveBook(hRequests, book)) {
+                System.out.println("This book is on hold by some borrower.");
+                System.out.println("Please remove the hold request first.");
+            } else {
+                System.out.println("The book is successfully removed.");
+            }
+        }
+    }
 
-                while (true) {
-                    String choice = scanner.next();
-
-                    if (choice.equals("y") || choice.equals("n")) {
-                        if (choice.equals("n")) {
-                            System.out.println("\nDelete Unsuccessful.");
-                            return;
-                        } else {
-                            //Empty the books hold request array
-                            //Delete the hold request from the borrowers too
-                            for (int i = 0; i < hRequests.size() && delete; i++) {
-                                HoldRequest hr = hRequests.get(i);
-                                hr.getBorrower().removeHoldRequest(hr);
-                                holdRequestsOperations.removeHoldRequest();
-                            }
-                        }
-                    } else
-                        System.out.println("Invalid Input. Enter (y/n): ");
-                }
-
-            } else
-                System.out.println("This book has no hold requests.");
-
+    /**
+     * Attempts to logically remove a book from the library.
+     * 
+     * @param holdRequests the list of hold requests for the book
+     * @param book the book to be removed
+     * @return true if the book was successfully removed, false if there are hold requests for the book
+     */
+    public boolean logicalRemoveBook(ArrayList<HoldRequest> holdRequests, Book book) {
+        if (!holdRequests.isEmpty()) {
+            return false;
+        } else {
             booksInLibrary.remove(book);
-            System.out.println("The book is successfully removed.");
-        } else
-            System.out.println("\nDelete Unsuccessful.");
+            return true;
+        }
+
     }
 
     /**
@@ -569,7 +553,7 @@ public class Library {
                 phone = scanner.nextInt();
                 scanner.nextLine();
                 break;
-            } catch (java.util.InputMismatchException e) {
+            } catch (InputMismatchException e) {
                 System.out.println("\nInvalid Input. Please enter a valid phone number.");
                 scanner.next();
             }
@@ -626,7 +610,7 @@ public class Library {
                 phone = scanner.nextInt();
                 scanner.nextLine();
                 break;
-            } catch (java.util.InputMismatchException e) {
+            } catch (InputMismatchException e) {
                 System.out.println("\nInvalid Input. Please enter a valid phone number.");
                 scanner.next();
             }
@@ -642,7 +626,7 @@ public class Library {
                 salary = scanner.nextDouble();
                 scanner.nextLine();
                 break;
-            } catch (java.util.InputMismatchException e) {
+            } catch (InputMismatchException e) {
                 System.out.println("\nInvalid Input. Please enter a valid salary.");
                 scanner.next();
             }
@@ -695,6 +679,29 @@ public class Library {
         System.out.println("Enter Password: ");
         password = scanner.next();
 
+        Person person = logicalLogin(email, password);
+        
+        if (person == null) {
+            System.out.println("\nSorry! Wrong ID or Password");
+            scanner.nextLine();
+        }
+
+        return person;
+    }
+
+    /**
+     * Authenticates a user based on their email and password.
+     * 
+     * This method iterates through the list of borrowers and librarians to find a match
+     * for the provided email and password. If a match is found, the corresponding user
+     * (either a Borrower or a Librarian) is returned. If no match is found, the method
+     * returns null.
+     * 
+     * @param email The email address of the user attempting to log in.
+     * @param password The password of the user attempting to log in.
+     * @return A Person object representing the authenticated user, or null if authentication fails.
+     */
+    public Person logicalLogin(String email, String password) {
         for (Borrower borrower : borrowers) {
             if (borrower.getEmail().equals(email) && borrower.getPassword().equals(password)) {
                 System.out.println("\n[Borrower] Login Successful.");
@@ -709,9 +716,6 @@ public class Library {
             }
         }
 
-
-        System.out.println("\nSorry! Wrong ID or Password");
-        scanner.nextLine();
         return null;
     }
 
@@ -894,12 +898,12 @@ public class Library {
                 int issuerId = resultSet.getInt("i_librarian_id");
                 Integer rid = (Integer) resultSet.getObject("r_librarian_id");
                 int rd = 0;
-                java.util.Date rdate;
+                Date rdate;
 
-                java.util.Date idate = new java.util.Date(resultSet.getTimestamp("issued_date").getTime()); // Updated
+                Date idate = new Date(resultSet.getTimestamp("issued_date").getTime()); // Updated
 
                 if (rid != null) { // if there is a receiver
-                    rdate = new java.util.Date(resultSet.getTimestamp("date_returned").getTime()); // Updated
+                    rdate = new Date(resultSet.getTimestamp("date_returned").getTime()); // Updated
                     rd = rid;
                 } else {
                     rdate = null;
@@ -967,7 +971,7 @@ public class Library {
             do {
                 int borrowerId = resultSet.getInt("borrower_id");
                 int bookId = resultSet.getInt("book_id");
-                java.util.Date off = new Date(resultSet.getDate("request_date").getTime());
+                Date off = new Date(resultSet.getDate("request_date").getTime());
 
                 boolean set = true;
                 Borrower borower = null;
@@ -1074,7 +1078,7 @@ public class Library {
      * @throws SQLException If any SQL error occurs during the execution of the statements.
      */
     @SuppressWarnings("exports")
-    public void fillItBack(Connection connection) throws SQLException {
+    public static void fillItBack(Connection connection) throws SQLException {
         // Clear Tables
         String[] tables = {
                 "HOLD_REQUEST", //xoa hold_request truoc de tranh tham chieu den !!
@@ -1093,7 +1097,7 @@ public class Library {
             }
         }
 
-        Library library = this;
+        Library library = Library.getInstance();
 
         // Filling Person's Table
         for (Borrower borrower : borrowers) {
@@ -1163,33 +1167,19 @@ public class Library {
                 stmt.setInt(2, loan.getBorrower().getID());
                 stmt.setInt(3, loan.getBook().getID());
                 stmt.setInt(4, loan.getIssuer().getID());
-                stmt.setTimestamp(5, new java.sql.Timestamp(loan.getIssuedDate().getTime()));
+                stmt.setTimestamp(5, new Timestamp(loan.getIssuedDate().getTime()));
                 stmt.setBoolean(8, loan.getFineStatus());
                 if (loan.getReceiver() == null) {
                     stmt.setNull(6, Types.INTEGER);
                     stmt.setDate(7, null);
                 } else {
                     stmt.setInt(6, loan.getReceiver().getID());
-                    stmt.setTimestamp(7, new java.sql.Timestamp(loan.getReturnDate().getTime()));
+                    stmt.setTimestamp(7, new Timestamp(loan.getReturnDate().getTime()));
                 }
                 stmt.executeUpdate();
             }
         }
 
-        // Filling Hold Request Table
-//        int x = 1;
-//        for (Book book : library.getBooks()) {
-//            for (HoldRequest holdRequest : book.getHoldRequests()) {
-//                String template = "INSERT INTO HOLD_REQUEST (REQ_ID, BOOK, BORROWER, REQ_DATE) values (?, ?, ?, ?)";
-//                try (PreparedStatement stmt = connection.prepareStatement(template)) {
-//                    stmt.setInt(1, x++);
-//                    stmt.setInt(2, holdRequest.getBook().getID());
-//                    stmt.setInt(3, holdRequest.getBorrower().getID());
-//                    stmt.setDate(4, new java.sql.Date(holdRequest.getRequestDate().getTime()));
-//                    stmt.executeUpdate();
-//                }
-//            }
-//        }
         Set<String> processedRequests = new HashSet<>();
         int x = 1;
         for (Book book : library.getBooks()) {

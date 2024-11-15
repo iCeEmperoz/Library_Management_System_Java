@@ -104,7 +104,7 @@ public class OnTerminalTest {
     @Test
     public void testCreateAddedBorrower() {
         executeTest(CREATE_NEW_BORROWER + CREATE_NEW_BORROWER + EXIT);
-        assertTrue((output.contains("This user was already added before.")));
+        assertTrue((output.contains("This email is already in use.")));
     }
 
     @Test
@@ -116,7 +116,7 @@ public class OnTerminalTest {
     @Test
     public void testCreateAddedLibrarian() {
         executeTest(CREATE_NEW_LIBRARIAN + CREATE_NEW_LIBRARIAN + EXIT);
-        assertTrue((output.contains("This user was already added before.")));
+        assertTrue((output.contains("This email is already in use.")));
     }
 
     @Test
@@ -154,9 +154,9 @@ public class OnTerminalTest {
                                 + TC.Borrower.ADDR + "\n" + TC.Borrower.PHONE + "\n"
                                 + TC.Borrower.EMAIL + "\n";
         String createSecondBorrower = TC.SignupOption.BORROWER + "\n"
-                                + "Second " + TC.Borrower.NAME + "\n" + TC.Borrower.PASS + "\n"
+                                + "Second" + TC.Borrower.NAME + "\n" + TC.Borrower.PASS + "\n"
                                 + TC.Borrower.ADDR + "\n" + TC.Borrower.PHONE + "\n"
-                                + TC.Borrower.EMAIL + "\n";
+                                + "Second" + TC.Borrower.EMAIL + "\n";
         String addBook = TC.Book.TITLE + "\n" + TC.Book.SUBTITLE + "\n" + TC.Book.AUTHOR + "\n";
         String searchBook = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";
         String option = "0\n";
@@ -212,7 +212,7 @@ public class OnTerminalTest {
 
     @Test
     public void testSearchForBook() {
-        setup(TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n");
+        setup(TC.PortalOption.SEARCH_BY_TITLE + "\n" + "" + "\n");
         try {
             libraryMock.searchForBooks();
         } catch (IOException e) {

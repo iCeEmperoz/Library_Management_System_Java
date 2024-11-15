@@ -1,10 +1,14 @@
 package LMS;
 
+import java.sql.Connection;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+
+import static LMS.HandleAlertOperations.showAlert;
 
 /**
  * Main class for the Library Management System (LMS) application.
@@ -25,9 +29,9 @@ public class Main extends Application {
 
         primaryStage.getIcons().add(icon);
 
-        FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/LMS/Admin.fxml"));
+        FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/LMS/Login.fxml"));
 
-        Scene loginScene = new Scene(loginLoader.load(), 1096, 640);
+        Scene loginScene = new Scene(loginLoader.load(), 372, 594);
 
         primaryStage.setTitle("Login");
         primaryStage.setScene(loginScene);
@@ -41,6 +45,21 @@ public class Main extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        Library library = Library.getInstance();
+        Connection connection = OnTerminal.initialize(library);
+        if (connection == null) {
+            showAlert("Error", "Database connection failed. Exiting application.");
+
+        }
+
         launch(args);
+
+        try {
+            Library.fillItBack(connection);
+        } catch (Exception e) {
+            showAlert("Error", "Filling data back failed!\n" + e.getMessage());
+        } finally {
+            OnTerminal.cleanup(connection);
+        }
     }
 }

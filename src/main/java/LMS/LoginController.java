@@ -2,7 +2,7 @@ package LMS;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -10,9 +10,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
+
+import static LMS.HandleAlertOperations.showAlert;
 
 /**
  * The FXMLDocument class serves as the controller for the Library Management System's JavaFX application.
@@ -26,13 +30,13 @@ import javafx.scene.layout.AnchorPane;
  * </p>
  * 
  * <ul>
- *   <li>{@link #handleBack(ActionEvent)}: Handles the back button action event to switch between forms.</li>
- *   <li>{@link #handleChangePassProceed(ActionEvent)}: Handles the action event for changing the password.</li>
- *   <li>{@link #handleCreateAccount(ActionEvent)}: Handles the action event for creating a new account.</li>
- *   <li>{@link #handleForgotPassword(ActionEvent)}: Handles the action event for the "Forgot Password" option.</li>
- *   <li>{@link #handleForgotProceed(ActionEvent)}: Handles the action event for the "Forgot Password" proceed button.</li>
- *   <li>{@link #handleLogin(ActionEvent)}: Handles the login action when the login button is pressed.</li>
- *   <li>{@link #handleSignUp(ActionEvent)}: Handles the sign-up action triggered by the user.</li>
+ *   <li>{@link #handleBack(Event)}: Handles the back button action event to switch between forms.</li>
+ *   <li>{@link #handleChangePassProceed(Event)}: Handles the action event for changing the password.</li>
+ *   <li>{@link #handleCreateAccount(Event)}: Handles the action event for creating a new account.</li>
+ *   <li>{@link #handleForgotPassword(Event)}: Handles the action event for the "Forgot Password" option.</li>
+ *   <li>{@link #handleForgotProceed(Event)}: Handles the action event for the "Forgot Password" proceed button.</li>
+ *   <li>{@link #handleLogin(Event)}: Handles the login action when the login button is pressed.</li>
+ *   <li>{@link #handleSignUp(Event)}: Handles the sign-up action triggered by the user.</li>
  *   <li>{@link #togglePasswordVisibility()}: Toggles the visibility of the password field in the login form.</li>
  *   <li>{@link #initialize()}: Initializes the controller class after the FXML file has been loaded.</li>
  * </ul>
@@ -82,11 +86,6 @@ import javafx.scene.layout.AnchorPane;
  * <p>
  * The {@link #initialize()} method ensures that all the necessary FXML components are properly injected
  * and initializes the selection options for the security questions in the forgot password and signup forms.
- * </p>
- * 
- * <p>
- * The {@link #showAlert(String, String)} method displays an information alert with the specified title
- * and content.
  * </p>
  */
 public class LoginController {
@@ -158,9 +157,6 @@ public class LoginController {
   private AnchorPane main_form;
 
   @FXML
-  private TextField signup_answer;
-
-  @FXML
   private Button signup_btn;
 
   @FXML
@@ -176,10 +172,30 @@ public class LoginController {
   private PasswordField signup_password;
 
   @FXML
-  private ComboBox<String> signup_selectQuestion;
+  private TextField signup_username;
 
   @FXML
-  private TextField signup_username;
+  private TextField signup_address;
+
+  @FXML
+  private TextField signup_phone;
+
+  @FXML
+  private TextField signup_systemPassword;
+
+  @FXML 
+  private TextField signup_salary;
+
+  @FXML
+  private CheckBox signup_librarian;
+
+  @FXML
+  private Hyperlink hyperlink_loginHere;
+
+  @FXML
+  private Hyperlink hyperlink_createAccount;
+
+  Library library = Library.getInstance();
 
   /**
    * Handles the back button action event. This method is triggered when the back button is pressed.
@@ -189,7 +205,7 @@ public class LoginController {
    * @param event the action event triggered by the back button
    */
   @FXML
-  void handleBack(ActionEvent event) {
+  void handleBack(Event event) {
     if (signup_form.isVisible()) {
       signup_form.setVisible(false);
       login_form.setVisible(true);
@@ -215,7 +231,7 @@ public class LoginController {
    * @param event the action event triggered by the user
    */
   @FXML
-  void handleChangePassProceed(ActionEvent event) {
+  void handleChangePassProceed(Event event) {
     String newPassword = changePass_password.getText();
     String confirmPassword = changePass_cPassword.getText();
 
@@ -237,9 +253,11 @@ public class LoginController {
    * @param event the action event triggered by the user interaction
    */
   @FXML
-  void handleCreateAccount(ActionEvent event) {
+  void handleSignUp(Event event) {
     login_form.setVisible(false);
     signup_form.setVisible(true);
+    signup_systemPassword.setVisible(false);
+    signup_salary.setVisible(false);
   }
 
   /**
@@ -249,7 +267,7 @@ public class LoginController {
    * @param event the action event triggered by the user interaction
    */
   @FXML
-  void handleForgotPassword(ActionEvent event) {
+  void handleForgotPassword(Event event) {
     login_form.setVisible(false);
     forgot_form.setVisible(true);
   }
@@ -265,7 +283,7 @@ public class LoginController {
    * @param event The action event triggered by the user's interaction.
    */
   @FXML
-  void handleForgotProceed(ActionEvent event) {
+  void handleForgotProceed(Event event) {
     String username = forgot_username.getText();
     String question = forgot_selectQuestion.getValue();
     String answer = forgot_answer.getText();
@@ -294,35 +312,25 @@ public class LoginController {
   /**
    * Handles the login action when the login button is pressed.
    * 
-   * @param event The ActionEvent triggered by the login button.
+   * @param event The Event triggered by the login button.
    * 
    * This method retrieves the username and password from the login form,
    * validates the credentials, and displays an appropriate alert message.
    * If the login is successful, it makes the main form visible and hides the login form.
    */
   @FXML
-  void handleLogin(ActionEvent event) {
+  void handleLogin(Event event) {
     String username = login_username.getText();
     String password = login_password.getText();
 
-    if (validateLogin(username, password)) {
+    Person user = library.logicalLogin(username, password);
+    if (user != null) {
       showAlert("Success", "Login successful for user: " + username);
       main_form.setVisible(true);
       login_form.setVisible(false);
     } else {
       showAlert("Error", "Invalid username or password.");
     }
-  }
-
-  /**
-   * Validates the login credentials.
-   *
-   * @param username the username to be validated
-   * @param password the password to be validated
-   * @return true if the username is "admin" and the password is "password", false otherwise
-   */
-  private boolean validateLogin(String username, String password) {
-    return "admin".equals(username) && "password".equals(password); // Simple example
   }
 
   /**
@@ -336,38 +344,44 @@ public class LoginController {
    * form is hidden, and the login form is made visible. If the registration 
    * fails, an error alert is displayed.
    * 
-   * @param event The ActionEvent triggered by the sign-up button.
+   * @param event The Event triggered by the sign-up button.
    */
   @FXML
-  void handleSignUp(ActionEvent event) {
-    String email = signup_email.getText();
+  void handleCreateAccount(Event event) {
     String username = signup_username.getText();
     String password = signup_password.getText();
-    String question = signup_selectQuestion.getValue();
-    String answer = signup_answer.getText();
+    String email = signup_email.getText();
+    String address = signup_address.getText();
+    int phone = Integer.parseInt(signup_phone.getText());
+    boolean isLibrarian = signup_librarian.isSelected();
+    if (isLibrarian) {
+      signup_systemPassword.setVisible(true);
+      signup_salary.setVisible(true);
+      String systemPassword = signup_systemPassword.getText();
+      double salary = Double.parseDouble(signup_salary.getText());
+      Librarian librarian = new Librarian(-1, username, password, address, phone, email, salary);
+      if (systemPassword.equals(library.LMS_PASSWORD)) {
 
-    if (registerAccount(email, username, password, question, answer)) {
-      showAlert("Success", "Registration successful for user: " + username);
-      signup_form.setVisible(false);
-      login_form.setVisible(true);
+        if (library.addLibrarian(librarian)) {
+          showAlert("Success", "Librarian account created successfully.");
+          signup_form.setVisible(false);
+          login_form.setVisible(true);
+        } else {
+          showAlert("Error", "Failed to create librarian account. Record already exists.");
+        }
+      } else {
+        showAlert("Error", "System password is incorrect.");
+      }
     } else {
-      showAlert("Error", "Unable to register account.");
+      Borrower borrower = new Borrower(-1, username, password, address, phone, email);
+      if (library.addBorrower(borrower)) {
+        showAlert("Success", "Borrower account created successfully.");
+        signup_form.setVisible(false);
+        login_form.setVisible(true);
+      } else {
+        showAlert("Error", "Failed to create borrower account. Record already exists.");
+      }
     }
-  }
-
-  /**
-   * Registers a new account with the provided details.
-   *
-   * @param email The email address of the user.
-   * @param username The username chosen by the user.
-   * @param password The password chosen by the user.
-   * @param question The security question for account recovery.
-   * @param answer The answer to the security question.
-   * @return true if the account registration is successful, false otherwise.
-   */
-  private boolean registerAccount(String email, String username, String password, String question,
-      String answer) {
-    return true; // Example success
   }
 
   /**
@@ -447,8 +461,8 @@ public class LoginController {
         != null : "fx:id=\"login_username\" was not injected: check your FXML file 'Login.fxml'.";
     assert main_form
         != null : "fx:id=\"main_form\" was not injected: check your FXML file 'Login.fxml'.";
-    assert signup_answer
-        != null : "fx:id=\"signup_answer\" was not injected: check your FXML file 'Login.fxml'.";
+    // assert signup_answer
+    //     != null : "fx:id=\"signup_answer\" was not injected: check your FXML file 'Login.fxml'.";
     assert signup_btn
         != null : "fx:id=\"signup_btn\" was not injected: check your FXML file 'Login.fxml'.";
     assert signup_email
@@ -459,8 +473,8 @@ public class LoginController {
         != null : "fx:id=\"signup_loginAccount\" was not injected: check your FXML file 'Login.fxml'.";
     assert signup_password
         != null : "fx:id=\"signup_password\" was not injected: check your FXML file 'Login.fxml'.";
-    assert signup_selectQuestion
-        != null : "fx:id=\"signup_selectQuestion\" was not injected: check your FXML file 'Login.fxml'.";
+    // assert signup_selectQuestion
+    //     != null : "fx:id=\"signup_selectQuestion\" was not injected: check your FXML file 'Login.fxml'.";
     assert signup_username
         != null : "fx:id=\"signup_username\" was not injected: check your FXML file 'Login.fxml'.";
     forgot_selectQuestion.getItems()
@@ -468,23 +482,10 @@ public class LoginController {
             "What is your favorite food?", "What was the name of your elementary school?",
             "Who is your best friend?");
 
-    signup_selectQuestion.getItems()
-        .addAll("What is your childhood nickname?", "What is the name of your first pet?",
-            "What is your favorite food?", "What was the name of your elementary school?",
-            "Who is your best friend?");
+    // signup_selectQuestion.getItems()
+    //     .addAll("What is your childhood nickname?", "What is the name of your first pet?",
+    //         "What is your favorite food?", "What was the name of your elementary school?",
+    //         "Who is your best friend?");
   }
 
-  /**
-   * Displays an information alert with the specified title and content.
-   *
-   * @param title   the title of the alert dialog
-   * @param content the content text of the alert dialog
-   */
-  private void showAlert(String title, String content) {
-    Alert alert = new Alert(AlertType.INFORMATION);
-    alert.setTitle(title);
-    alert.setHeaderText(null);
-    alert.setContentText(content);
-    alert.showAndWait();
-  }
 }

@@ -259,12 +259,11 @@ public class OnTerminal {
         int ch = takeInput(0, 4);
         if (ch == 1) {
             library.createBorrower();
-        } else if (ch == 2) {
-            String lPassword = "LMS_Password";
+        } else if (ch == 2) {;
             System.out.print("Please enter system's password: ");
             String pass = scanner.next();
             scanner.nextLine();
-            if (pass.equals(lPassword)) {
+            if (pass.equals(Library.LMS_PASSWORD)) {
                 library.createLibrarian();
             } else {
                 System.out.println("Wrong password.");

@@ -232,7 +232,7 @@
                            <children>
                               <ImageView fx:id="userImageView" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../../../../Pictures/ghost-rider-2020-art-2s.jpg" />
+                                    <Image url="@../images/ghost-rider-2020-art-2s.jpg" />
                                  </image>
                               </ImageView>
                            </children>

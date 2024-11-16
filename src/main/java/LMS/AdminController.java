@@ -40,6 +40,11 @@ public class AdminController implements Initializable {
 
   private final ArrayList<Librarian> librarians = library.getLibrarians();
 
+  private final API_TEST apiTest = new API_TEST();
+
+  private final ObservableList<Book> apiBooksList = FXCollections.observableArrayList();
+
+
   @FXML
   private Button backButton;
   @FXML
@@ -322,35 +327,38 @@ public class AdminController implements Initializable {
 
     tableUsers.setItems(filteredData);
 
-    userSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-      filteredData.setPredicate(person -> {
-        // Nếu thanh tìm kiếm trống, hiển thị tất cả người dùng
-        if (newValue == null || newValue.isEmpty()) {
-          return true;
-        }
+      userSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+          filteredData.setPredicate(person -> {
+              // Nếu thanh tìm kiếm trống, hiển thị tất cả người dùng
+              if (newValue == null || newValue.isEmpty()) {
+                  return true;
+              }
 
-        // So khớp từ khóa (không phân biệt chữ hoa/thường)
-        String lowerCaseFilter = newValue.toLowerCase();
+              // So khớp từ khóa (không phân biệt chữ hoa/thường)
+              String lowerCaseFilter = newValue.toLowerCase();
 
-        if (String.valueOf(person.getID()).contains(lowerCaseFilter)) {
-          return true; // Khớp với ID
-        } else if (person.getEmail().toLowerCase().contains(lowerCaseFilter)) {
-          return true; // Khớp với email
-        } else if (person.getName().toLowerCase().contains(lowerCaseFilter)) {
-          return true; // Khớp với tên
-        } else if (String.valueOf(person.getPhoneNo()).contains(lowerCaseFilter)) {
-          return true; // Khớp với số điện thoại
-        } else if (person.getAddress().toLowerCase().contains(lowerCaseFilter)) {
-          return true; // Khớp với địa chỉ
-        } else if (person instanceof Librarian && "true".contains(lowerCaseFilter)) {
-          return true; // Khớp với is_Librarian là True
-        } else if (!(person instanceof Librarian) && "false".contains(lowerCaseFilter)) {
-          return true; // Khớp với is_Librarian là False
-        }
+              if (String.valueOf(person.getID()).contains(lowerCaseFilter)) {
+                  return true; // Khớp với ID
+              } else if (person.getEmail().toLowerCase().contains(lowerCaseFilter)) {
+                  return true; // Khớp với email
+              } else if (person.getName().toLowerCase().contains(lowerCaseFilter)) {
+                  return true; // Khớp với tên
+              } else if (String.valueOf(person.getPhoneNo()).contains(lowerCaseFilter)) {
+                  return true; // Khớp với số điện thoại
+              } else if (person.getAddress().toLowerCase().contains(lowerCaseFilter)) {
+                  return true; // Khớp với địa chỉ
+              } else if (person instanceof Librarian && "true".contains(lowerCaseFilter)) {
+                  return true; // Khớp với is_Librarian là True
+              } else if (!(person instanceof Librarian) && "false".contains(lowerCaseFilter)) {
+                  return true; // Khớp với is_Librarian là False
+              }
+              return false; // Không khớp
+          });
 
-        return false; // Không khớp
+          // lam moi khi loc
+          tableUsers.refresh();
       });
-    });
+
   }
 
 
@@ -369,11 +377,65 @@ public class AdminController implements Initializable {
   }
 
   @FXML
-    void handleAddBook(ActionEvent event) {
-      Book newBook = new Book(5, "nov", "Tiêu đề mới", "Tác giả mới", false);
+    void handleAddBook() {
+    // Đánh dấu bảng là có thể chỉnh sửa
+    tableBooks.setEditable(true);
 
-  // Thêm hàng mới vào TableView
-      bookList.add(newBook);
+    // Thiết lập các cột với thuộc tính của lớp Book
+    bookIdColumn.setCellValueFactory(new PropertyValueFactory<>("ID"));
+    bookTitleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+    bookAuthorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
+    bookIsIssuedColumn.setCellValueFactory(new PropertyValueFactory<>("IssuedStatus"));
+
+    // Thiết lập cột title, author, và isIssued có thể chỉnh sửa
+    bookTitleColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+    bookAuthorColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+    bookIsIssuedColumn.setCellFactory(
+            TextFieldTableCell.forTableColumn(new BooleanStringConverter()));
+
+    bookTitleColumn.setOnEditCommit(event -> {
+      Book book = event.getRowValue();
+      book.setTitle(event.getNewValue());
+    });
+
+    bookAuthorColumn.setOnEditCommit(event -> {
+      Book book = event.getRowValue();
+      book.setAuthor(event.getNewValue());
+    });
+
+    bookIsIssuedColumn.setOnEditCommit(event -> {
+      Book book = event.getRowValue();
+      book.setIssuedStatus(event.getNewValue().equals("true"));
+    });
+
+    // ObservableList để hiển thị dữ liệu từ API
+    ObservableList<Book> apiBooksList = FXCollections.observableArrayList();
+
+    // Thiết lập dữ liệu cho bảng
+    tableBooks.setItems(apiBooksList);
+
+    // Lắng nghe sự thay đổi của thanh tìm kiếm và gọi API
+    bookSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+      if (newValue == null || newValue.isEmpty()) {
+        apiBooksList.clear(); // Xóa bảng nếu từ khóa tìm kiếm trống
+        return;
+      }
+
+      // Gọi API với từ khóa tìm kiếm
+      String apiUrl = "https://www.googleapis.com/books/v1/volumes?q=" + newValue + "&maxResults=10";
+      String jsonResponse = apiTest.getHttpResponse(apiUrl);
+
+      if (jsonResponse != null) {
+        // Lấy danh sách sách từ phản hồi JSON
+        ArrayList<Book> booksFromAPI = apiTest.getBooksFromJson(jsonResponse);
+
+        // Cập nhật ObservableList để hiển thị trên TableView
+        apiBooksList.clear();
+        apiBooksList.addAll(booksFromAPI);
+      } else {
+        System.out.println("Không thể lấy dữ liệu từ API");
+      }
+    });
 
     }
 

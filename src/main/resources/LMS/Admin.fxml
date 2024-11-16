@@ -217,7 +217,7 @@
                                           </ImageView>
                                        </graphic>
                                     </Button>
-                                    <TextField fx:id="ibsnTextField" prefHeight="43.0" prefWidth="150.0" promptText="Search to Add" />
+                                    <TextField fx:id="ibsnTextField" prefHeight="43.0" prefWidth="150.0" promptText="Search" />
                                  </children>
                                  <GridPane.margin>
                                     <Insets left="20.0" />

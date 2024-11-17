@@ -47,7 +47,7 @@ public class Book implements Subject {
    * @param issued   Issued status of the book
    */
   public Book(int id, String title, String subtitle, String author, boolean issued,
-      String previewLink, String imageLink) {
+      String imageLink, String previewLink) {
     currentIdNumber++;
     if (id == 0) {
       bookID = currentIdNumber;
@@ -77,6 +77,10 @@ public class Book implements Subject {
    */
   public static void setIDCount(int n) {
     currentIdNumber = n;
+  }
+
+  public int getCurrentIdNumber() {
+      return currentIdNumber;
   }
 
   // Tạo bản sao sâu
@@ -542,7 +546,7 @@ public class Book implements Subject {
   @Override
   public String toString() {
     return "Title: " + title + "\nAuthor: " + author + "\nISBN: " + isbn + "\nSubtitle: " + subtitle
-        + "\nPreviewLink: " + previewLink + "\nImageLink: " + imageLink;
+        + "\nImageLink" + imageLink + "\nPreviewLink" + previewLink;
   }
 
 

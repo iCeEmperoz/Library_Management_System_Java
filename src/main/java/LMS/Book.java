@@ -42,7 +42,7 @@ public class Book implements Subject {
    * @param author   Author of the book
    * @param issued   Issued status of the book
    */
-  public Book(int id, String title, String subtitle, String author, boolean issued) {
+  public Book(int id, String title, String subtitle, String author, boolean issued, String previewLink, String imageLink) {
     currentIdNumber++;
     if (id == -1) {
       bookID = currentIdNumber;

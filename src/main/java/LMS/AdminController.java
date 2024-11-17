@@ -184,7 +184,7 @@ public class AdminController implements Initializable {
       return;
     }
 
-    labelTotalBooks.setText(String.valueOf(books.size()));
+    labelTotalBooks.setText(String.valueOf(books.size()/2));
     labelTotalUsers.setText(String.valueOf(users.size()));
 
     initializeTableBooks();

@@ -318,139 +318,139 @@ public class Library {
      *                     and collects those that match the search term. If matching books are found, they are printed and
      *                     returned. If no books match the search criteria, a message is displayed and null is returned.
      */
-    public ArrayList<Book> searchForBooks() throws IOException {
-        String choice;
-        String title = "", subtitle = "", author = "";
-        Scanner scanner = OnTerminal.getScanner();
+//    public ArrayList<Book> searchForBooks() throws IOException {
+//        String choice;
+//        String title = "", subtitle = "", author = "";
+//        Scanner scanner = OnTerminal.getScanner();
+//
+//        while (true) {
+//            System.out.println("\nEnter either '1' or '2' or '3' for search by Title, Subtitle or Author of Book respectively: ");
+//            choice = scanner.next();
+//            scanner.nextLine();
+//
+//            if (choice.equals("1") || choice.equals("2") || choice.equals("3")) {
+//                break;
+//            } else {
+//                System.out.println("\nWrong Input!");
+//            }
+//        }
+//
+//        if (choice.equals("1")) {
+//            System.out.println("\nEnter the Title of the Book: ");
+//            title = scanner.nextLine();
+//        } else if (choice.equals("2")) {
+//            System.out.println("\nEnter the Subtitle of the Book: ");
+//            subtitle = scanner.nextLine();
+//        } else {
+//            System.out.println("\nEnter the Author of the Book: ");
+//            author = scanner.nextLine();
+//        }
+//
+//        ArrayList<Book> matchedBooks = new ArrayList<>();
+//
+//        //Retrieving all the books which matched the user's search query
+//        for (Book book : booksInLibrary) {
+//            if (choice.equals("1")) {
+//                if (book.getTitle().toLowerCase().contains(title.toLowerCase()))
+//                    matchedBooks.add(book);
+//            } else if (choice.equals("2")) {
+//                if (book.getSubtitle().toLowerCase().contains(subtitle.toLowerCase()))
+//                    matchedBooks.add(book);
+//            } else {
+//                if (book.getAuthor().toLowerCase().contains(author.toLowerCase()))
+//                    matchedBooks.add(book);
+//            }
+//        }
+//
+//        //Printing all the matched Books
+//        if (!matchedBooks.isEmpty()) {
+//            System.out.println("\nThese books are found: \n");
+//            System.out.println("------------------------------------------------------------------------------");
+//            System.out.printf("%-5s %-40s %-30s %-30s\n", "No.", "Title", "Author", "Subtitle");
+//            System.out.println("------------------------------------------------------------------------------");
+//
+//            for (int i = 0; i < matchedBooks.size(); i++) {
+//                System.out.printf("%-5s ", i);
+//                matchedBooks.get(i).printInfo();
+//                System.out.print("\n");
+//            }
+//
+//            return matchedBooks;
+//        } else {
+//            System.out.println("\nSorry. No Books were found related to your query.");
+//            return null;
+//        }
+//    }
 
-        while (true) {
-            System.out.println("\nEnter either '1' or '2' or '3' for search by Title, Subtitle or Author of Book respectively: ");
-            choice = scanner.next();
-            scanner.nextLine();
+     public ArrayList<Book> searchForBooks() throws IOException {
+         String choice;
+         String title = "", subject = "", author = "";
+         Scanner scanner = OnTerminal.getScanner();
 
-            if (choice.equals("1") || choice.equals("2") || choice.equals("3")) {
-                break;
-            } else {
-                System.out.println("\nWrong Input!");
-            }
-        }
+         while (true) {
+             System.out.println("\nEnter either '1' or '2' or '3' for search by Title, Subject or Author of Book respectively: ");
+             choice = scanner.next();
+             scanner.nextLine();
 
-        if (choice.equals("1")) {
-            System.out.println("\nEnter the Title of the Book: ");
-            title = scanner.nextLine();
-        } else if (choice.equals("2")) {
-            System.out.println("\nEnter the Subtitle of the Book: ");
-            subtitle = scanner.nextLine();
-        } else {
-            System.out.println("\nEnter the Author of the Book: ");
-            author = scanner.nextLine();
-        }
+             if (choice.equals("1") || choice.equals("2") || choice.equals("3")) {
+                 break;
+             } else {
+                 System.out.println("\nWrong Input!");
+             }
+         }
 
-        ArrayList<Book> matchedBooks = new ArrayList<>();
+         if (choice.equals("1")) {
+             System.out.println("\nEnter the Title of the Book: ");
+             title = scanner.nextLine();
+         } else if (choice.equals("2")) {
+             System.out.println("\nEnter the Subject of the Book: ");
+             subject = scanner.nextLine();
+         } else {
+             System.out.println("\nEnter the Author of the Book: ");
+             author = scanner.nextLine();
+         }
 
-        //Retrieving all the books which matched the user's search query
-        for (Book book : booksInLibrary) {
-            if (choice.equals("1")) {
-                if (book.getTitle().toLowerCase().contains(title.toLowerCase()))
-                    matchedBooks.add(book);
-            } else if (choice.equals("2")) {
-                if (book.getSubtitle().toLowerCase().contains(subtitle.toLowerCase()))
-                    matchedBooks.add(book);
-            } else {
-                if (book.getAuthor().toLowerCase().contains(author.toLowerCase()))
-                    matchedBooks.add(book);
-            }
-        }
+         ArrayList<Book> matchedBooks = new ArrayList<>();
 
-        //Printing all the matched Books
-        if (!matchedBooks.isEmpty()) {
-            System.out.println("\nThese books are found: \n");
-            System.out.println("------------------------------------------------------------------------------");
-            System.out.printf("%-5s %-40s %-30s %-30s\n", "No.", "Title", "Author", "Subtitle");
-            System.out.println("------------------------------------------------------------------------------");
+         // Tạo URL tìm kiếm theo tiêu chí
+         String api = "https://www.googleapis.com/books/v1/volumes?q=";
+         String query;
 
-            for (int i = 0; i < matchedBooks.size(); i++) {
-                System.out.printf("%-5s ", i);
-                matchedBooks.get(i).printInfo();
-                System.out.print("\n");
-            }
+         // Tạo truy vấn tùy theo lựa chọn của người dùng
+         if (choice.equals("1")) {
+             query = "intitle:" + title.replace(" ", "+");
+         } else if (choice.equals("2")) {
+             query = "subject:" + subject.replace(" ", "+");
+         } else {
+             query = "inauthor:" + author.replace(" ", "+");
+         }
 
-            return matchedBooks;
-        } else {
-            System.out.println("\nSorry. No Books were found related to your query.");
-            return null;
-        }
-    }
+         // Gọi API Google Books
+         String jsonResponse = googleAPI.getHttpResponse(api + query);
 
-    // public ArrayList<Book> searchForBooks() throws IOException {
-    //     String choice;
-    //     String title = "", subject = "", author = "";
-    //     Scanner scanner = OnTerminal.getScanner();
+         if (jsonResponse != null) {
+             matchedBooks.addAll(googleAPI.getBooksFromJson(jsonResponse)); // Giả sử bạn có phương thức này
+         }
 
-    //     while (true) {
-    //         System.out.println("\nEnter either '1' or '2' or '3' for search by Title, Subject or Author of Book respectively: ");
-    //         choice = scanner.next();
-    //         scanner.nextLine();
+         // In thông tin sách tìm được
+         if (!matchedBooks.isEmpty()) {
+             System.out.println("\nThese books are found: \n");
+             System.out.println("------------------------------------------------------------------------------");
+             System.out.printf("%-5s %-30s %-30s %-30s\n", "No.", "Title", "Author", "Subject");
+             System.out.println("------------------------------------------------------------------------------");
 
-    //         if (choice.equals("1") || choice.equals("2") || choice.equals("3")) {
-    //             break;
-    //         } else {
-    //             System.out.println("\nWrong Input!");
-    //         }
-    //     }
+             for (int i = 0; i < matchedBooks.size(); i++) {
+                 System.out.printf("%-5d ", i);
+                 matchedBooks.get(i).printInfo(); // Giả sử bạn có phương thức này
+                 System.out.print("\n");
+             }
 
-    //     if (choice.equals("1")) {
-    //         System.out.println("\nEnter the Title of the Book: ");
-    //         title = scanner.nextLine();
-    //     } else if (choice.equals("2")) {
-    //         System.out.println("\nEnter the Subject of the Book: ");
-    //         subject = scanner.nextLine();
-    //     } else {
-    //         System.out.println("\nEnter the Author of the Book: ");
-    //         author = scanner.nextLine();
-    //     }
-
-    //     ArrayList<Book> matchedBooks = new ArrayList<>();
-
-    //     // Tạo URL tìm kiếm theo tiêu chí
-    //     String api = "https://www.googleapis.com/books/v1/volumes?q=";
-    //     String query;
-
-    //     // Tạo truy vấn tùy theo lựa chọn của người dùng
-    //     if (choice.equals("1")) {
-    //         query = "intitle:" + title.replace(" ", "+");
-    //     } else if (choice.equals("2")) {
-    //         query = "subject:" + subject.replace(" ", "+");
-    //     } else {
-    //         query = "inauthor:" + author.replace(" ", "+");
-    //     }
-
-    //     // Gọi API Google Books
-    //     String jsonResponse = googleAPI.getHttpResponse(api + query);
-
-    //     if (jsonResponse != null) {
-    //         matchedBooks.addAll(googleAPI.getBooksFromJson(jsonResponse)); // Giả sử bạn có phương thức này
-    //     }
-
-    //     // In thông tin sách tìm được
-    //     if (!matchedBooks.isEmpty()) {
-    //         System.out.println("\nThese books are found: \n");
-    //         System.out.println("------------------------------------------------------------------------------");
-    //         System.out.printf("%-5s %-30s %-30s %-30s\n", "No.", "Title", "Author", "Subject");
-    //         System.out.println("------------------------------------------------------------------------------");
-
-    //         for (int i = 0; i < matchedBooks.size(); i++) {
-    //             System.out.printf("%-5d ", i);
-    //             matchedBooks.get(i).printInfo(); // Giả sử bạn có phương thức này
-    //             System.out.print("\n");
-    //         }
-
-    //         return matchedBooks;
-    //     } else {
-    //         System.out.println("\nSorry. No Books were found related to your query.");
-    //         return null;
-    //     }
-    // }
+             return matchedBooks;
+         } else {
+             System.out.println("\nSorry. No Books were found related to your query.");
+             return null;
+         }
+     }
 
     /**
      * Displays all the books available in the library.
@@ -650,7 +650,7 @@ public class Library {
      * @param author  the author of the book
      */
     public void createBook(String title, String subtitle, String author) {
-        Book book = new Book(-1, title, subtitle, author, false);
+        Book book = new Book(-1, title, subtitle, author, false, "", "");
 
         if (addBookinLibrary(book)) {
             System.out.println("\nBook with Title " + book.getTitle() + " is successfully created.");
@@ -806,7 +806,9 @@ public class Library {
                     String author = resultSet.getString("AUTHOR");
                     String subtitle = resultSet.getString("SUBTITLE");
                     boolean issue = resultSet.getBoolean("IS_ISSUED");
-                    Book book = new Book(id, title, subtitle, author, issue);
+                    String imageLink = resultSet.getString("IMAGE_LINK");
+                    String previewLink = resultSet.getString("PREVIEW_LINK");
+                    Book book = new Book(id, title, subtitle, author, issue, imageLink, previewLink);
                     addBookinLibrary(book);
 
                     if (maxID < id)
@@ -1147,13 +1149,15 @@ public class Library {
 
         // Filling Book's Table
         for (Book book : library.getBooks()) {
-            String template = "INSERT INTO BOOK (BOOK_ID, TITLE, AUTHOR, SUBTITLE, IS_ISSUED) values (?, ?, ?, ?, ?)";
+            String template = "INSERT INTO BOOK (BOOK_ID, TITLE, AUTHOR, SUBTITLE, IS_ISSUED, IMAGE_LINK, PREVIEW_LINK) values (?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = connection.prepareStatement(template)) {
                 stmt.setInt(1, book.getID());
                 stmt.setString(2, book.getTitle());
                 stmt.setString(3, book.getAuthor());
                 stmt.setString(4, book.getSubtitle());
                 stmt.setBoolean(5, book.getIssuedStatus());
+                stmt.setString(6, book.getImageLink());
+                stmt.setString(7, book.getPreviewLink());
                 stmt.executeUpdate();
             }
         }

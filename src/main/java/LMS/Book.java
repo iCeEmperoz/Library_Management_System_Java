@@ -20,16 +20,18 @@ import javafx.scene.image.Image;
  * Represents a Book in the library management system (LMS).
  */
 public class Book implements Subject {
+    private int bookID;
+    private String title;
+    private String subtitle;
+    private String author;
+    private boolean isIssued;
+    private HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
+    private List<Observer> observers = new ArrayList<>();
+    static int currentIdNumber = 0;
+    private String isbn;
+    private String previewLink; //link to create QR
+    private String imageLink;
 
-  static int currentIdNumber = 0;
-  private int bookID;
-  private String title;
-  private String subtitle;
-  private String author;
-  private boolean isIssued;
-  private HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
-  private List<Observer> observers = new ArrayList<>();
-  private String isbn;
 
   /**
    * Constructor to initialize a Book object.
@@ -48,11 +50,13 @@ public class Book implements Subject {
       bookID = id;
     }
 
-    this.title = title;
-    this.subtitle = subtitle;
-    this.author = author;
-    isIssued = issued;
-  }
+        this.title = title;
+        this.subtitle = subtitle;
+        this.author = author;
+        isIssued = issued;
+        this.imageLink = imageLink;
+        this.previewLink = previewLink;
+    }
 
   public Book(String s, String title, String subtitle, String author) {
   }
@@ -498,11 +502,26 @@ public class Book implements Subject {
     this.isbn = isbn.replaceAll("^\"|\"$", "");
   }
 
-  @Override
-  public String toString() {
-    return "Title: " + title + "\nAuthor: " + author + "\nISBN: " + isbn + "\nSubtitle: "
-        + subtitle;
-  }
+    public void setPreviewLink(String previewLink) {
+        this.previewLink = previewLink.replaceAll("^\"|\"$", "");
+    }
+
+    public String getPreviewLink() {
+        return previewLink;
+    }
+
+    public void setImageLink(String imageLink) {
+        this.imageLink = imageLink.replaceAll("^\"|\"$", "");
+    }
+
+    public String getImageLink() {
+        return imageLink;
+    }
+
+    @Override
+    public String toString() {
+        return "Title: " + title + "\nAuthor: " + author + "\nISBN: " + isbn + "\nSubtitle: " + subtitle + "\nPreviewLink: " + previewLink + "\nImageLink: " + imageLink;
+    }
 
 
 }

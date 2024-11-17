@@ -34,6 +34,15 @@ import javafx.scene.layout.VBox;
 import javafx.util.converter.BooleanStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
+
+
+
+
 public class AdminController implements Initializable {
 
     private static final Library library = Library.getInstance();
@@ -47,6 +56,25 @@ public class AdminController implements Initializable {
     private final API_TEST apiTest = new API_TEST();
 
     private final ObservableList<Book> apiBooksList = FXCollections.observableArrayList();
+
+
+    // Biến lưu trữ truy vấn tìm kiếm hiện tại
+    private final AtomicReference<String> searchQuery = new AtomicReference<>("");
+
+    // Biến điều chỉnh thời gian debounce (500ms)
+    private final long debounceDelay = 500;
+
+    // Scheduler để thực hiện debounce
+    private final ScheduledExecutorService debounceScheduler = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> scheduledFuture;
+
+    // Biến theo dõi thời gian lần gọi API gần nhất (sử dụng để throttle)
+    private volatile long lastApiCallTime = 0;
+
+    // Executor cho các tác vụ bất đồng bộ
+    private final ExecutorService apiExecutor = Executors.newCachedThreadPool();
+
+
     @FXML
     TableView<Book> tableAddBooks;
     private ObservableList<Book> bookList;
@@ -410,6 +438,8 @@ public class AdminController implements Initializable {
 
     }
 
+//
+
     @FXML
     void handleAddBook() {
         showPane(paneAddBook);
@@ -419,66 +449,89 @@ public class AdminController implements Initializable {
         addBookAuthorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
 
         // Thiết lập cột hành động với nút "Add"
-        addBookBtnColumn.setCellFactory(column -> {
-            return new TableCell<>() {
-                private final Button addButton = new Button("Add");
+        addBookBtnColumn.setCellFactory(column -> new TableCell<>() {
+            private final Button addButton = new Button("Add");
 
-                {
-                    addButton.setOnAction(event -> {
-                        Book book = getTableView().getItems().get(getIndex());
-                        System.out.println("Adding book: " + book.getTitle());
-                        // Thực hiện thêm sách vào thư viện ở đây
+            {
+                addButton.setOnAction(event -> {
+                    Book book = getTableView().getItems().get(getIndex());
+                    System.out.println("Adding book: " + book.getTitle());
+                    Book newBook = new Book(book.getCurrentIdNumber() + 1, book.getTitle(), book.getSubtitle(),
+                            book.getAuthor(), book.getIssuedStatus(), book.getImageLink(),
+                            book.getPreviewLink());
+                    bookList.add(newBook);
+                });
+            }
 
-                        Book newBook = new Book(book.getCurrentIdNumber() + 1, book.getTitle(), book.getSubtitle(),
-                                book.getAuthor(), book.getIssuedStatus(), book.getPreviewLink(),
-                                book.getImageLink());
-                        bookList.add(newBook);
-                    });
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(addButton);
                 }
-
-                @Override
-                protected void updateItem(Void item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setGraphic(null);
-                    } else {
-                        setGraphic(addButton);
-                    }
-                }
-            };
+            }
         });
 
-        // Thiết lập dữ liệu cho bảng
         tableAddBooks.setItems(apiBooksList);
 
-        // Lắng nghe sự thay đổi của thanh tìm kiếm và gọi API
+        // Thực hiện debounce và throttle tìm kiếm
         bookApiSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == null || newValue.isEmpty()) {
+            if (newValue == null || newValue.trim().isEmpty()) {
                 apiBooksList.clear(); // Xóa bảng nếu từ khóa tìm kiếm trống
                 return;
             }
 
-            // Gọi API với từ khóa tìm kiếm
-            String apiUrl =
-                    "https://www.googleapis.com/books/v1/volumes?q=" + newValue + "&maxResults=10";
-            String jsonResponse = apiTest.getHttpResponse(apiUrl);
+            // Chỉ tìm kiếm nếu từ khóa có tối thiểu 3 ký tự
+            if (newValue.trim().length() < 3) return;
 
-            if (jsonResponse != null) {
-                try {
-                    // Lấy danh sách sách từ phản hồi JSON
-                    ArrayList<Book> booksFromAPI = apiTest.getBooksFromJson(jsonResponse);
+            // Cập nhật giá trị tìm kiếm hiện tại
+            searchQuery.set(newValue.trim());
 
-                    // Cập nhật ObservableList để hiển thị trên TableView
-                    apiBooksList.clear();
-                    apiBooksList.addAll(booksFromAPI);
-                } catch (Exception e) {
-                    System.out.println("Lỗi khi xử lý dữ liệu API: " + e.getMessage());
-                }
-            } else {
-                System.out.println("Không thể lấy dữ liệu từ API");
+            // Hủy bỏ nhiệm vụ đã lên lịch trước đó nếu có
+            if (scheduledFuture != null && !scheduledFuture.isDone()) {
+                scheduledFuture.cancel(false);
             }
+
+            // Lên lịch gọi API sau 500ms (debounce)
+            scheduledFuture = debounceScheduler.schedule(
+                    this::performSearch, debounceDelay, TimeUnit.MILLISECONDS
+            );
         });
     }
+
+    private void performSearch() {
+        String query = searchQuery.get();
+        CompletableFuture.supplyAsync(() -> {
+            try {
+                // Chỉ gọi API mỗi giây một lần để tránh quá tải (throttle)
+                if (System.currentTimeMillis() - lastApiCallTime < 500) return null;
+
+                lastApiCallTime = System.currentTimeMillis();
+                String apiUrl = "https://www.googleapis.com/books/v1/volumes?q=" + query + "&maxResults=10";
+                String jsonResponse = apiTest.getHttpResponse(apiUrl);
+
+                if (jsonResponse != null) {
+                    return apiTest.getBooksFromJson(jsonResponse);
+                }
+            } catch (Exception e) {
+                System.out.println("Lỗi khi gọi API: " + e.getMessage());
+            }
+            return null;
+        }).thenAccept(booksFromAPI -> {
+            if (booksFromAPI == null) return;
+
+            // Chỉ cập nhật nếu kết quả khác biệt
+            Platform.runLater(() -> {
+                if (!apiBooksList.equals(booksFromAPI)) {
+                    apiBooksList.clear();
+                    apiBooksList.addAll(booksFromAPI);
+                }
+            });
+        });
+    }
+
 
     @FXML
     void handleBooks(ActionEvent event) {

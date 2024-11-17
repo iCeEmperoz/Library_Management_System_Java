@@ -16,6 +16,8 @@ module group {
     requires java.net.http;
     requires java.sql;
   requires javafx.swing;
+  requires com.google.zxing;
+  requires com.google.zxing.javase;
 
   opens LMS to javafx.fxml;
   exports LMS;

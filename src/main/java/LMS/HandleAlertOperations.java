@@ -1,5 +1,8 @@
 package LMS;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+
 public class HandleAlertOperations {
     /**
      * Displays an information alert with the specified title and content.
@@ -8,10 +11,12 @@ public class HandleAlertOperations {
      * @param content the content text of the alert dialog
      */
     public static void showAlert(String title, String content) {
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
+        Platform.runLater(() -> { // Đảm bảo đoạn mã này chạy trên FX Application Thread
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(content);
+            alert.showAndWait();
+        });
     }
 }

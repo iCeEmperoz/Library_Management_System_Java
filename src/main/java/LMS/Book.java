@@ -8,6 +8,9 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,17 +23,18 @@ import javafx.scene.image.Image;
  * Represents a Book in the library management system (LMS).
  */
 public class Book implements Subject {
-    private int bookID;
-    private String title;
-    private String subtitle;
-    private String author;
-    private boolean isIssued;
-    private HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
-    private List<Observer> observers = new ArrayList<>();
-    static int currentIdNumber = 0;
-    private String isbn;
-    private String previewLink; //link to create QR
-    private String imageLink;
+
+  static int currentIdNumber = 0;
+  private int bookID;
+  private String title;
+  private String subtitle;
+  private String author;
+  private boolean isIssued;
+  private HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
+  private List<Observer> observers = new ArrayList<>();
+  private String isbn;
+  private String previewLink; //link to create QR
+  private String imageLink;
 
 
   /**
@@ -42,21 +46,22 @@ public class Book implements Subject {
    * @param author   Author of the book
    * @param issued   Issued status of the book
    */
-  public Book(int id, String title, String subtitle, String author, boolean issued, String previewLink, String imageLink) {
+  public Book(int id, String title, String subtitle, String author, boolean issued,
+      String previewLink, String imageLink) {
     currentIdNumber++;
-    if (id == -1) {
+    if (id == 0) {
       bookID = currentIdNumber;
     } else {
       bookID = id;
     }
 
-        this.title = title;
-        this.subtitle = subtitle;
-        this.author = author;
-        isIssued = issued;
-        this.imageLink = imageLink;
-        this.previewLink = previewLink;
-    }
+    this.title = title;
+    this.subtitle = subtitle;
+    this.author = author;
+    isIssued = issued;
+    this.imageLink = imageLink;
+    this.previewLink = previewLink;
+  }
 
   public Book(String s, String title, String subtitle, String author) {
   }
@@ -72,6 +77,22 @@ public class Book implements Subject {
    */
   public static void setIDCount(int n) {
     currentIdNumber = n;
+  }
+
+  // Tạo bản sao sâu
+  public Book deepCopy() {
+    try {
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      ObjectOutputStream out = new ObjectOutputStream(bos);
+      out.writeObject(this);
+
+      ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+      ObjectInputStream in = new ObjectInputStream(bis);
+      return (Book) in.readObject();
+    } catch (IOException | ClassNotFoundException e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
   /**
@@ -502,26 +523,27 @@ public class Book implements Subject {
     this.isbn = isbn.replaceAll("^\"|\"$", "");
   }
 
-    public void setPreviewLink(String previewLink) {
-        this.previewLink = previewLink.replaceAll("^\"|\"$", "");
-    }
+  public String getPreviewLink() {
+    return previewLink;
+  }
 
-    public String getPreviewLink() {
-        return previewLink;
-    }
+  public void setPreviewLink(String previewLink) {
+    this.previewLink = previewLink.replaceAll("^\"|\"$", "");
+  }
 
-    public void setImageLink(String imageLink) {
-        this.imageLink = imageLink.replaceAll("^\"|\"$", "");
-    }
+  public String getImageLink() {
+    return imageLink;
+  }
 
-    public String getImageLink() {
-        return imageLink;
-    }
+  public void setImageLink(String imageLink) {
+    this.imageLink = imageLink.replaceAll("^\"|\"$", "");
+  }
 
-    @Override
-    public String toString() {
-        return "Title: " + title + "\nAuthor: " + author + "\nISBN: " + isbn + "\nSubtitle: " + subtitle + "\nPreviewLink: " + previewLink + "\nImageLink: " + imageLink;
-    }
+  @Override
+  public String toString() {
+    return "Title: " + title + "\nAuthor: " + author + "\nISBN: " + isbn + "\nSubtitle: " + subtitle
+        + "\nPreviewLink: " + previewLink + "\nImageLink: " + imageLink;
+  }
 
 
 }

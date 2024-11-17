@@ -1,5 +1,6 @@
 package LMS;
 
+import com.google.zxing.WriterException;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -26,6 +27,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.BooleanStringConverter;
 import javafx.util.converter.IntegerStringConverter;
@@ -43,7 +45,8 @@ public class AdminController implements Initializable {
   private final API_TEST apiTest = new API_TEST();
 
   private final ObservableList<Book> apiBooksList = FXCollections.observableArrayList();
-
+  @FXML
+  TableView<Book> tableAddBooks;
   private ObservableList<Book> bookList;
   @FXML
   private AnchorPane paneAddBook;
@@ -67,8 +70,8 @@ public class AdminController implements Initializable {
   private TableColumn<Book, String> bookTitleColumn;
   @FXML
   private Label bookTitle;
-  @FXML
-  private HBox box;
+//  @FXML
+//  private HBox box;
   @FXML
   private Button btnAddBook;
   @FXML
@@ -124,20 +127,15 @@ public class AdminController implements Initializable {
   @FXML
   private Label labelTotalUsers;
   @FXML
+  private ImageView qrImage;
+  @FXML
   private TableColumn<Book, String> addBookAuthorColumn;
-
   @FXML
   private TableColumn<Book, Void> addBookBtnColumn;
-
-  @FXML
-  private TableColumn<Book, Integer> addBookIdColumn;
-
-  @FXML
-  private TableColumn<Book, Boolean> addBookIsIssuedColumn;
-
   @FXML
   private TableColumn<Book, String> addBookTitleColumn;
-
+  @FXML
+  private StackPane box;
   public static Connection initialize(Library lib) {
     try {
       setupLibrary(lib);
@@ -184,7 +182,7 @@ public class AdminController implements Initializable {
       return;
     }
 
-    labelTotalBooks.setText(String.valueOf(books.size()/2));
+    labelTotalBooks.setText(String.valueOf(books.size() / 2));
     labelTotalUsers.setText(String.valueOf(users.size()));
 
     initializeTableBooks();
@@ -193,7 +191,6 @@ public class AdminController implements Initializable {
     tableBooks.getSelectionModel().selectedItemProperty()
         .addListener((observable, oldValue, newValue) -> {
           if (newValue != null) {
-            box.getChildren().clear();
             showBookDetails(newValue);
           }
         });
@@ -206,11 +203,18 @@ public class AdminController implements Initializable {
       HBox cardBox = fxmlLoader.load();
       CardController cardController = fxmlLoader.getController();
       cardController.setData(selectedBook);
-      box.getChildren().add(cardBox);
-    } catch (IOException e) {
+
+      // Cập nhật thông tin sách
+      qrImage.setImage(selectedBook.generateQRCodeImage(selectedBook.getPreviewLink(), 150, 150));
+      textSubTiltle.setText(selectedBook.getTitle());
+
+      // Thay toàn bộ nội dung của StackPane
+      box.getChildren().setAll(cardBox);
+    } catch (IOException | WriterException e) {
       e.printStackTrace();
     }
   }
+
 
   private void initializeTableBooks() {
 
@@ -219,6 +223,7 @@ public class AdminController implements Initializable {
     bookTitleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
     bookAuthorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
     bookIsIssuedColumn.setCellValueFactory(new PropertyValueFactory<>("IssuedStatus"));
+
     // Đánh dấu bảng là có thể chỉnh sửa
     tableBooks.setEditable(true);
     // Thiết lập cột title, author, và isIssued có thể chỉnh sửa
@@ -279,10 +284,10 @@ public class AdminController implements Initializable {
           return true; // Khớp với tiêu đề sách
         } else if (book.getAuthor().toLowerCase().contains(lowerCaseFilter)) {
           return true; // Khớp với tác giả
-        } else if (String.valueOf(book.getID()).contains(lowerCaseFilter)) {
-          return true; // Khớp với ID
+        } else {
+          return String.valueOf(book.getID()).contains(lowerCaseFilter); // Khớp với ID
         }
-        return false; // Không khớp
+// Không khớp
       });
     });
   }
@@ -378,11 +383,11 @@ public class AdminController implements Initializable {
           return true; // Khớp với địa chỉ
         } else if (person instanceof Librarian && "true".contains(lowerCaseFilter)) {
           return true; // Khớp với is_Librarian là True
-        } else if (!(person instanceof Librarian) && "false".contains(lowerCaseFilter)) {
-          return true; // Khớp với is_Librarian là False
+        } else {
+          return !(person instanceof Librarian) && "false".contains(
+              lowerCaseFilter); // Khớp với is_Librarian là False
         }
-
-        return false; // Không khớp
+// Không khớp
       });
     });
   }
@@ -407,37 +412,40 @@ public class AdminController implements Initializable {
     showPane(paneAddBook);
 
     // Thiết lập cột với thuộc tính của lớp Book
-    addBookIdColumn.setCellValueFactory(new PropertyValueFactory<>("ID"));
     addBookTitleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
     addBookAuthorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
-    addBookIsIssuedColumn.setCellValueFactory(new PropertyValueFactory<>("IssuedStatus"));
 
     // Thiết lập cột hành động với nút "Add"
-    addBookBtnColumn.setCellFactory(column -> new TableCell<>() {
-      private final Button addButton = new Button("Add");
+    addBookBtnColumn.setCellFactory(column -> {
+      return new TableCell<>() {
+        private final Button addButton = new Button("Add");
 
-      {
-        addButton.setOnAction(event -> {
-          Book book = getTableView().getItems().get(getIndex());
-          //System.out.println("Adding book: " + book.getTitle());
-          // Thực hiện thêm sách vào thư viện ở đây
-          bookList.add(book);
-        });
-      }
-
-      @Override
-      protected void updateItem(Void item, boolean empty) {
-        super.updateItem(item, empty);
-        if (empty) {
-          setGraphic(null);
-        } else {
-          setGraphic(addButton);
+        {
+          addButton.setOnAction(event -> {
+            Book book = getTableView().getItems().get(getIndex());
+            System.out.println("Adding book: " + book.getTitle());
+            // Thực hiện thêm sách vào thư viện ở đây
+            Book newBook = new Book(book.getID(), book.getTitle(), book.getSubtitle(),
+                book.getAuthor(), book.getIssuedStatus(), book.getPreviewLink(),
+                book.getImageLink());
+            bookList.add(newBook);
+          });
         }
-      }
+
+        @Override
+        protected void updateItem(Void item, boolean empty) {
+          super.updateItem(item, empty);
+          if (empty) {
+            setGraphic(null);
+          } else {
+            setGraphic(addButton);
+          }
+        }
+      };
     });
 
     // Thiết lập dữ liệu cho bảng
-    tableBooks.setItems(apiBooksList);
+    tableAddBooks.setItems(apiBooksList);
 
     // Lắng nghe sự thay đổi của thanh tìm kiếm và gọi API
     bookApiSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {

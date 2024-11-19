@@ -196,10 +196,11 @@
                            <children>
                               <TableView fx:id="tableBooks" editable="true" prefHeight="439.0" prefWidth="406.0" styleClass="white-background" stylesheets="@styles.css" GridPane.rowIndex="2">
                                  <columns>
-                                    <TableColumn fx:id="bookIdColumn" prefWidth="75.0" text="ID" />
-                                    <TableColumn fx:id="bookTitleColumn" prefWidth="118.40003204345703" text="Title" />
-                                    <TableColumn fx:id="bookAuthorColumn" prefWidth="118.40008544921875" text="Author" />
-                                    <TableColumn fx:id="bookIsIssuedColumn" prefWidth="111.99993896484375" text="Is Issued" />
+                                    <TableColumn fx:id="bookIdColumn" prefWidth="35.0" text="ID" />
+                                    <TableColumn fx:id="bookTitleColumn" prefWidth="160.0" text="Title" />
+                                    <TableColumn fx:id="bookAuthorColumn" prefWidth="137.59994506835938" text="Author" />
+                                    <TableColumn fx:id="bookIsIssuedColumn" prefWidth="52.0" text="Issued" />
+                                    <TableColumn fx:id="bookOptionsColumn" maxWidth="35.0" minWidth="1.0" prefWidth="35.0" />
                                  </columns>
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -247,7 +248,7 @@
                                           <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="180.0" prefWidth="380.0" styleClass="shadow" stylesheets="@styles.css" />
                                        </children>
                                     </StackPane>
-                                    <Label fx:id="textSubTiltle" alignment="CENTER" prefHeight="254.0" prefWidth="380.0" style="-fx-background-radius: 20; -fx-border-color: #5dbdb4; -fx-border-radius: 20;" styleClass="white-background" stylesheets="@styles.css" text="subtitle" wrapText="true">
+                                    <Label fx:id="textSubTiltle" alignment="CENTER" contentDisplay="CENTER" prefHeight="254.0" prefWidth="380.0" style="-fx-background-radius: 20; -fx-border-color: #5dbdb4; -fx-border-radius: 20;" styleClass="white-background" stylesheets="@styles.css" text="subtitle" textAlignment="CENTER" wrapText="true">
                                        <font>
                                           <Font name="Roboto Condensed Black" size="18.0" />
                                        </font>

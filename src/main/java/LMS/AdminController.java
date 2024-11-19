@@ -40,9 +40,6 @@ import javafx.concurrent.Task;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-
-
-
 public class AdminController implements Initializable {
 
     private static final Library library = Library.getInstance();

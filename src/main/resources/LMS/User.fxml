@@ -6,6 +6,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -15,6 +17,8 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -80,7 +84,7 @@
                               <Insets left="10.0" />
                            </VBox.margin>
                         </Label>
-                        <Button fx:id="topBook_btn" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" stylesheets="@styles.css" text="Top Books">
+                        <Button fx:id="btnTopBooks" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleTopBooks" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Top Books">
                            <graphic>
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -91,16 +95,12 @@
                            <font>
                               <Font name="Roboto Condensed Black" size="18.0" />
                            </font>
-                           <styleClass>
-                              <String fx:value="transparent" />
-                              <String fx:value="selected" />
-                           </styleClass>
                         </Button>
-                        <Button alignment="TOP_LEFT" graphicTextGap="25.0" layoutX="10.0" layoutY="38.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" styleClass="transparent" stylesheets="@styles.css" text="Your Shelf">
+                        <Button fx:id="btnBooks" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleBooks" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Books">
                            <graphic>
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../images/Bookshelf.png" />
+                                    <Image url="@../images/book_1.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -124,11 +124,11 @@
                               <Insets left="10.0" />
                            </VBox.margin>
                         </Label>
-                        <Button fx:id="reading_btn" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" styleClass="transparent" stylesheets="@styles.css" text="Reading">
+                        <Button fx:id="btnYourShelf" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleYourShelf" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Your Shelf">
                            <graphic>
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../images/Reading.png" />
+                                    <Image url="@../images/Bookshelf.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -136,7 +136,7 @@
                               <Font name="Roboto Condensed Black" size="18.0" />
                            </font>
                         </Button>
-                        <Button fx:id="favorite_btn" alignment="TOP_LEFT" graphicTextGap="25.0" layoutX="10.0" layoutY="38.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" styleClass="transparent" stylesheets="@styles.css" text="Favorite">
+                        <Button fx:id="btnFavorite" alignment="TOP_LEFT" graphicTextGap="25.0" layoutX="10.0" layoutY="38.0" mnemonicParsing="false" onAction="#handleFavorite" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Favorite">
                            <graphic>
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -148,7 +148,7 @@
                               <Font name="Roboto Condensed Black" size="18.0" />
                            </font>
                         </Button>
-                        <Button fx:id="history_btn" alignment="TOP_LEFT" graphicTextGap="25.0" layoutX="10.0" layoutY="96.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" styleClass="transparent" stylesheets="@styles.css" text="History">
+                        <Button fx:id="btnHistory" alignment="TOP_LEFT" graphicTextGap="25.0" layoutX="10.0" layoutY="96.0" mnemonicParsing="false" onAction="#handleHistory" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="History">
                            <graphic>
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -168,40 +168,176 @@
          <center>
             <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label prefHeight="41.0" prefWidth="162.0" text="Recently Added">
-                     <font>
-                        <Font name="Roboto Condensed Black" size="18.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                  </Label>
-                  <ScrollPane prefHeight="200.0" prefWidth="200.0" styleClass="transparent" stylesheets="@styles.css">
-                     <content>
-                        <HBox fx:id="cardLayout" prefHeight="200.0" prefWidth="1200.0" styleClass="transparent" stylesheets="@styles.css" />
-                     </content>
-                  </ScrollPane>
-                  <Label prefHeight="41.0" prefWidth="162.0" text="Recommended">
-                     <font>
-                        <Font name="Roboto Condensed Black" size="18.0" />
-                     </font>
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                  </Label>
-                  <ScrollPane prefHeight="200.0" prefWidth="200.0" styleClass="transparent" stylesheets="@styles.css" VBox.vgrow="ALWAYS">
-                     <content>
-                        <GridPane fx:id="bookContainer">
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                           </columnConstraints>
-                        </GridPane>
-                     </content>
-                  </ScrollPane>
+                  <AnchorPane prefHeight="590.0" prefWidth="890.0">
+                     <children>
+                        <AnchorPane fx:id="paneTopBooks" prefHeight="590.0" prefWidth="890.0">
+                           <children>
+                              <Label layoutX="0.800000011920929" prefHeight="41.0" prefWidth="162.0" text="Recently Added">
+                                 <font>
+                                    <Font name="Roboto Condensed Black" size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </Label>
+                              <ScrollPane layoutY="44.0" prefHeight="200.0" prefWidth="890.0" styleClass="transparent" stylesheets="@styles.css">
+                                 <content>
+                                    <HBox fx:id="cardLayout" prefHeight="200.0" prefWidth="1200.0" styleClass="transparent" stylesheets="@styles.css" />
+                                 </content>
+                              </ScrollPane>
+                              <Label layoutX="0.800000011920929" layoutY="244.0" prefHeight="41.0" prefWidth="162.0" text="Recommended">
+                                 <font>
+                                    <Font name="Roboto Condensed Black" size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </Label>
+                              <ScrollPane layoutY="288.0" prefHeight="200.0" prefWidth="890.0" styleClass="transparent" stylesheets="@styles.css">
+                                 <content>
+                                    <GridPane fx:id="bookContainer">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                       </columnConstraints>
+                                    </GridPane>
+                                 </content>
+                              </ScrollPane>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="paneBooks" prefHeight="590.0" prefWidth="886.0" visible="false">
+                           <children>
+                              <Separator layoutX="440.0" orientation="VERTICAL" prefHeight="590.0" prefWidth="10.0" />
+                              <GridPane layoutX="14.0" layoutY="31.0" prefHeight="538.0" prefWidth="409.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="160.19998779296876" minHeight="10.0" prefHeight="99.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="439.20000000000005" minHeight="10.0" prefHeight="439.20000000000005" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <TableView fx:id="tableBooks" editable="true" prefHeight="439.0" prefWidth="406.0" styleClass="white-background" stylesheets="@styles.css" GridPane.rowIndex="1">
+                                       <columns>
+                                          <TableColumn fx:id="bookIdColumn" prefWidth="75.0" text="ID" />
+                                          <TableColumn fx:id="bookTitleColumn" prefWidth="118.40003204345703" text="Title" />
+                                          <TableColumn fx:id="bookAuthorColumn" prefWidth="118.40008544921875" text="Author" />
+                                          <TableColumn fx:id="bookIsIssuedColumn" prefWidth="111.99993896484375" text="Is Issued" />
+                                       </columns>
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
+                                    </TableView>
+                                    <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="35.0" prefWidth="200.0" spacing="10.0" styleClass="round-layout">
+                                       <children>
+                                          <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../images/search.png" />
+                                             </image>
+                                          </ImageView>
+                                          <TextField fx:id="bookSearchTextField" prefHeight="30.0" prefWidth="297.0" promptText="Search" stylesheets="@styles.css">
+                                             <styleClass>
+                                                <String fx:value="transparent" />
+                                                <String fx:value="round-layout" />
+                                             </styleClass>
+                                          </TextField>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </GridPane>
+                              <ScrollPane layoutX="444.0" prefHeight="590.0" styleClass="transparent" stylesheets="@styles.css">
+                                 <content>
+                                    <VBox alignment="TOP_CENTER" prefHeight="1024.0" prefWidth="441.0">
+                                       <children>
+                                          <StackPane fx:id="box" prefHeight="179.0" prefWidth="442.0">
+                                             <children>
+                                                <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="180.0" prefWidth="380.0" style="-fx-background-color: #C3A3D3;" styleClass="shadow" stylesheets="@styles.css">
+                                                   <StackPane.margin>
+                                                      <Insets />
+                                                   </StackPane.margin>
+                                                </HBox>
+                                             </children>
+                                          </StackPane>
+                                          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <Button fx:id="btnBorrow" mnemonicParsing="false" text="Borrow">
+                                                   <graphic>
+                                                      <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../images/add.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Button>
+                                             </children>
+                                          </HBox>
+                                          <Label fx:id="textSubTiltle" alignment="CENTER" prefHeight="256.0" prefWidth="380.0" style="-fx-background-radius: 20; -fx-border-color: #5dbdb4; -fx-border-radius: 20;" styleClass="white-background" stylesheets="@styles.css" text="subtitle" wrapText="true">
+                                             <font>
+                                                <Font name="Roboto Condensed Black" size="18.0" />
+                                             </font>
+                                          </Label>
+                                          <Label text="QR Code">
+                                             <font>
+                                                <Font name="Roboto Condensed Black" size="18.0" />
+                                             </font>
+                                          </Label>
+                                          <ImageView fx:id="qrImage" fitHeight="128.0" fitWidth="128.0" pickOnBounds="true" preserveRatio="true" />
+                                       </children>
+                                       <padding>
+                                          <Insets top="50.0" />
+                                       </padding>
+                                    </VBox>
+                                 </content>
+                              </ScrollPane>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="paneYourShelf" prefHeight="590.0" prefWidth="890.0" visible="false">
+                           <children>
+                              <Label layoutX="0.800000011920929" prefHeight="41.0" prefWidth="162.0" text="Recently Added">
+                                 <font>
+                                    <Font name="Roboto Condensed Black" size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </Label>
+                              <ScrollPane layoutY="44.0" prefHeight="200.0" prefWidth="890.0" styleClass="transparent" stylesheets="@styles.css">
+                                 <content>
+                                    <HBox fx:id="cardLayout1" prefHeight="200.0" prefWidth="1200.0" styleClass="transparent" stylesheets="@styles.css" />
+                                 </content>
+                              </ScrollPane>
+                              <Label layoutX="0.800000011920929" layoutY="244.0" prefHeight="41.0" prefWidth="162.0" text="Recommended">
+                                 <font>
+                                    <Font name="Roboto Condensed Black" size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </Label>
+                              <ScrollPane layoutY="288.0" prefHeight="200.0" prefWidth="890.0" styleClass="transparent" stylesheets="@styles.css">
+                                 <content>
+                                    <GridPane fx:id="bookContainer1">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                       </columnConstraints>
+                                    </GridPane>
+                                 </content>
+                              </ScrollPane>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="paneFavorite" prefHeight="590.0" prefWidth="890.0" visible="false">
+                           <children>
+                              <Label text="Favorite" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="paneHistory" prefHeight="590.0" prefWidth="890.0" visible="false">
+                           <children>
+                              <Label text="History" />
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
                </children>
             </VBox>
          </center>
@@ -231,9 +367,6 @@
                         <Pane maxHeight="200.0" maxWidth="200.0" prefHeight="200.0" prefWidth="200.0" style="-fx-border-radius: 100; -fx-border-color: #12b4a6; -fx-background-radius: 100; -fx-border-width: 3;" stylesheets="@styles.css">
                            <children>
                               <ImageView fx:id="userImageView" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/ghost-rider-2020-art-2s.jpg" />
-                                 </image>
                               </ImageView>
                            </children>
                         </Pane>

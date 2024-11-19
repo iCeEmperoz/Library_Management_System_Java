@@ -1,6 +1,7 @@
 package LMS;
 
 import static LMS.HandleAlertOperations.showAlert;
+import javafx.application.Platform;
 
 import java.sql.Connection;
 import javafx.application.Application;
@@ -55,11 +56,17 @@ public class Main extends Application {
     primaryStage.getIcons().add(icon);
 
     FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/LMS/Login.fxml"));
-
     Scene loginScene = new Scene(loginLoader.load(), 372, 594);
 
     primaryStage.setTitle("Login");
     primaryStage.setScene(loginScene);
+
+    // Đảm bảo thoát ứng dụng khi cửa sổ chính bị đóng
+    primaryStage.setOnCloseRequest(event -> {
+      System.out.println("Application is closing...");
+      Platform.exit(); // Đóng tất cả cửa sổ JavaFX
+      System.exit(0);  // Đảm bảo JVM thoát
+    });
     primaryStage.show();
   }
 }

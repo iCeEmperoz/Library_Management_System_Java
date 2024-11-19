@@ -333,20 +333,36 @@ public class LoginController {
       showAlert("Success", "Login successful for user: " + username);
       main_form.setVisible(true);
       login_form.setVisible(false);
-      Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+      if (user instanceof Borrower) {
+        Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-      // Tải file FXML của dashboard
-      FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/LMS/Admin.fxml"));
+        // Tải file FXML của dashboard
+        FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/LMS/User.fxml"));
 
-      Scene adminScene = new Scene(adminLoader.load(), 1096,640);
+        Scene userScene = new Scene(adminLoader.load(), 1096,640);
 
-      primaryStage.setTitle("Dashboard");
+        primaryStage.setTitle("Library Administration");
 
-      // Chuyển sang Scene của dashboard
-      primaryStage.setScene(adminScene);
+        // Chuyển sang Scene của dashboard
+        primaryStage.setScene(userScene);
+      } else {
+        Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+        // Tải file FXML của dashboard
+        FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/LMS/Admin.fxml"));
+
+        Scene adminScene = new Scene(adminLoader.load(), 1096,640);
+
+        primaryStage.setTitle("Library");
+
+        // Chuyển sang Scene của dashboard
+        primaryStage.setScene(adminScene);
+      }
     } else {
       showAlert("Error", "Invalid username or password.");
     }
+
+
   }
 
   /**

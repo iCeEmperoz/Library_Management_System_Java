@@ -1,33 +1,60 @@
 package LMS;
 
+import com.google.zxing.WriterException;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.converter.BooleanStringConverter;
 import javax.imageio.ImageIO;
 
 public class UserController implements Initializable {
 
+  private static final Library library = Library.getInstance();
+
+  private final ArrayList<Book> books = library.getBooks();
+
+  private ObservableList<Book> bookList;
+
+  private List<Book> recentlyAdded;
+
+  private List<Book> recommended;
+
+  private FileChooser fileChooser;
+
+  private File filePath;
   @FXML
   private HBox cardLayout;
 
@@ -51,16 +78,68 @@ public class UserController implements Initializable {
 
   @FXML
   private VBox user_form;
+  @FXML
+  private TableView<Book> tableBooks;
+  @FXML
+  private TableColumn<Book, String> bookAuthorColumn;
+  @FXML
+  private TableColumn<Book, Integer> bookIdColumn;
+  @FXML
+  private ImageView bookImage;
+  @FXML
+  private TableColumn<Book, Boolean> bookIsIssuedColumn;
+  @FXML
+  private TextField bookSearchTextField;
+  @FXML
+  private TableColumn<Book, String> bookTitleColumn;
+  @FXML
+  private AnchorPane paneBooks;
+  @FXML
+  private AnchorPane paneFavorite;
+  @FXML
+  private AnchorPane paneHistory;
+  @FXML
+  private AnchorPane paneTopBooks;
+  @FXML
+  private AnchorPane paneYourShelf;
+  @FXML
+  private ImageView qrImage;
+  @FXML
+  private Label textSubTiltle;
+  @FXML
+  private StackPane box;
 
-  private List<Book> recentlyAdded;
+  public static Connection initialize(Library lib) {
+    try {
+      setupLibrary(lib);
+      Connection connection = lib.makeConnection();
+      if (connection == null) {
+        System.out.println("\nError connecting to Database. Exiting.");
+        return null;
+      }
+      lib.populateLibrary(connection);
+      return connection;
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return null;
+    }
+  }
 
-  private List<Book> recommended;
-
-  private FileChooser fileChooser;
-  private File filePath;
+  private static void setupLibrary(Library library) {
+    library.setFine(20);
+    library.setRequestExpiry(7);
+    library.setReturnDeadline(5);
+    library.setName("Library");
+  }
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
+    Connection connection = initialize(library);
+    if (connection == null) {
+      System.out.println("\nError connecting to Database. Exiting.");
+      return;
+    }
+
     recentlyAdded = recentlyAdded();
     recommended = books();
     int column = 0;
@@ -94,8 +173,87 @@ public class UserController implements Initializable {
       e.printStackTrace();
     }
 
-    Circle clip = new Circle(100,100,100);
+    Circle clip = new Circle(100, 100, 100);
     userImageView.setClip(clip);
+
+    initializeTableBooks();
+  }
+  private void showBookDetails(Book selectedBook) {
+    try {
+      FXMLLoader fxmlLoader = new FXMLLoader();
+      fxmlLoader.setLocation(getClass().getResource("/LMS/Card.fxml"));
+      HBox cardBox = fxmlLoader.load();
+      CardController cardController = fxmlLoader.getController();
+      cardController.setData(selectedBook);
+
+      // Cập nhật thông tin sách
+      qrImage.setImage(selectedBook.generateQRCodeImage(selectedBook.getPreviewLink(), 150, 150));
+      textSubTiltle.setText(selectedBook.getTitle());
+
+      // Thay toàn bộ nội dung của StackPane
+      box.getChildren().setAll(cardBox);
+    } catch (IOException | WriterException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void initializeTableBooks() {
+    // Thiết lập các cột với thuộc tính của lớp Book
+    bookIdColumn.setCellValueFactory(new PropertyValueFactory<>("ID"));
+    bookTitleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+    bookAuthorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
+    bookIsIssuedColumn.setCellValueFactory(new PropertyValueFactory<>("IssuedStatus"));
+
+    int sizeReal = 0;
+    for (int i = 0; i < books.size(); i++) {
+      sizeReal = Math.max(books.get(i).getID(), sizeReal);
+    }
+
+    int numToRemove = books.size() - sizeReal;
+
+    if (numToRemove > 0) {
+      for (int i = 0; i < numToRemove; i++) {
+        books.remove(books.size() - 1);
+      }
+    }
+
+    // Chuyển đổi ArrayList<Book> sang ObservableList<Book>
+    bookList = FXCollections.observableArrayList(books);
+
+    // Tạo FilteredList để hỗ trợ tìm kiếm
+    FilteredList<Book> filteredData = new FilteredList<>(bookList, b -> true);
+
+    // Thiết lập dữ liệu cho bảng
+    tableBooks.setItems(filteredData);
+
+    // Lắng nghe sự thay đổi của thanh tìm kiếm
+    bookSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+      filteredData.setPredicate(book -> {
+        // Nếu thanh tìm kiếm trống, hiển thị tất cả sách
+        if (newValue == null || newValue.isEmpty()) {
+          return true;
+        }
+
+        // So khớp từ khóa (không phân biệt chữ hoa/thường)
+        String lowerCaseFilter = newValue.toLowerCase();
+
+        if (book.getTitle().toLowerCase().contains(lowerCaseFilter)) {
+          return true; // Khớp với tiêu đề sách
+        } else if (book.getAuthor().toLowerCase().contains(lowerCaseFilter)) {
+          return true; // Khớp với tác giả
+        } else {
+          return String.valueOf(book.getID()).contains(lowerCaseFilter); // Khớp với ID
+        }
+// Không khớp
+      });
+    });
+
+    tableBooks.getSelectionModel().selectedItemProperty()
+        .addListener((observable, oldValue, newValue) -> {
+          if (newValue != null) {
+            showBookDetails(newValue);
+          }
+        });
   }
 
   public void chooseImageButtonPushed(ActionEvent event) {
@@ -128,21 +286,55 @@ public class UserController implements Initializable {
 
   private List<Book> recentlyAdded() {
     List<Book> ls = new ArrayList<>();
-
-    Book book = new Book();
-    book.setTitle("FORTRESS BLOOD");
-    book.setAuthor("L.D. GOFFIGAN");
-    ls.add(book);
+//
+//    Book book = new Book();
+//    book.setTitle("FORTRESS BLOOD");
+//    book.setAuthor("L.D. GOFFIGAN");
+//    ls.add(book);
     return ls;
   }
 
   private List<Book> books() {
     List<Book> ls = new ArrayList<>();
-
-    Book book = new Book();
-    book.setTitle("FORTRESS BLOOD");
-    book.setAuthor("L.D. GOFFIGAN");
-    ls.add(book);
+//
+//    Book book = new Book();
+//    book.setTitle("FORTRESS BLOOD");
+//    book.setAuthor("L.D. GOFFIGAN");
+//    ls.add(book);
     return ls;
+  }
+
+  private void showPane(AnchorPane paneToShow) {
+    paneTopBooks.setVisible(false);
+    paneBooks.setVisible(false);
+    paneYourShelf.setVisible(false);
+    paneFavorite.setVisible(false);
+    paneHistory.setVisible(false);
+    paneToShow.setVisible(true);
+  }
+
+  @FXML
+  void handleBooks(ActionEvent event) {
+    showPane(paneBooks);
+  }
+
+  @FXML
+  void handleFavorite(ActionEvent event) {
+    showPane(paneFavorite);
+  }
+
+  @FXML
+  void handleHistory(ActionEvent event) {
+    showPane(paneHistory);
+  }
+
+  @FXML
+  void handleTopBooks(ActionEvent event) {
+    showPane(paneTopBooks);
+  }
+
+  @FXML
+  void handleYourShelf(ActionEvent event) {
+    showPane(paneYourShelf);
   }
 }

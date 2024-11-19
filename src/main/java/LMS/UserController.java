@@ -5,9 +5,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,13 +19,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -37,7 +39,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.converter.BooleanStringConverter;
 import javax.imageio.ImageIO;
 
 public class UserController implements Initializable {
@@ -108,38 +109,11 @@ public class UserController implements Initializable {
   private Label textSubTiltle;
   @FXML
   private StackPane box;
-
-  public static Connection initialize(Library lib) {
-    try {
-      setupLibrary(lib);
-      Connection connection = lib.makeConnection();
-      if (connection == null) {
-        System.out.println("\nError connecting to Database. Exiting.");
-        return null;
-      }
-      lib.populateLibrary(connection);
-      return connection;
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return null;
-    }
-  }
-
-  private static void setupLibrary(Library library) {
-    library.setFine(20);
-    library.setRequestExpiry(7);
-    library.setReturnDeadline(5);
-    library.setName("Library");
-  }
+  @FXML
+  private Button btnLogOut;
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
-    Connection connection = initialize(library);
-    if (connection == null) {
-      System.out.println("\nError connecting to Database. Exiting.");
-      return;
-    }
-
     recentlyAdded = recentlyAdded();
     recommended = books();
     int column = 0;
@@ -178,6 +152,7 @@ public class UserController implements Initializable {
 
     initializeTableBooks();
   }
+
   private void showBookDetails(Book selectedBook) {
     try {
       FXMLLoader fxmlLoader = new FXMLLoader();
@@ -286,21 +261,11 @@ public class UserController implements Initializable {
 
   private List<Book> recentlyAdded() {
     List<Book> ls = new ArrayList<>();
-//
-//    Book book = new Book();
-//    book.setTitle("FORTRESS BLOOD");
-//    book.setAuthor("L.D. GOFFIGAN");
-//    ls.add(book);
     return ls;
   }
 
   private List<Book> books() {
     List<Book> ls = new ArrayList<>();
-//
-//    Book book = new Book();
-//    book.setTitle("FORTRESS BLOOD");
-//    book.setAuthor("L.D. GOFFIGAN");
-//    ls.add(book);
     return ls;
   }
 
@@ -336,5 +301,26 @@ public class UserController implements Initializable {
   @FXML
   void handleYourShelf(ActionEvent event) {
     showPane(paneYourShelf);
+  }
+
+  @FXML
+  void handleLogOut(ActionEvent event) throws IOException {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle("Logout");
+    alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
+    Optional<ButtonType> result = alert.showAndWait();
+    if (result.isPresent() && result.get() == ButtonType.OK) {
+      Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+      // Tải file FXML của dashboard
+      FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/LMS/Login.fxml"));
+
+      Scene loginScene = new Scene(loginLoader.load(), 372, 594);
+
+      primaryStage.setTitle("Login");
+
+      // Chuyển sang Scene của dashboard
+      primaryStage.setScene(loginScene);
+    }
   }
 }

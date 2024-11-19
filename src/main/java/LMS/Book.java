@@ -468,11 +468,12 @@ public class Book implements Subject {
    * @param object the object to compare this Book against
    * @return true if the given object represents a Book equivalent to this book, false otherwise
    */
+  @Override
   public boolean equals(Object object) {
     if (object instanceof Book && object != null) {
       Book book = (Book) object;
-      return book.title.equals(getTitle()) && book.author.equals(getSubtitle())
-          && book.subtitle.equals(getAuthor());
+      return book.title.equals(getTitle()) && book.author.equals(getAuthor())
+          && book.subtitle.equals(getSubtitle());
     }
     return false;
   }
@@ -483,6 +484,7 @@ public class Book implements Subject {
    *
    * @return a hash code value for this book.
    */
+  @Override
   public int hashCode() {
     return Objects.hash(title, subtitle, author);
   }

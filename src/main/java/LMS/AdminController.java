@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -22,7 +23,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -31,39 +36,32 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.converter.BooleanStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
 public class AdminController implements Initializable {
 
   private static final Library library = Library.getInstance();
-
-  private final ArrayList<Book> books = library.getBooks();
-
   private final ArrayList<Borrower> users = library.getBorrowers();
-
   private final ArrayList<Librarian> librarians = library.getLibrarians();
-
   private final API_TEST apiTest = new API_TEST();
-
   private final ObservableList<Book> apiBooksList = FXCollections.observableArrayList();
-
-
   // Biến lưu trữ truy vấn tìm kiếm hiện tại
   private final AtomicReference<String> searchQuery = new AtomicReference<>("");
-
   // Biến điều chỉnh thời gian debounce (500ms)
   private final long debounceDelay = 500;
-
   // Scheduler để thực hiện debounce
   private final ScheduledExecutorService debounceScheduler = Executors.newSingleThreadScheduledExecutor();
   // Executor cho các tác vụ bất đồng bộ
   private final ExecutorService apiExecutor = Executors.newCachedThreadPool();
+  private final ArrayList<Book> books = library.getBooks();
   @FXML
   TableView<Book> tableAddBooks;
   private ScheduledFuture<?> scheduledFuture;
@@ -184,7 +182,7 @@ public class AdminController implements Initializable {
 
       // Cập nhật thông tin sách
       qrImage.setImage(selectedBook.generateQRCodeImage(selectedBook.getPreviewLink(), 150, 150));
-      textSubTiltle.setText(selectedBook.getTitle());
+      textSubTiltle.setText(selectedBook.getSubtitle());
 
       // Thay toàn bộ nội dung của StackPane
       box.getChildren().setAll(cardBox);
@@ -193,69 +191,73 @@ public class AdminController implements Initializable {
     }
   }
 
-
   private void initializeTableBooks() {
-
     // Thiết lập các cột với thuộc tính của lớp Book
     bookIdColumn.setCellValueFactory(new PropertyValueFactory<>("ID"));
     bookTitleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
     bookAuthorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
     bookIsIssuedColumn.setCellValueFactory(new PropertyValueFactory<>("IssuedStatus"));
 
-    // Đánh dấu bảng là có thể chỉnh sửa
+    // Đánh dấu bảng có thể chỉnh sửa
     tableBooks.setEditable(true);
-    // Thiết lập cột title, author, và isIssued có thể chỉnh sửa
     bookTitleColumn.setCellFactory(TextFieldTableCell.forTableColumn());
     bookAuthorColumn.setCellFactory(TextFieldTableCell.forTableColumn());
     bookIsIssuedColumn.setCellFactory(
         TextFieldTableCell.forTableColumn(new BooleanStringConverter()));
 
-    bookTitleColumn.setOnEditCommit(event -> {
-      Book book = event.getRowValue();
-      book.setTitle(event.getNewValue());
-    });
+    bookTitleColumn.setOnEditCommit(event -> event.getRowValue().setTitle(event.getNewValue()));
+    bookAuthorColumn.setOnEditCommit(event -> event.getRowValue().setAuthor(event.getNewValue()));
+    bookIsIssuedColumn.setOnEditCommit(event ->
+        event.getRowValue().setIssuedStatus(event.getNewValue().equals("true"))
+    );
 
-    bookAuthorColumn.setOnEditCommit(event -> {
-      Book book = event.getRowValue();
-      book.setAuthor(event.getNewValue());
-    });
-
-    bookIsIssuedColumn.setOnEditCommit(event -> {
-      Book book = event.getRowValue();
-      book.setIssuedStatus(event.getNewValue().equals("true"));
-    });
-
-    // Chuyển đổi ArrayList<Book> sang ObservableList<Book>
+    // Tạo ObservableList từ danh sách sách gốc
     bookList = FXCollections.observableArrayList(books);
 
     // Tạo FilteredList để hỗ trợ tìm kiếm
     FilteredList<Book> filteredData = new FilteredList<>(bookList, b -> true);
 
-    // Thiết lập dữ liệu cho bảng
+    // Gán dữ liệu cho bảng
     tableBooks.setItems(filteredData);
 
     // Lắng nghe sự thay đổi của thanh tìm kiếm
     bookSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
       filteredData.setPredicate(book -> {
-        // Nếu thanh tìm kiếm trống, hiển thị tất cả sách
         if (newValue == null || newValue.isEmpty()) {
           return true;
         }
-
-        // So khớp từ khóa (không phân biệt chữ hoa/thường)
         String lowerCaseFilter = newValue.toLowerCase();
-
-        if (book.getTitle().toLowerCase().contains(lowerCaseFilter)) {
-          return true; // Khớp với tiêu đề sách
-        } else if (book.getAuthor().toLowerCase().contains(lowerCaseFilter)) {
-          return true; // Khớp với tác giả
-        } else {
-          return String.valueOf(book.getID()).contains(lowerCaseFilter); // Khớp với ID
-        }
-// Không khớp
+        return book.getTitle().toLowerCase().contains(lowerCaseFilter) ||
+            book.getAuthor().toLowerCase().contains(lowerCaseFilter) ||
+            String.valueOf(book.getID()).contains(lowerCaseFilter);
       });
     });
 
+    // Lắng nghe phím Backspace trên bảng
+    tableBooks.setOnKeyPressed(event -> {
+      if (event.getCode() == KeyCode.BACK_SPACE) {
+        Book selectedBook = tableBooks.getSelectionModel().getSelectedItem();
+        if (selectedBook != null) {
+          Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+          alert.setTitle("Xác nhận xóa");
+          alert.setHeaderText("Bạn có chắc chắn muốn xóa sách này?");
+          alert.setContentText("Sách: " + selectedBook.getTitle());
+
+          Optional<ButtonType> result = alert.showAndWait();
+          if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Xóa trong ObservableList
+            bookList.remove(selectedBook);
+
+            // Xóa trong ArrayList gốc
+            books.remove(selectedBook);
+
+            System.out.println("Đã xóa sách: " + selectedBook.getTitle());
+          }
+        }
+      }
+    });
+
+    // Lắng nghe khi chọn dòng mới và hiển thị chi tiết sách
     tableBooks.getSelectionModel().selectedItemProperty()
         .addListener((observable, oldValue, newValue) -> {
           if (newValue != null) {
@@ -263,6 +265,7 @@ public class AdminController implements Initializable {
           }
         });
   }
+
 
   private void initializeTableUsers() {
     // Thiết lập các cột với thuộc tính của lớp Person (là lớp cha của Borrower và Librarian)
@@ -504,5 +507,26 @@ public class AdminController implements Initializable {
   @FXML
   void handleBackFromPaneAPI(ActionEvent event) {
     showPane(paneBooks);
+  }
+
+  @FXML
+  void handleLogOut(ActionEvent event) throws IOException {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle("Logout");
+    alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
+    Optional<ButtonType> result = alert.showAndWait();
+    if (result.isPresent() && result.get() == ButtonType.OK) {
+      Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+      // Tải file FXML của dashboard
+      FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/LMS/Login.fxml"));
+
+      Scene loginScene = new Scene(loginLoader.load(), 372, 594);
+
+      primaryStage.setTitle("Login");
+
+      // Chuyển sang Scene của dashboard
+      primaryStage.setScene(loginScene);
+    }
   }
 }

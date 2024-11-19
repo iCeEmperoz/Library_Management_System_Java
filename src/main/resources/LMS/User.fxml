@@ -165,7 +165,7 @@
                   <Separator prefWidth="200.0" />
                   <VBox alignment="BOTTOM_LEFT" prefHeight="189.0" prefWidth="210.0" spacing="5.0">
                      <children>
-                        <Button fx:id="btnBooks1" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleBooks" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Log Out">
+                        <Button fx:id="btnLogOut" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleLogOut" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Log Out">
                            <graphic>
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

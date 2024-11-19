@@ -286,21 +286,11 @@ public class UserController implements Initializable {
 
   private List<Book> recentlyAdded() {
     List<Book> ls = new ArrayList<>();
-//
-//    Book book = new Book();
-//    book.setTitle("FORTRESS BLOOD");
-//    book.setAuthor("L.D. GOFFIGAN");
-//    ls.add(book);
     return ls;
   }
 
   private List<Book> books() {
     List<Book> ls = new ArrayList<>();
-//
-//    Book book = new Book();
-//    book.setTitle("FORTRESS BLOOD");
-//    book.setAuthor("L.D. GOFFIGAN");
-//    ls.add(book);
     return ls;
   }
 

@@ -39,6 +39,8 @@ public class Main extends Application {
     } finally {
       OnTerminal.cleanup(connection);
     }
+    Platform.exit(); // Đóng tất cả cửa sổ JavaFX
+    System.exit(0);  // Đảm bảo JVM thoát
   }
 
   /**
@@ -64,8 +66,7 @@ public class Main extends Application {
     // Đảm bảo thoát ứng dụng khi cửa sổ chính bị đóng
     primaryStage.setOnCloseRequest(event -> {
       System.out.println("Application is closing...");
-      Platform.exit(); // Đóng tất cả cửa sổ JavaFX
-      System.exit(0);  // Đảm bảo JVM thoát
+
     });
     primaryStage.show();
   }

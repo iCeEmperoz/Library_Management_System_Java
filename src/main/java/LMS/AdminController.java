@@ -23,7 +23,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -206,17 +205,16 @@ public class AdminController implements Initializable {
     bookIsIssuedColumn.setCellFactory(
         TextFieldTableCell.forTableColumn(new BooleanStringConverter()));
 
+    bookTitleColumn.setOnEditCommit(event -> {
+      Book book = event.getRowValue();
+      book.setTitle(event.getNewValue());
+      //library.setBooksInLibrary(book.getID(), book);
+    });
 
-        bookTitleColumn.setOnEditCommit(event -> {
-            Book book = event.getRowValue();
-            book.setTitle(event.getNewValue());
-            //library.setBooksInLibrary(book.getID(), book);
-        });
-
-        bookAuthorColumn.setOnEditCommit(event -> {
-            Book book = event.getRowValue();
-            book.setAuthor(event.getNewValue());
-        });
+    bookAuthorColumn.setOnEditCommit(event -> {
+      Book book = event.getRowValue();
+      book.setAuthor(event.getNewValue());
+    });
 
     // Tạo ObservableList từ danh sách sách gốc
     bookList = FXCollections.observableArrayList(books);
@@ -403,35 +401,36 @@ public class AdminController implements Initializable {
     addBookBtnColumn.setCellFactory(column -> new TableCell<>() {
       private final Button addButton = new Button("Add");
 
-            {
-                addButton.setOnAction(event -> {
-                    Book book = getTableView().getItems().get(getIndex());
+      {
+        addButton.setOnAction(event -> {
+          Book book = getTableView().getItems().get(getIndex());
 
-                    // Kiểm tra xem sách đã tồn tại trong danh sách hay chưa
-                    boolean bookExists = bookList.stream().anyMatch(existingBook ->
-                            existingBook.getTitle().equalsIgnoreCase(book.getTitle()) &&
-                                    existingBook.getAuthor().equalsIgnoreCase(book.getAuthor())
-                    );
+          // Kiểm tra xem sách đã tồn tại trong danh sách hay chưa
+          boolean bookExists = bookList.stream().anyMatch(existingBook ->
+              existingBook.getTitle().equalsIgnoreCase(book.getTitle()) &&
+                  existingBook.getAuthor().equalsIgnoreCase(book.getAuthor())
+          );
 
-                    if (bookExists) {
-                        // Hiển thị thông báo nếu sách đã tồn tại
-                        System.out.println("Book already exists: " + book.getTitle());
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Duplicate Book");
-                        alert.setHeaderText("This book already exists in the library.");
-                        alert.setContentText("You cannot add the same book again.");
-                        alert.showAndWait();
-                    } else {
-                        // Thêm sách mới nếu chưa tồn tại
-                        System.out.println("Adding book: " + book.getTitle());
-                        Book newBook = new Book(book.getCurrentIdNumber() + 1, book.getTitle(), book.getSubtitle(),
-                                book.getAuthor(), book.getIssuedStatus(), book.getImageLink(),
-                                book.getPreviewLink());
-                        bookList.add(newBook);
-                        library.addBookinLibrary(newBook);
-                    }
-                });
-            }
+          if (bookExists) {
+            // Hiển thị thông báo nếu sách đã tồn tại
+            System.out.println("Book already exists: " + book.getTitle());
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Duplicate Book");
+            alert.setHeaderText("This book already exists in the library.");
+            alert.setContentText("You cannot add the same book again.");
+            alert.showAndWait();
+          } else {
+            // Thêm sách mới nếu chưa tồn tại
+            System.out.println("Adding book: " + book.getTitle());
+            Book newBook = new Book(book.getCurrentIdNumber() + 1, book.getTitle(),
+                book.getSubtitle(),
+                book.getAuthor(), book.getIssuedStatus(), book.getImageLink(),
+                book.getPreviewLink());
+            bookList.add(newBook);
+            library.addBookinLibrary(newBook);
+          }
+        });
+      }
 
       @Override
       protected void updateItem(Void item, boolean empty) {

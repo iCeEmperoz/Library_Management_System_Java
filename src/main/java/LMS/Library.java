@@ -107,6 +107,10 @@ public class Library {
         this.name = name;
     }
 
+    public void setBooksInLibrary(int index, Book newBook) {
+        booksInLibrary.set(index, newBook);
+    }
+
     /*-----------Getter FUNCs.------------*/
 
     /**

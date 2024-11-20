@@ -30,6 +30,7 @@ public class Library {
     public static final String LMS_PASSWORD = "LMS_Password";
     private static Library obj;
     private API_TEST googleAPI; // Khai báo đối tượng GoogleAPI
+    private static Person user;
 
     /**
      * Returns the singleton instance of the Library class.
@@ -66,6 +67,15 @@ public class Library {
 
 
     /*------------Setter FUNCs.------------*/
+
+    /**
+     * Sets the User
+     *
+     * @param user the User using application
+     */
+    public void setUser(Person user) {
+        this.user = user;
+    }
 
     /**
      * Sets the return deadline for books.
@@ -112,6 +122,15 @@ public class Library {
     }
 
     /*-----------Getter FUNCs.------------*/
+
+    /**
+     * Retrieves the User
+     *
+     * @return the user
+     */
+    public Person getUser() {
+        return user;
+    }
 
     /**
      * Retrieves the expiry duration for hold requests.

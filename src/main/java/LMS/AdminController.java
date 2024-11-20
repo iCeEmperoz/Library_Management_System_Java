@@ -6,6 +6,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -157,16 +158,6 @@ public class AdminController implements Initializable {
     @FXML
     private StackPane box;
 
-    private Librarian librarian;
-
-    public void setLibrarian(Librarian librarian) {
-        this.librarian = librarian;
-    }
-
-    public Librarian getLibrarian() {
-        return librarian;
-    }
-
     @FXML
     void chooseImageButtonPushed(ActionEvent event) {
 
@@ -262,7 +253,7 @@ public class AdminController implements Initializable {
                 });
 
                 // Add all menu items to the MenuButton
-                menuButton.getItems().addAll(holdItem, checkOutItem, checkInItem, deleteItem);
+                menuButton.getItems().addAll(holdItem, checkOutItem, checkInItem, showHoldRequestQueue, deleteItem);
             }
 
             @Override
@@ -344,10 +335,10 @@ public class AdminController implements Initializable {
     private void handleCheckOutBookAction(Book book) {
         // Similar to handleBookIssue in OnTerminal.java
         Borrower borrower = handleFindBorrower();
-        String message = book.issueBook(borrower, librarian);
-        showAlert("Check Out Book Operation", message);
-        if (message.contains("Would you like to place the book on hold?")) {
-
+        String message = book.issueBook(borrower, (Librarian) library.getUser());
+        boolean secondConfirm = showAlert("Check Out Book Operation", message);
+        if (message.contains("Would you like to place the book on hold?") && secondConfirm) {
+            showAlert("Place Book on Hold operation", book.makeHoldRequest(borrower));
         }
     }
 
@@ -358,10 +349,12 @@ public class AdminController implements Initializable {
             showAlert("Check In Operation", "This book has not been issued yet!");
         } else {
             Loan loan = book.getLoan();
-            String message = book.returnBook(loan.getBorrower(), loan, librarian);
-            showAlert("Check In Operation", message);
+            if (showAlert("Check in Confirmation", "This book is now borrowed by "
+                    + loan.getBorrower().getName() + ".\nCheck in this Book?")) {
+                String message = book.returnBook(loan.getBorrower(), loan, (Librarian) library.getUser());
+                showAlert("Check In Operation", message);
+            }
         }
-
     }
 
     @FXML
@@ -371,8 +364,49 @@ public class AdminController implements Initializable {
 
     @FXML
     private void handleShowHoldRequestQueue(Book book) {
+        if (book == null) {
+            showAlert("Error", "No book selected to show hold requests.");
+            return;
+        }
 
+        List<HoldRequest> holdRequests = book.getHoldRequests(); // Assume this method exists
+        Stage stage = new Stage();
+        stage.setTitle("Hold Request Queue for " + book.getTitle());
+
+        if (holdRequests.isEmpty()) {
+            showAlert("Information", "No hold requests available for this book.");
+            return;
+        }
+
+        TableView<HoldRequest> table = new TableView<>();
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        TableColumn<HoldRequest, String> noColumn = new TableColumn<>("No.");
+        noColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(holdRequests.indexOf(data.getValue()) + 1)));
+
+        TableColumn<HoldRequest, String> titleColumn = new TableColumn<>("Book's Title");
+        titleColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getBook().getTitle()));
+
+        TableColumn<HoldRequest, String> borrowerColumn = new TableColumn<>("Borrower's Name");
+        borrowerColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getBorrower().getName()));
+
+        TableColumn<HoldRequest, String> dateColumn = new TableColumn<>("Request Date");
+        dateColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getRequestDate().toString()));
+
+        table.getColumns().addAll(noColumn, titleColumn, borrowerColumn, dateColumn);
+
+        ObservableList<HoldRequest> holdRequestList = FXCollections.observableArrayList(holdRequests);
+        table.setItems(holdRequestList);
+
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(10));
+        vbox.getChildren().addAll(new Label("Hold Request Queue for: " + book.getTitle()), table);
+
+        Scene scene = new Scene(vbox, 600, 400);
+        stage.setScene(scene);
+        stage.show();
     }
+
 
     @FXML
     private Borrower handleFindBorrower() {
@@ -387,7 +421,7 @@ public class AdminController implements Initializable {
 
         // Create a dropdown (ChoiceBox) and a TextField
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
-        choiceBox.getItems().addAll("ID", "Name", "Email");
+        choiceBox.getItems().addAll("ID", "Name");
         choiceBox.setValue("ID"); // Default selection
 
         TextField textField = new TextField();
@@ -430,17 +464,14 @@ public class AdminController implements Initializable {
                     case "Name":
 //                        borrower = library.findBorrowerByName(searchValue);
                         break;
-                    case "Email":
-//                        borrower = library.findBorrowerByEmail(searchValue);
-                        break;
                 }
 
                 // Display the result
                 if (borrower != null) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Borrower Found");
-                    alert.setHeaderText("Borrower Details");
-                    alert.setContentText(borrower.toString());
+                    alert.setHeaderText("Borrower's Name");
+                    alert.setContentText(borrower.getName());
                     alert.showAndWait();
                 } else {
                     Alert alert = new Alert(Alert.AlertType.WARNING);

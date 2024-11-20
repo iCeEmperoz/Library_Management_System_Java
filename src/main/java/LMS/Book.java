@@ -131,7 +131,7 @@ public class Book implements Subject {
      * Prints the hold requests for the book.
      */
     public void printHoldRequests() {
-        if (!holdRequestsOperations.getHoldRequests().isEmpty()) {
+        if (!getHoldRequests().isEmpty()) {
             System.out.println("\nHold Requests are:");
 
             System.out.println(
@@ -141,9 +141,9 @@ public class Book implements Subject {
             System.out.println(
                     "----------------------------------------------------------------------------------------------------");
 
-            for (int i = 0; i < holdRequestsOperations.getHoldRequests().size(); i++) {
+            for (int i = 0; i < getHoldRequests().size(); i++) {
                 System.out.printf("%-5d ", i + 1);
-                holdRequestsOperations.getHoldRequests().get(i).print();
+                getHoldRequests().get(i).print();
             }
         } else {
             System.out.println("\nNo hold requests available");
@@ -344,8 +344,8 @@ public class Book implements Subject {
         }
 
         // If that borrower has already requested for that particular book. Then he isn't allowed to make the same request again.
-        for (int i = 0; i < holdRequestsOperations.getHoldRequests().size(); i++) {
-            HoldRequest holdRequest = holdRequestsOperations.getHoldRequests().get(i);
+        for (int i = 0; i < getHoldRequests().size(); i++) {
+            HoldRequest holdRequest = getHoldRequests().get(i);
             if (holdRequest.getBorrower() == borrower && this.getTitle()
                     .equals(holdRequest.getBook().getTitle())) {
                 makeRequest = false;
@@ -383,15 +383,13 @@ public class Book implements Subject {
         // First deleting the expired hold requests
         Date today = new Date();
 
-        ArrayList<HoldRequest> hRequests = holdRequestsOperations.getHoldRequests();
+        ArrayList<HoldRequest> hRequests = getHoldRequests();
 
-        for (int i = 0; i < hRequests.size(); i++) {
-            HoldRequest holdRequest = hRequests.get(i);
-
+        for (HoldRequest holdRequest : hRequests) {
             // Remove that hold request which has expired
             long days = ChronoUnit.DAYS.between(today.toInstant(),
                     holdRequest.getRequestDate().toInstant());
-            days = 0 - days;
+            days = -days;
 
             if (days > Library.getInstance().getHoldRequestExpiry()) {
                 holdRequestsOperations.removeHoldRequest();
@@ -411,19 +409,19 @@ public class Book implements Subject {
 //                makeHoldRequest(borrower);
 //            }
         } else {
-            if (!holdRequestsOperations.getHoldRequests().isEmpty()) {
+            if (!hRequests.isEmpty()) {
                 boolean hasRequest = false;
 
-                for (int i = 0; i < holdRequestsOperations.getHoldRequests().size() && !hasRequest; i++) {
-                    if (holdRequestsOperations.getHoldRequests().get(i).getBorrower() == borrower) {
+                for (int i = 0; i < hRequests.size() && !hasRequest; i++) {
+                    if (hRequests.get(i).getBorrower() == borrower) {
                         hasRequest = true;
                     }
                 }
 
                 if (hasRequest) {
                     // If this particular borrower has the earliest request for this book
-                    if (holdRequestsOperations.getHoldRequests().getFirst().getBorrower() == borrower) {
-                        serviceHoldRequest(holdRequestsOperations.getHoldRequests().getFirst());
+                    if (hRequests.getFirst().getBorrower() == borrower) {
+                        serviceHoldRequest(hRequests.getFirst());
                     } else {
                         output.append("\nSorry some other users have requested for this book earlier. " +
                                 "So you have to wait until their hold requests are processed.\n");

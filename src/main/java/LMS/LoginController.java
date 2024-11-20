@@ -228,7 +228,7 @@ public class LoginController {
                 Scene userScene = new Scene(adminLoader.load(), 1096, 640);
 
                 primaryStage.setTitle("Library Administration");
-                primaryStage.setUserData(user);
+                library.setUser(user);
 
                 // Chuyển sang Scene của dashboard
                 primaryStage.setScene(userScene);
@@ -237,12 +237,11 @@ public class LoginController {
 
                 // Tải file FXML của dashboard
                 FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/LMS/Admin.fxml"));
-                AdminController admin = adminLoader.getController();
-                admin.setLibrarian((Librarian) user);
+
                 Scene adminScene = new Scene(adminLoader.load(), 1096, 640);
 
                 primaryStage.setTitle("Library");
-                primaryStage.setUserData(user);
+                library.setUser(user);
 
                 // Chuyển sang Scene của dashboard
                 primaryStage.setScene(adminScene);

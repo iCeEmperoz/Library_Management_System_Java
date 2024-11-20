@@ -482,6 +482,7 @@ public class OnTerminal {
             Borrower borrower = library.findBorrower();
             if (borrower != null) {
                 String out = book.issueBook(borrower, (Librarian) person);
+                System.out.print(out);
                 if (out.contains("Would you like to place the book on hold?")) {
                     System.out.print("(y/n) ");
                     String choice = scanner.next();

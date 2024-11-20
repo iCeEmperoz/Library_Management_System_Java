@@ -2,12 +2,10 @@ package LMS;
 
 import com.google.zxing.WriterException;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,18 +26,23 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import javafx.util.converter.BooleanStringConverter;
 import javafx.util.converter.IntegerStringConverter;
+import javafx.geometry.Insets;
+
+import static LMS.HandleAlertOperations.showAlert;
 
 public class AdminController implements Initializable {
 
@@ -154,6 +157,16 @@ public class AdminController implements Initializable {
     @FXML
     private StackPane box;
 
+    private Librarian librarian;
+
+    public void setLibrarian(Librarian librarian) {
+        this.librarian = librarian;
+    }
+
+    public Librarian getLibrarian() {
+        return librarian;
+    }
+
     @FXML
     void chooseImageButtonPushed(ActionEvent event) {
 
@@ -221,25 +234,31 @@ public class AdminController implements Initializable {
                 MenuItem holdItem = new MenuItem("Place book on Hold");
                 holdItem.setOnAction(event -> {
                     Book book = getTableView().getItems().get(getIndex());
-//                    handleAddBookAction(book); // Implement your method for adding a book
+                    handleHoldBookAction(book); // Implement your method for adding a book
                 });
 
                 MenuItem checkOutItem = new MenuItem("Check out");
                 checkOutItem.setOnAction(event -> {
                     Book book = getTableView().getItems().get(getIndex());
-//                    handleEditBookAction(book); // Implement your method for editing a book
+                    handleCheckOutBookAction(book); // Implement your method for editing a book
                 });
 
                 MenuItem checkInItem = new MenuItem("Check in");
                 checkInItem.setOnAction(event -> {
                     Book book = getTableView().getItems().get(getIndex());
-//                    handleDeleteBookAction(book); // Implement your method for deleting a book
+                    handleCheckInBookAction(book); // Implement your method for deleting a book
                 });
 
                 MenuItem deleteItem = new MenuItem("Remove");
                 deleteItem.setOnAction(event -> {
                     Book book = getTableView().getItems().get(getIndex());
-//                    handleDeleteBookAction(book); // Implement your method for deleting a book
+                    handleDeleteBookAction(book); // Implement your method for deleting a book
+                });
+
+                MenuItem showHoldRequestQueue = new MenuItem("Show hold request queue");
+                showHoldRequestQueue.setOnAction(event -> {
+                    Book book = getTableView().getItems().get(getIndex());
+                    handleShowHoldRequestQueue(book);
                 });
 
                 // Add all menu items to the MenuButton
@@ -313,6 +332,136 @@ public class AdminController implements Initializable {
                     }
                 });
     }
+
+    @FXML
+    private void handleHoldBookAction(Book book) {
+        // Similar to handleHoldRequest in OnTerminal.java
+        Borrower borrower = handleFindBorrower();
+        showAlert("Place Book on Hold operation", book.makeHoldRequest(borrower));
+    }
+
+    @FXML
+    private void handleCheckOutBookAction(Book book) {
+        // Similar to handleBookIssue in OnTerminal.java
+        Borrower borrower = handleFindBorrower();
+        String message = book.issueBook(borrower, librarian);
+        showAlert("Check Out Book Operation", message);
+        if (message.contains("Would you like to place the book on hold?")) {
+
+        }
+    }
+
+    @FXML
+    private void handleCheckInBookAction(Book book) {
+        // Similar to handleBookReturn in OnTerminal.java
+        if (!book.getIssuedStatus()) {
+            showAlert("Check In Operation", "This book has not been issued yet!");
+        } else {
+            Loan loan = book.getLoan();
+            String message = book.returnBook(loan.getBorrower(), loan, librarian);
+            showAlert("Check In Operation", message);
+        }
+
+    }
+
+    @FXML
+    private void handleDeleteBookAction(Book book) {
+
+    }
+
+    @FXML
+    private void handleShowHoldRequestQueue(Book book) {
+
+    }
+
+    @FXML
+    private Borrower handleFindBorrower() {
+        // Create the custom dialog
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Search Borrower");
+        dialog.setHeaderText("Search for a Borrower using specific criteria");
+
+        // Set the dialog's buttons
+        ButtonType searchButtonType = new ButtonType("Search", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(searchButtonType, ButtonType.CANCEL);
+
+        // Create a dropdown (ChoiceBox) and a TextField
+        ChoiceBox<String> choiceBox = new ChoiceBox<>();
+        choiceBox.getItems().addAll("ID", "Name", "Email");
+        choiceBox.setValue("ID"); // Default selection
+
+        TextField textField = new TextField();
+        textField.setPromptText("Enter search value");
+
+        // Layout: Arrange the ChoiceBox and TextField
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        grid.add(new Label("Search By:"), 0, 0);
+        grid.add(choiceBox, 1, 0);
+        grid.add(new Label("Search Value:"), 0, 1);
+        grid.add(textField, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Convert the result when the "Search" button is clicked
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == searchButtonType) {
+                return new Pair<>(choiceBox.getValue(), textField.getText());
+            }
+            return null;
+        });
+
+        // Show the dialog and process the result
+        Optional<Pair<String, String>> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            String searchType = result.get().getKey();
+            String searchValue = result.get().getValue();
+
+            // Perform the search based on the selected type
+            Borrower borrower = null;
+            try {
+                switch (searchType) {
+                    case "ID":
+                        borrower = library.logicalFindBorrower(Integer.parseInt(searchValue));
+                        break;
+                    case "Name":
+//                        borrower = library.findBorrowerByName(searchValue);
+                        break;
+                    case "Email":
+//                        borrower = library.findBorrowerByEmail(searchValue);
+                        break;
+                }
+
+                // Display the result
+                if (borrower != null) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Borrower Found");
+                    alert.setHeaderText("Borrower Details");
+                    alert.setContentText(borrower.toString());
+                    alert.showAndWait();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Borrower Not Found");
+                    alert.setHeaderText("No Borrower Found");
+                    alert.setContentText("No borrower matches the provided information.");
+                    alert.showAndWait();
+                }
+            } catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("An error occurred");
+                alert.setContentText(e.getMessage());
+                alert.showAndWait();
+            }
+            return borrower;
+        }
+
+        return null;
+    }
+
 
 
     private void initializeTableUsers() {

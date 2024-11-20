@@ -1046,8 +1046,9 @@ public class Library {
                 for (int i = 0; i < books.size() && set; i++) {
                     if (books.get(i).getBook().getID() == bookID && books.get(i).getReceiver() == null) {
                         set = false;
-                        Loan bBook = new Loan(borower, books.get(i).getBook(), books.get(i).getIssuer(), null, books.get(i).getIssuedDate(), null, books.get(i).getFineStatus());
-                        borower.addBorrowedBook(bBook);
+                        Loan loan = new Loan(borower, books.get(i).getBook(), books.get(i).getIssuer(), null, books.get(i).getIssuedDate(), null, books.get(i).getFineStatus());
+                        borower.addBorrowedBook(loan);
+                        books.get(i).getBook().setLoan(loan);
                     }
                 }
 

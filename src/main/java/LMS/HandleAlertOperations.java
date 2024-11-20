@@ -2,6 +2,12 @@ package LMS;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.TextInputDialog;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class HandleAlertOperations {
     /**
@@ -18,5 +24,9 @@ public class HandleAlertOperations {
             alert.setContentText(content);
             alert.showAndWait();
         });
+    }
+
+    public static void showDialoge(String title, String content) {
+
     }
 }

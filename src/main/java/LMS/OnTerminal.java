@@ -408,10 +408,10 @@ public class OnTerminal {
             if ("Librarian".equals(person.getClass().getSimpleName())) {
                 Borrower borrower = library.findBorrower();
                 if (borrower != null) {
-                    book.makeHoldRequest(borrower);
+                    System.out.print(book.makeHoldRequest(borrower));
                 }
             } else {
-                book.makeHoldRequest((Borrower) person);
+                System.out.print(book.makeHoldRequest((Borrower) person));
             }
         }
     }
@@ -481,7 +481,15 @@ public class OnTerminal {
 
             Borrower borrower = library.findBorrower();
             if (borrower != null) {
-                book.issueBook(borrower, (Librarian) person);
+                String out = book.issueBook(borrower, (Librarian) person);
+                if (out.contains("Would you like to place the book on hold?")) {
+                    System.out.print("(y/n) ");
+                    String choice = scanner.next();
+
+                    if (choice.equals("y") || choice.equals("Y")) {
+                        System.out.print(book.makeHoldRequest(borrower));
+                    }
+                }
             }
         }
     }
@@ -501,7 +509,7 @@ public class OnTerminal {
             if (!loans.isEmpty()) {
                 int input = takeInput(-1, loans.size());
                 Loan l = loans.get(input);
-                l.getBook().returnBook(borrower, l, (Librarian) person);
+                System.out.print(l.getBook().returnBook(borrower, l, (Librarian) person));
             } else {
                 System.out.println("\nThis borrower " + borrower.getName() + " has no book to return.");
             }

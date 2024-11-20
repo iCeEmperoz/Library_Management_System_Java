@@ -379,6 +379,9 @@
                         </Button>
                      </children>
                   </AnchorPane>
+                  <AnchorPane fx:id="paneSearchBorrower" prefHeight="100.0" prefWidth="500.0" visible="false">
+
+                  </AnchorPane>
                </children>
             </AnchorPane>
          </center>

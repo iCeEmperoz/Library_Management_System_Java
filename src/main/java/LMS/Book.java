@@ -32,6 +32,7 @@ public class Book implements Subject {
     private String subtitle;
     private String author;
     private boolean isIssued;
+    private ArrayList<HoldRequest> holdRequests = new ArrayList<>();
     private HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
     private List<Observer> observers = new ArrayList<>();
     private String isbn;
@@ -85,6 +86,10 @@ public class Book implements Subject {
 
     public int getCurrentIdNumber() {
         return currentIdNumber;
+    }
+
+    public void addHoldRequest(HoldRequest holdRequest) {
+        holdRequests.add(holdRequest);
     }
 
     // Tạo bản sao sâu
@@ -288,7 +293,8 @@ public class Book implements Subject {
      * @return The list of hold requests for the book
      */
     public ArrayList<HoldRequest> getHoldRequests() {
-        return holdRequestsOperations.getHoldRequests();
+//        return holdRequestsOperations.getHoldRequests();
+        return holdRequests;
     }
 
     /**
@@ -318,7 +324,8 @@ public class Book implements Subject {
     public String placeBookOnHold(Borrower borrower) {
         HoldRequest holdRequest = new HoldRequest(borrower, this, new Date());
 
-        holdRequestsOperations.addHoldRequest(holdRequest);
+//        holdRequestsOperations.addHoldRequest(holdRequest);
+        addHoldRequest(holdRequest);
         borrower.addHoldRequest(holdRequest);
 
         attach(borrower);
@@ -366,7 +373,10 @@ public class Book implements Subject {
      * @param holdRequest The hold request to be serviced
      */
     public void serviceHoldRequest(HoldRequest holdRequest) {
-        holdRequestsOperations.removeHoldRequest();
+//        holdRequestsOperations.removeHoldRequest();
+        if (!holdRequests.isEmpty()) {
+            holdRequests.removeFirst();
+        }
         holdRequest.getBorrower().removeHoldRequest(holdRequest);
         detach(holdRequest.getBorrower());
     }
@@ -392,7 +402,10 @@ public class Book implements Subject {
             days = -days;
 
             if (days > Library.getInstance().getHoldRequestExpiry()) {
-                holdRequestsOperations.removeHoldRequest();
+//                holdRequestsOperations.removeHoldRequest();
+                if (!holdRequests.isEmpty()) {
+                    holdRequests.removeFirst();
+                }
                 holdRequest.getBorrower().removeHoldRequest(holdRequest);
                 detach(holdRequest.getBorrower());
             }

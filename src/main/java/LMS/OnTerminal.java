@@ -578,7 +578,7 @@ public class OnTerminal {
         ArrayList<Book> books = library.searchForBooks();
         if (books != null) {
             int input = takeInput(-1, books.size());
-            library.removeBookfromLibrary(books.get(input));
+            System.out.print(library.removeBookfromLibrary(books.get(input)));
         }
     }
 

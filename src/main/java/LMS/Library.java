@@ -293,24 +293,27 @@ public class Library {
      *
      * @param book The book to be removed from the library.
      */
-    public void removeBookfromLibrary(Book book) {
+    public String removeBookfromLibrary(Book book) {
+        StringBuilder output = new StringBuilder();
         boolean isIssued = book.getIssuedStatus();
 
         //Checking if this book is currently borrowed by some borrower
         if (isIssued) {
-            System.out.println("This particular book is currently borrowed by some borrower.");
-            System.out.println("\nDelete Unsuccessful.");
+            output.append("This particular book is currently borrowed by some borrower.\n");
+            output.append("Delete Unsuccessful.\n");
         } else {
-            System.out.println("\nCurrently this book is not borrowed by anyone.");
+            output.append("Currently this book is not borrowed by anyone.\n");
             ArrayList<HoldRequest> hRequests = book.getHoldRequests();
 
             if (!logicalRemoveBook(hRequests, book)) {
-                System.out.println("This book is on hold by some borrower.");
-                System.out.println("Please remove the hold request first.");
+                output.append("This book is on hold by some borrower.\n");
+                output.append("Please remove the hold request first.\nDelete Unsuccessful.\n");
             } else {
-                System.out.println("The book is successfully removed.");
+                output.append("The book is successfully removed.\n");
             }
         }
+
+        return output.toString();
     }
 
     /**
@@ -327,7 +330,6 @@ public class Library {
             booksInLibrary.remove(book);
             return true;
         }
-
     }
 
     /**
@@ -1019,7 +1021,8 @@ public class Library {
                     if (book.getID() == bookId) {
                         set = false;
                         HoldRequest hbook = new HoldRequest(borower, book, off);
-                        holdRequestsOperations.addHoldRequest(hbook);
+//                        holdRequestsOperations.addHoldRequest(hbook);
+                        book.addHoldRequest(hbook);
                         borower.addHoldRequest(hbook);
                         
                         // Setting subject - observer relationship

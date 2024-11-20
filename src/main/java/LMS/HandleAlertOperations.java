@@ -14,28 +14,18 @@ public class HandleAlertOperations {
      * @param title   the title of the alert dialog
      * @param content the content text of the alert dialog
      */
-    public static boolean showAlert(String title, String content) {
-        final boolean[] result = {true}; // Default return value is true
+    public static void showAlert(String title, String content) {
         Platform.runLater(() -> { // Ensure this code runs on FX Application Thread
-            if (content.contains("?")) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle(title);
-                alert.setHeaderText(null);
-                alert.setContentText(content);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
 
-                ButtonType yesButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
-                ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.NO);
-                alert.getButtonTypes().setAll(yesButton, noButton);
+            // Wrap text for content
+            Label contentLabel = new Label(content);
+            contentLabel.setWrapText(true);
+            alert.getDialogPane().setContent(contentLabel);
 
-                Optional<ButtonType> choice = alert.showAndWait();
-                result[0] = choice.isPresent() && choice.get() == yesButton; // True if "Yes" is selected, false otherwise
-            } else {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle(title);
-                alert.setHeaderText(null);
-                alert.setContentText(content);
-                alert.showAndWait(); // Simply show the alert
-            }
+            alert.showAndWait(); // Simply show the alert
         });
 
         try {
@@ -44,12 +34,28 @@ public class HandleAlertOperations {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt(); // Restore interrupted state
         }
-
-        return result[0];
     }
 
 
-    public static void showDialoge(String title, String content) {
+    public static boolean showConfirmation(String title, String content) {
+        final boolean[] result = {true}; // Default return value is true
 
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+
+        // Wrap text for content
+        Label contentLabel = new Label(content);
+        contentLabel.setWrapText(true);
+        alert.getDialogPane().setContent(contentLabel);
+
+        ButtonType yesButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+        ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.NO);
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> choice = alert.showAndWait();
+        result[0] = choice.isPresent() && choice.get() == yesButton; // True if "Yes" is selected, false otherwise
+
+        return result[0];
     }
 }

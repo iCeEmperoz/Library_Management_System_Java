@@ -366,8 +366,15 @@ public class AdminController implements Initializable {
 
     @FXML
     private void handleDeleteBookAction(Book book) {
-        showAlert("Remove Book from Library", library.removeBookfromLibrary(book));
+        String result = library.removeBookfromLibrary(book);
+
+        showAlert("Remove Book from Library", result);
+
+        if (result.endsWith("The book is successfully removed.\n")) {
+            bookList.remove(book);
+        }
     }
+
 
     @FXML
     private void handleShowHoldRequestQueue(Book book) {

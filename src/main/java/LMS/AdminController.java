@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,6 +38,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import javafx.util.converter.BooleanStringConverter;
@@ -388,17 +390,45 @@ public class AdminController implements Initializable {
 
         TableColumn<HoldRequest, String> noColumn = new TableColumn<>("No.");
         noColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(holdRequests.indexOf(data.getValue()) + 1)));
+        noColumn.setPrefWidth(40);
 
         TableColumn<HoldRequest, String> titleColumn = new TableColumn<>("Book's Title");
         titleColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getBook().getTitle()));
+        titleColumn.setCellFactory( column -> {
+            return new TableCell<HoldRequest, String>() {
+                private final Text text;
+
+                {
+                    text = new Text();
+                    text.wrappingWidthProperty().bind(column.widthProperty());
+                    setGraphic(text);
+                }
+
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        text.setText(item);
+                    }
+                }
+            };
+        });
+        titleColumn.setPrefWidth(500);
+
+        TableColumn<HoldRequest, Integer> borrowerIDColumn = new TableColumn<>("BorrowerID");
+        borrowerIDColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getBorrower().getID()).asObject());
+        borrowerIDColumn.setPrefWidth(90);
 
         TableColumn<HoldRequest, String> borrowerColumn = new TableColumn<>("Borrower's Name");
         borrowerColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getBorrower().getName()));
+        borrowerColumn.setPrefWidth(150);
 
         TableColumn<HoldRequest, String> dateColumn = new TableColumn<>("Request Date");
         dateColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getRequestDate().toString()));
 
-        table.getColumns().addAll(noColumn, titleColumn, borrowerColumn, dateColumn);
+        table.getColumns().addAll(noColumn, titleColumn, borrowerIDColumn, borrowerColumn, dateColumn);
 
         ObservableList<HoldRequest> holdRequestList = FXCollections.observableArrayList(holdRequests);
         table.setItems(holdRequestList);
@@ -407,7 +437,7 @@ public class AdminController implements Initializable {
         vbox.setPadding(new Insets(10));
         vbox.getChildren().addAll(new Label("Hold Request Queue for: " + book.getTitle()), table);
 
-        Scene scene = new Scene(vbox, 600, 400);
+        Scene scene = new Scene(vbox, 1000, 400);
         stage.setScene(scene);
         stage.show();
     }

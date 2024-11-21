@@ -270,11 +270,40 @@ public class LoginController {
         String password = signup_password.getText();
         String email = signup_email.getText();
         String address = signup_address.getText();
-        int phone = Integer.parseInt(signup_phone.getText());
+        String phoneText = signup_phone.getText();
+
+        // Validate that essential fields are not null or empty
+        if (username == null || username.trim().isEmpty() ||
+                password == null || password.trim().isEmpty() ||
+                email == null || email.trim().isEmpty() ||
+                phoneText == null || phoneText.trim().isEmpty()) {
+            showAlert("Error", "Please fill in all required fields: username, password, email, and phone.");
+            return;
+        }
+
+        // Validate phone number is an integer
+        int phone;
+        try {
+            phone = Integer.parseInt(phoneText);
+        } catch (NumberFormatException e) {
+            showAlert("Error", "Invalid phone number. Please enter a numeric value.");
+            return;
+        }
+
         boolean isLibrarian = signup_librarian.isSelected();
         if (isLibrarian) {
             String systemPassword = signup_systemPassword.getText();
-            double salary = Double.parseDouble(signup_salary.getText());
+            String salaryText = signup_salary.getText();
+            double salary;
+
+            // Validate salary is a double
+            try {
+                salary = Double.parseDouble(salaryText);
+            } catch (NumberFormatException e) {
+                showAlert("Error", "Invalid salary. Please enter a numeric value.");
+                return;
+            }
+
             Librarian librarian = new Librarian(-1, username, password, address, phone, email, salary);
             if (systemPassword.equals(library.LMS_PASSWORD)) {
 

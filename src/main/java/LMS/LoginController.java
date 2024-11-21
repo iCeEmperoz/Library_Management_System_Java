@@ -241,7 +241,7 @@ public class LoginController {
                 Scene adminScene = new Scene(adminLoader.load(), 1096, 640);
 
                 primaryStage.setTitle("Library");
-                library.setUser(user);
+                primaryStage.setUserData(user);
 
                 // Chuyển sang Scene của dashboard
                 primaryStage.setScene(adminScene);

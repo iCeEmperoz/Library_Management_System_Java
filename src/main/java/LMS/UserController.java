@@ -63,20 +63,10 @@ public class UserController implements Initializable {
   private GridPane bookContainer;
 
   @FXML
-  private Button backButton;
-
-  @FXML
-  private Button changeAvatarButton;
-
-  @FXML
   private ImageView userImageView;
 
   @FXML
   private BorderPane dashboard_form;
-
-  @FXML
-  private Button user_btn;
-
   @FXML
   private VBox user_form;
   @FXML
@@ -85,8 +75,6 @@ public class UserController implements Initializable {
   private TableColumn<Book, String> bookAuthorColumn;
   @FXML
   private TableColumn<Book, Integer> bookIdColumn;
-  @FXML
-  private ImageView bookImage;
   @FXML
   private TableColumn<Book, Boolean> bookIsIssuedColumn;
   @FXML
@@ -109,8 +97,6 @@ public class UserController implements Initializable {
   private Label textSubTiltle;
   @FXML
   private StackPane box;
-  @FXML
-  private Button btnLogOut;
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -178,19 +164,6 @@ public class UserController implements Initializable {
     bookTitleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
     bookAuthorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
     bookIsIssuedColumn.setCellValueFactory(new PropertyValueFactory<>("IssuedStatus"));
-
-    int sizeReal = 0;
-    for (int i = 0; i < books.size(); i++) {
-      sizeReal = Math.max(books.get(i).getID(), sizeReal);
-    }
-
-    int numToRemove = books.size() - sizeReal;
-
-    if (numToRemove > 0) {
-      for (int i = 0; i < numToRemove; i++) {
-        books.remove(books.size() - 1);
-      }
-    }
 
     // Chuyển đổi ArrayList<Book> sang ObservableList<Book>
     bookList = FXCollections.observableArrayList(books);

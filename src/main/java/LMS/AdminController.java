@@ -242,9 +242,27 @@ public class AdminController implements Initializable {
 
                 MenuItem deleteItem = new MenuItem("Remove");
                 deleteItem.setOnAction(event -> {
-                    Book book = getTableView().getItems().get(getIndex());
-                    handleDeleteBookAction(book); // Implement your method for deleting a book
-                });
+                    Book selectedBook = getTableView().getItems().get(getIndex());
+                    if (selectedBook != null) {
+                      Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                      alert.setTitle("Xác nhận xóa");
+                      alert.setHeaderText("Bạn có chắc chắn muốn xóa sách này?");
+                      alert.setContentText("Sách: " + selectedBook.getTitle());
+
+                      Optional<ButtonType> result = alert.showAndWait();
+                      if (result.isPresent() && result.get() == ButtonType.OK) {
+                        // Xóa trong ObservableList
+                        bookList.remove(selectedBook);
+
+
+                      }
+                      // Xóa trong ArrayList gốc
+                      books.remove(selectedBook);
+
+                      System.out.println("Đã xóa sách: " + selectedBook.getTitle());
+                    }
+
+                  });
 
                 MenuItem showHoldRequestQueue = new MenuItem("Show hold request queue");
                 showHoldRequestQueue.setOnAction(event -> {
@@ -359,7 +377,7 @@ public class AdminController implements Initializable {
 
     @FXML
     private void handleDeleteBookAction(Book book) {
-
+      
     }
 
     @FXML

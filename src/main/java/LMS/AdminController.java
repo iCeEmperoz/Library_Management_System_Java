@@ -44,6 +44,7 @@ import javafx.util.converter.IntegerStringConverter;
 import javafx.geometry.Insets;
 
 import static LMS.HandleAlertOperations.showAlert;
+import static LMS.HandleAlertOperations.showConfirmation;
 
 public class AdminController implements Initializable {
 
@@ -346,17 +347,21 @@ public class AdminController implements Initializable {
     private void handleHoldBookAction(Book book) {
         // Similar to handleHoldRequest in OnTerminal.java
         Borrower borrower = handleFindBorrower();
-        showAlert("Place Book on Hold operation", book.makeHoldRequest(borrower));
+        if (borrower != null) {
+            showAlert("Place Book on Hold operation", book.makeHoldRequest(borrower));
+        }
     }
 
     @FXML
     private void handleCheckOutBookAction(Book book) {
         // Similar to handleBookIssue in OnTerminal.java
         Borrower borrower = handleFindBorrower();
-        String message = book.issueBook(borrower, (Librarian) library.getUser());
-        boolean secondConfirm = showAlert("Check Out Book Operation", message);
-        if (message.contains("Would you like to place the book on hold?") && secondConfirm) {
-            showAlert("Place Book on Hold operation", book.makeHoldRequest(borrower));
+        if (borrower != null) {
+            String message = book.issueBook(borrower, (Librarian) library.getUser());
+            boolean secondConfirm = showConfirmation("Check Out Book Operation", message);
+            if (message.contains("Would you like to place the book on hold?") && secondConfirm) {
+                showAlert("Place Book on Hold operation", book.makeHoldRequest(borrower));
+            }
         }
     }
 
@@ -367,7 +372,7 @@ public class AdminController implements Initializable {
             showAlert("Check In Operation", "This book has not been issued yet!");
         } else {
             Loan loan = book.getLoan();
-            if (showAlert("Check in Confirmation", "This book is now borrowed by "
+            if (showConfirmation("Check in Confirmation", "This book is now borrowed by "
                     + loan.getBorrower().getName() + ".\nCheck in this Book?")) {
                 String message = book.returnBook(loan.getBorrower(), loan, (Librarian) library.getUser());
                 showAlert("Check In Operation", message);
@@ -377,7 +382,7 @@ public class AdminController implements Initializable {
 
     @FXML
     private void handleDeleteBookAction(Book book) {
-      
+        showAlert("Remove Book from Library", library.removeBookfromLibrary(book));
     }
 
     @FXML

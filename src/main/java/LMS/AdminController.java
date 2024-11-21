@@ -555,6 +555,23 @@ public class AdminController implements Initializable {
 
 
 
+    @FXML
+    private void handleShowInfo(ActionEvent event) {
+        Librarian librarian = (Librarian)library.getUser();
+
+            String info = "Librarian Information:\n"
+                    + "ID: " + librarian.getID() + "\n"
+                    + "Name: " + librarian.getName() + "\n"
+                    + "Email: " + librarian.getEmail() + "\n"
+                    + "Address: " + librarian.getAddress() + "\n"
+                    + "Phone: " + librarian.getPhoneNo() + "\n";
+
+            showAlert("Librarian Info", info);
+
+    }
+
+
+
     private void initializeTableUsers() {
         // Thiết lập các cột với thuộc tính của lớp Person (là lớp cha của Borrower và Librarian)
         userIdColumn.setCellValueFactory(new PropertyValueFactory<>("ID"));

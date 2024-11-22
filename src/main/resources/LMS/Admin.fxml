@@ -24,7 +24,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1096.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LMS.AdminController">
    <children>
-      <BorderPane fx:id="formHome" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1096.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BorderPane fx:id="paneHome" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1096.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
             <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0" styleClass="white-background" stylesheets="@styles.css" BorderPane.alignment="CENTER">
                <children>
@@ -126,7 +126,7 @@
          <center>
             <AnchorPane prefHeight="590.0" prefWidth="886.0" BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane fx:id="paneDashboard" prefHeight="590.0" prefWidth="886.0" visible="false">
+                  <AnchorPane fx:id="paneDashboard" prefHeight="590.0" prefWidth="886.0">
                      <children>
                         <Separator layoutX="446.0" layoutY="2.0" orientation="VERTICAL" prefHeight="586.0" prefWidth="0.0" />
                         <VBox alignment="CENTER" prefHeight="590.0" prefWidth="446.0">
@@ -181,7 +181,7 @@
                         </VBox>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="paneBooks" prefHeight="590.0" prefWidth="886.0">
+                  <AnchorPane fx:id="paneBooks" prefHeight="590.0" prefWidth="886.0" visible="false">
                      <children>
                         <Separator layoutX="440.0" orientation="VERTICAL" prefHeight="590.0" prefWidth="10.0" />
                         <GridPane layoutX="14.0" layoutY="31.0" prefHeight="538.0" prefWidth="409.0">
@@ -386,107 +386,111 @@
             </AnchorPane>
          </center>
       </BorderPane>
-      <VBox fx:id="formUser" prefHeight="640.0" prefWidth="1096.0" visible="false">
+      <AnchorPane fx:id="paneInformation" visible="false">
          <children>
-            <HBox prefHeight="50.0" prefWidth="200.0" styleClass="transparent" stylesheets="@styles.css">
+            <VBox fx:id="formUser" prefHeight="640.0" prefWidth="1096.0">
                <children>
-                  <Button fx:id="backButton" alignment="TOP_LEFT" graphicTextGap="10.0" mnemonicParsing="false" prefHeight="66.0" prefWidth="152.0" text="Back">
-                     <graphic>
-                        <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/back2.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <font>
-                        <Font name="Roboto Condensed Black" size="24.0" />
-                     </font>
-                  </Button>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="251.0" prefWidth="1096.0">
-               <children>
-                  <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0">
+                  <HBox prefHeight="50.0" prefWidth="200.0" styleClass="transparent" stylesheets="@styles.css">
                      <children>
-                        <Pane maxHeight="200.0" maxWidth="200.0" prefHeight="200.0" prefWidth="200.0" style="-fx-border-radius: 100; -fx-border-color: #12b4a6; -fx-background-radius: 100; -fx-border-width: 3;" stylesheets="@styles.css">
-                           <children>
-                              <ImageView fx:id="userImageView" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                           </children>
-                        </Pane>
-                        <Button fx:id="changeAvatarButton" mnemonicParsing="false" onAction="#chooseImageButtonPushed" text="Change Avatar">
+                        <Button fx:id="backButton" alignment="TOP_LEFT" graphicTextGap="10.0" mnemonicParsing="false" onAction="#handleBack" prefHeight="66.0" prefWidth="152.0" styleClass="btn" stylesheets="@styles.css" text="Back">
                            <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../images/camera24.png" />
+                                    <Image url="@../images/back2.png" />
                                  </image>
                               </ImageView>
                            </graphic>
+                           <font>
+                              <Font name="Roboto Condensed Black" size="24.0" />
+                           </font>
                         </Button>
                      </children>
-                  </VBox>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="340.0" prefWidth="200.0" styleClass="transparent" stylesheets="@styles.css">
-               <children>
-                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="365.0" spacing="5.0">
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="251.0" prefWidth="1096.0">
                      <children>
-                        <Label lineSpacing="15.0" prefHeight="18.0" prefWidth="438.0" text="Username">
-                           <font>
-                              <Font name="Roboto Condensed Black" size="18.0" />
-                           </font>
-                           <padding>
-                              <Insets left="20.0" />
-                           </padding>
-                        </Label>
-                        <TextField prefHeight="46.0" prefWidth="0.0" promptText="Username">
-                           <VBox.margin>
-                              <Insets left="20.0" />
-                           </VBox.margin>
-                        </TextField>
-                        <Label lineSpacing="15.0" prefHeight="18.0" prefWidth="438.0" text="Email">
-                           <font>
-                              <Font name="Roboto Condensed Black" size="18.0" />
-                           </font>
-                           <padding>
-                              <Insets left="20.0" />
-                           </padding>
-                        </Label>
-                        <TextField prefHeight="46.0" prefWidth="0.0" promptText="Email">
-                           <VBox.margin>
-                              <Insets left="20.0" />
-                           </VBox.margin>
-                        </TextField>
-                        <Label lineSpacing="15.0" prefHeight="18.0" prefWidth="438.0" text="Ardress">
-                           <font>
-                              <Font name="Roboto Condensed Black" size="18.0" />
-                           </font>
-                           <padding>
-                              <Insets left="20.0" />
-                           </padding>
-                        </Label>
-                        <TextField prefHeight="46.0" prefWidth="0.0" promptText="Adress">
-                           <VBox.margin>
-                              <Insets left="20.0" />
-                           </VBox.margin>
-                        </TextField>
-                        <Label lineSpacing="15.0" prefHeight="18.0" prefWidth="438.0" text="Phone Number">
-                           <font>
-                              <Font name="Roboto Condensed Black" size="18.0" />
-                           </font>
-                           <padding>
-                              <Insets left="20.0" />
-                           </padding>
-                        </Label>
-                        <TextField prefHeight="46.0" prefWidth="0.0" promptText="Phone Number">
-                           <VBox.margin>
-                              <Insets left="20.0" />
-                           </VBox.margin>
-                        </TextField>
+                        <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0">
+                           <children>
+                              <Pane maxHeight="200.0" maxWidth="200.0" prefHeight="200.0" prefWidth="200.0" style="-fx-border-radius: 100; -fx-border-color: #12b4a6; -fx-background-radius: 100; -fx-border-width: 3;" stylesheets="@styles.css">
+                                 <children>
+                                    <ImageView fx:id="userImageView" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                              </Pane>
+                              <Button fx:id="changeAvatarButton" mnemonicParsing="false" onAction="#chooseImageButtonPushed" styleClass="btn" stylesheets="@styles.css" text="Change Avatar">
+                                 <graphic>
+                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/camera24.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </VBox>
                      </children>
-                  </VBox>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="340.0" prefWidth="200.0" styleClass="transparent" stylesheets="@styles.css">
+                     <children>
+                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="365.0" spacing="5.0">
+                           <children>
+                              <Label lineSpacing="15.0" prefHeight="18.0" prefWidth="438.0" text="Username">
+                                 <font>
+                                    <Font name="Roboto Condensed Black" size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <TextField fx:id="infoName" prefHeight="46.0" prefWidth="0.0" promptText="Username">
+                                 <VBox.margin>
+                                    <Insets left="20.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Label lineSpacing="15.0" prefHeight="18.0" prefWidth="438.0" text="Email">
+                                 <font>
+                                    <Font name="Roboto Condensed Black" size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <TextField fx:id="infoEmail" prefHeight="46.0" prefWidth="0.0" promptText="Email">
+                                 <VBox.margin>
+                                    <Insets left="20.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Label lineSpacing="15.0" prefHeight="18.0" prefWidth="438.0" text="Ardress">
+                                 <font>
+                                    <Font name="Roboto Condensed Black" size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <TextField fx:id="infoAddress" prefHeight="46.0" prefWidth="0.0" promptText="Adress">
+                                 <VBox.margin>
+                                    <Insets left="20.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Label lineSpacing="15.0" prefHeight="18.0" prefWidth="438.0" text="Phone Number">
+                                 <font>
+                                    <Font name="Roboto Condensed Black" size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <TextField fx:id="infoPhone" prefHeight="46.0" prefWidth="0.0" promptText="Phone Number">
+                                 <VBox.margin>
+                                    <Insets left="20.0" />
+                                 </VBox.margin>
+                              </TextField>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
                </children>
-            </HBox>
+            </VBox>
          </children>
-      </VBox>
+      </AnchorPane>
    </children>
 </AnchorPane>

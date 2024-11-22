@@ -8,184 +8,190 @@ import java.util.Scanner;
  * Represents a Loan in the library management system (LMS).
  */
 public class Loan {
-    private Borrower borrower;
-    private Book book;
-    private Librarian issuer;
-    private Date issuedDate;
-    private Date dateReturned;
-    private Librarian receiver;
-    private boolean finePaid;
 
-    /**
-     * Constructs a Loan object with the given parameters.
-     *
-     * @param borrower     The borrower of the book.
-     * @param book         The book being borrowed.
-     * @param iLibrarrian  The librarian who issued the book.
-     * @param rLibrarrian  The librarian who received the returned book.
-     * @param iDate        The date the book was issued.
-     * @param rDate        The date the book was returned.
-     * @param fPaid        The status of the fine payment.
-     */
-    public Loan(Borrower borrower, Book book, Librarian iLibrarrian, Librarian rLibrarrian, Date iDate, Date rDate, boolean fPaid) {
-        this.borrower = borrower;
-        this.book = book;
-        this.issuer = iLibrarrian;
-        this.receiver = rLibrarrian;
-        this.issuedDate = iDate;
-        this.dateReturned = rDate;
-        this.finePaid = fPaid;
-    }
+  private Borrower borrower;
+  private Book book;
+  private Librarian issuer;
+  private Date issuedDate;
+  private Date dateReturned;
+  private Librarian receiver;
+  private boolean finePaid;
 
-    /**
-     * Gets the book associated with this loan.
-     *
-     * @return The book.
-     */
-    public Book getBook() {
-        return book;
-    }
+  /**
+   * Constructs a Loan object with the given parameters.
+   *
+   * @param borrower    The borrower of the book.
+   * @param book        The book being borrowed.
+   * @param iLibrarrian The librarian who issued the book.
+   * @param rLibrarrian The librarian who received the returned book.
+   * @param iDate       The date the book was issued.
+   * @param rDate       The date the book was returned.
+   * @param fPaid       The status of the fine payment.
+   */
+  public Loan(Borrower borrower, Book book, Librarian iLibrarrian, Librarian rLibrarrian,
+      Date iDate, Date rDate, boolean fPaid) {
+    this.borrower = borrower;
+    this.book = book;
+    this.issuer = iLibrarrian;
+    this.receiver = rLibrarrian;
+    this.issuedDate = iDate;
+    this.dateReturned = rDate;
+    this.finePaid = fPaid;
+  }
 
-    /**
-     * Gets the librarian who issued the book.
-     *
-     * @return The librarian who issued the book.
-     */
-    public Librarian getIssuer() {
-        return issuer;
-    }
+  /**
+   * Gets the book associated with this loan.
+   *
+   * @return The book.
+   */
+  public Book getBook() {
+    return book;
+  }
 
-    /**
-     * Gets the librarian who received the returned book.
-     *
-     * @return The librarian who received the returned book.
-     */
-    public Librarian getReceiver() {
-        return receiver;
-    }
+  /**
+   * Gets the librarian who issued the book.
+   *
+   * @return The librarian who issued the book.
+   */
+  public Librarian getIssuer() {
+    return issuer;
+  }
 
-    /**
-     * Gets the date the book was issued.
-     *
-     * @return The issued date.
-     */
-    public Date getIssuedDate() {
-        return issuedDate;
-    }
+  /**
+   * Gets the librarian who received the returned book.
+   *
+   * @return The librarian who received the returned book.
+   */
+  public Librarian getReceiver() {
+    return receiver;
+  }
 
-    /**
-     * Gets the date the book was returned.
-     *
-     * @return The return date.
-     */
-    public Date getReturnDate() {
-        return dateReturned;
-    }
+  /**
+   * Sets the librarian who received the returned book.
+   *
+   * @param librarian The librarian who received the returned book.
+   */
+  public void setReceiver(Librarian librarian) {
+    receiver = librarian;
+  }
 
-    /**
-     * Gets the borrower of the book.
-     *
-     * @return The borrower.
-     */
-    public Borrower getBorrower() {
-        return borrower;
-    }
+  /**
+   * Gets the date the book was issued.
+   *
+   * @return The issued date.
+   */
+  public Date getIssuedDate() {
+    return issuedDate;
+  }
 
-    /**
-     * Gets the status of the fine payment.
-     *
-     * @return True if the fine is paid, false otherwise.
-     */
-    public boolean getFineStatus() {
-        return finePaid;
-    }
+  /**
+   * Gets the date the book was returned.
+   *
+   * @return The return date.
+   */
+  public Date getReturnDate() {
+    return dateReturned;
+  }
 
-    /**
-     * Sets the date the book was returned.
-     *
-     * @param dReturned The return date.
-     */
-    public void setReturnedDate(Date dReturned) {
-        dateReturned = dReturned;
-    }
+  /**
+   * Gets the borrower of the book.
+   *
+   * @return The borrower.
+   */
+  public Borrower getBorrower() {
+    return borrower;
+  }
 
-    /**
-     * Sets the status of the fine payment.
-     *
-     * @param fStatus The fine status.
-     */
-    public void setFineStatus(boolean fStatus) {
-        finePaid = fStatus;
-    }
+  /**
+   * Gets the status of the fine payment.
+   *
+   * @return True if the fine is paid, false otherwise.
+   */
+  public boolean getFineStatus() {
+    return finePaid;
+  }
 
-    /**
-     * Sets the librarian who received the returned book.
-     *
-     * @param librarian The librarian who received the returned book.
-     */
-    public void setReceiver(Librarian librarian) {
-        receiver = librarian;
-    }
+  /**
+   * Sets the status of the fine payment.
+   *
+   * @param fStatus The fine status.
+   */
+  public void setFineStatus(boolean fStatus) {
+    finePaid = fStatus;
+  }
 
-    /**
-     * Computes the fine for this loan.
-     *
-     * @return The total fine.
-     */
-    public double computeFine0() {
-        double totalFine = 0;
+  /**
+   * Sets the date the book was returned.
+   *
+   * @param dReturned The return date.
+   */
+  public void setReturnedDate(Date dReturned) {
+    dateReturned = dReturned;
+  }
 
-        if (!finePaid) {
-            Date iDate = issuedDate;
-            Date rDate = new Date();
+  /**
+   * Computes the fine for this loan.
+   *
+   * @return The total fine.
+   */
+  public double computeFine0() {
+    double totalFine = 0;
 
-            long days = ChronoUnit.DAYS.between(rDate.toInstant(), iDate.toInstant());
-            days = -days;
+    if (!finePaid) {
+      Date iDate = issuedDate;
+      Date rDate = new Date();
 
-            days = days - Library.getInstance().bookReturnDeadline;
+      long days = ChronoUnit.DAYS.between(rDate.toInstant(), iDate.toInstant());
+      days = -days;
 
-            if (days > 0)
-                totalFine = days * Library.getInstance().perDayFine;
-            else
-                totalFine = 0;
-        }
-        return totalFine;
-    }
+      days = days - Library.getInstance().bookReturnDeadline;
 
-    /**
-     * Handles the fine payment process.
-     */
-    public void payFine() {
-        double totalFine = computeFine0();
-
-        if (totalFine > 0) {
-            System.out.println("\nTotal Fine generated: Rs " + totalFine);
-            System.out.println("Do you want to pay? (y/n)");
-
-            Scanner input = OnTerminal.getScanner();
-            String choice = input.next();
-
-            if (choice.equals("y") || choice.equals("Y"))
-                finePaid = true;
-
-            if (choice.equals("n") || choice.equals("N"))
-                finePaid = false;
-
+        if (days > 0) {
+            totalFine = days * Library.getInstance().perDayFine;
         } else {
-            System.out.println("\nNo fine is generated.");
+            totalFine = 0;
+        }
+    }
+    return totalFine;
+  }
+
+  /**
+   * Handles the fine payment process.
+   */
+  public void payFine() {
+    double totalFine = computeFine0();
+
+    if (totalFine > 0) {
+      System.out.println("\nTotal Fine generated: Rs " + totalFine);
+      System.out.println("Do you want to pay? (y/n)");
+
+      Scanner input = OnTerminal.getScanner();
+      String choice = input.next();
+
+        if (choice.equals("y") || choice.equals("Y")) {
             finePaid = true;
         }
-    }
 
-    /**
-     * Extends the issued date of the book.
-     *
-     * @param iDate The new issued date.
-     */
-    public void renewIssuedBook(Date iDate) {
-        issuedDate = iDate;
+        if (choice.equals("n") || choice.equals("N")) {
+            finePaid = false;
+        }
 
-        System.out.println("\nThe deadline of the book " + getBook().getTitle() + " has been extended.");
-        System.out.println("Issued Book is successfully renewed!\n");
+    } else {
+      System.out.println("\nNo fine is generated.");
+      finePaid = true;
     }
+  }
+
+  /**
+   * Extends the issued date of the book.
+   *
+   * @param iDate The new issued date.
+   */
+  public void renewIssuedBook(Date iDate) {
+    issuedDate = iDate;
+
+    System.out.println(
+        "\nThe deadline of the book " + getBook().getTitle() + " has been extended.");
+    System.out.println("Issued Book is successfully renewed!\n");
+  }
 }

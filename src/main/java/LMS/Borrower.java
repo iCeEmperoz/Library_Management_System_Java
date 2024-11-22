@@ -196,7 +196,7 @@ public class Borrower extends Person implements Observer {
 
     /**
      * Adds a hold request to the list of books on hold.
-     *
+     * INFORMATION_SCHEMA
      * @param holdRequest the HoldRequest object representing the book on hold.
      */
     public void addHoldRequest(HoldRequest holdRequest) {

@@ -100,8 +100,6 @@ public class OnTerminal {
      * @param library The library instance.
      */
     private static void setupLibrary(Library library) {
-        library.setFine(20);
-        library.setRequestExpiry(7);
         library.setReturnDeadline(5);
         library.setName("Library");
     }
@@ -176,7 +174,7 @@ public class OnTerminal {
         while (true) {
             clearScreen();
             displayBorrowerMenu();
-            int choice = takeInput(-1, 7);
+            int choice = takeInput(0, 7);
             if (choice == 6) break;
             allFunctionalities(user, choice);
         }
@@ -190,11 +188,10 @@ public class OnTerminal {
         System.out.println("\tWelcome to Borrower's Portal");
         System.out.println("--------------------------------------------------------");
         System.out.println("Following Functionalities are available: \n");
-        System.out.println("0- Check Notifications");
-        System.out.println("1- Search a Book");
-        System.out.println("2- Place a Book on hold");
-        System.out.println("3- Check Personal Info of Borrower");
-        System.out.println("4- Check Total Fine of Borrower");
+        System.out.println("1- Check Notifications");
+        System.out.println("2- Search a Book");
+        System.out.println("3- Place a Book on hold");
+        System.out.println("4- Check Personal Info of Borrower");
         System.out.println("5- Check Hold Requests Queue of a Book");
         System.out.println("6- Logout");
         System.out.println("--------------------------------------------------------");
@@ -210,7 +207,7 @@ public class OnTerminal {
         while (true) {
             clearScreen();
             displayLibrarianMenu();
-            int choice = takeInput(-1, 17);
+            int choice = takeInput(0, 17);
             if (choice == 16) break;
             allFunctionalities(user, choice);
         }
@@ -224,11 +221,10 @@ public class OnTerminal {
         System.out.println("\tWelcome to Librarian's Portal");
         System.out.println("--------------------------------------------------------");
         System.out.println("Following Functionalities are available: \n");
-        System.out.println("0 - Check Notifications");
-        System.out.println("1 - Search a Book");
-        System.out.println("2 - Place a Book on hold");
-        System.out.println("3 - Check Personal Info of Borrower");
-        System.out.println("4 - Check Total Fine of Borrower");
+        System.out.println("1- Check Notifications");
+        System.out.println("2- Search a Book");
+        System.out.println("3- Place a Book on hold");
+        System.out.println("4- Check Personal Info of Borrower");
         System.out.println("5 - Check Hold Requests Queue of a Book");
         System.out.println("6 - Check out a Book");
         System.out.println("7 - Check in a Book");
@@ -317,20 +313,17 @@ public class OnTerminal {
         Library library = Library.getInstance();
 
         switch (choice) {
-            case 0:
+            case 1:
                 handleNotifications(person);
                 break;
-            case 1:
+            case 2:
                 library.searchForBooks();
                 break;
-            case 2:
+            case 3:
                 handleHoldRequest(library, person);
                 break;
-            case 3:
-                handlePersonalInfo(library, person);
-                break;
             case 4:
-                handleFineCheck(library, person);
+                handlePersonalInfo(library, person);
                 break;
             case 5:
                 handleHoldRequestQueue(library);
@@ -429,26 +422,6 @@ public class OnTerminal {
             if (borrower != null) borrower.printInfo();
         } else {
             person.printInfo();
-        }
-    }
-
-    /**
-     * Handles the fine check for a person.
-     *
-     * @param library The library instance.
-     * @param person The person whose fine is to be checked.
-     * @throws IOException If an input or output exception occurred.
-     */
-    private static void handleFineCheck(Library library, Person person) throws IOException {
-        if ("Librarian".equals(person.getClass().getSimpleName())) {
-            Borrower borrower = library.findBorrower();
-            if (borrower != null) {
-                double totalFine = library.computeFine(borrower);
-                System.out.println("\nYour Total Fine is : Rs " + totalFine);
-            }
-        } else {
-            double totalFine = library.computeFine((Borrower) person);
-            System.out.println("\nYour Total Fine is : Rs " + totalFine);
         }
     }
 

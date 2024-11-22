@@ -126,7 +126,7 @@
          <center>
             <AnchorPane prefHeight="590.0" prefWidth="886.0" BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane fx:id="paneDashboard" prefHeight="590.0" prefWidth="886.0">
+                  <AnchorPane fx:id="paneDashboard" prefHeight="590.0" prefWidth="886.0" visible="false">
                      <children>
                         <Separator layoutX="446.0" layoutY="2.0" orientation="VERTICAL" prefHeight="586.0" prefWidth="0.0" />
                         <VBox alignment="CENTER" prefHeight="590.0" prefWidth="446.0">
@@ -181,7 +181,7 @@
                         </VBox>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="paneBooks" prefHeight="590.0" prefWidth="886.0" visible="false">
+                  <AnchorPane fx:id="paneBooks" prefHeight="590.0" prefWidth="886.0">
                      <children>
                         <Separator layoutX="440.0" orientation="VERTICAL" prefHeight="590.0" prefWidth="10.0" />
                         <GridPane layoutX="14.0" layoutY="31.0" prefHeight="538.0" prefWidth="409.0">
@@ -320,10 +320,37 @@
                         </GridPane>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="paneHistory" prefHeight="590.0" prefWidth="886.0" visible="false">
-                     <children>
-                        <Label layoutX="127.0" layoutY="39.0" text="History" />
-                     </children>
+                  <AnchorPane fx:id="paneHistory" visible="false" xmlns:fx="http://javafx.com/fxml">
+                     <ScrollPane fitToHeight="true" fitToWidth="true" layoutY="84.0" prefHeight="498.0" prefWidth="882.0">
+                        <content>
+                           <TableView fx:id="historyTableView" prefHeight="580.0" prefWidth="880.0">
+                              <columns>
+                                 <TableColumn fx:id="noColumn" text="No." />
+                                 <TableColumn fx:id="bookIDColumn" text="BookID" />
+                                 <TableColumn fx:id="titleColumn" text="Book's Title" />
+                                 <TableColumn fx:id="borrowerIDColumn" text="BorrowerID" />
+                                 <TableColumn fx:id="borrowerColumn" text="Borrower's Name" />
+                                 <TableColumn fx:id="issuerIDColumn" text="IssuerID" />
+                                 <TableColumn fx:id="issuerColumn" text="Issuer's Name" />
+                                 <TableColumn fx:id="issuedDateColumn" text="Issued Date" />
+                                 <TableColumn fx:id="receiverIDColumn" text="ReceiverID" />
+                                 <TableColumn fx:id="receiverColumn" text="Receiver's Name" />
+                                 <TableColumn fx:id="returnedDateColumn" text="Returned Date" />
+                              </columns>
+                           </TableView>
+                        </content>
+                     </ScrollPane>
+                     <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="49.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../images/search.png" />
+                        </image>
+                     </ImageView>
+                     <TextField fx:id="historySearchTextField" layoutX="55.0" layoutY="49.0" prefHeight="30.0" prefWidth="297.0" promptText="Search" stylesheets="@styles.css">
+                        <styleClass>
+                           <String fx:value="transparent" />
+                           <String fx:value="round-layout" />
+                        </styleClass>
+                     </TextField>
                   </AnchorPane>
                   <AnchorPane fx:id="paneAddBook" prefHeight="590.0" prefWidth="886.0" visible="false">
                      <children>

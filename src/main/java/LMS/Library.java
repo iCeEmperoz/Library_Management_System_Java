@@ -179,12 +179,12 @@ public class Library {
 
         // Filling Book's Table
         for (Book book : library.getBooks()) {
-            String template = "INSERT INTO BOOK (BOOK_ID, TITLE, AUTHOR, SUBTITLE, IS_ISSUED, IMAGE_LINK, PREVIEW_LINK) values (?, ?, ?, ?, ?, ?, ?)";
+            String template = "INSERT INTO BOOK (BOOK_ID, TITLE, AUTHOR, DESCRIPTION, IS_ISSUED, IMAGE_LINK, PREVIEW_LINK) values (?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = connection.prepareStatement(template)) {
                 stmt.setInt(1, book.getID());
                 stmt.setString(2, book.getTitle());
                 stmt.setString(3, book.getAuthor());
-                stmt.setString(4, book.getSubtitle());
+                stmt.setString(4, book.getDescription());
                 stmt.setBoolean(5, book.getIssuedStatus());
                 stmt.setString(6, book.getImageLink());
                 stmt.setString(7, book.getPreviewLink());
@@ -564,14 +564,14 @@ public class Library {
 //     }
 
     /**
-     * Searches for books in the library based on the user's input criteria (Title, Subtitle, or
+     * Searches for books in the library based on the user's input criteria (Title, Description, or
      * Author).
      *
      * @return An ArrayList of Book objects that match the search criteria. If no books are found,
      * returns null.
      * @throws IOException If an input or output exception occurs.
      *                     <p>
-     *                     The method prompts the user to choose a search criterion (Title, Subtitle,
+     *                     The method prompts the user to choose a search criterion (Title, Description,
      *                     or Author) and then asks for the corresponding search term. It then
      *                     iterates through the list of books in the library and collects those that
      *                     match the search term. If matching books are found, they are printed and
@@ -580,12 +580,12 @@ public class Library {
      */
     public ArrayList<Book> searchForBooks() throws IOException {
         String choice;
-        String title = "", subtitle = "", author = "";
+        String title = "", description = "", author = "";
         Scanner scanner = OnTerminal.getScanner();
 
         while (true) {
             System.out.println(
-                    "\nEnter either '1' or '2' or '3' for search by Title, Subtitle or Author of Book respectively: ");
+                    "\nEnter either '1' or '2' or '3' for search by Title, Description or Author of Book respectively: ");
             choice = scanner.next();
             scanner.nextLine();
 
@@ -600,8 +600,8 @@ public class Library {
             System.out.println("\nEnter the Title of the Book: ");
             title = scanner.nextLine();
         } else if (choice.equals("2")) {
-            System.out.println("\nEnter the Subtitle of the Book: ");
-            subtitle = scanner.nextLine();
+            System.out.println("\nEnter the Description of the Book: ");
+            description = scanner.nextLine();
         } else {
             System.out.println("\nEnter the Author of the Book: ");
             author = scanner.nextLine();
@@ -616,7 +616,7 @@ public class Library {
                     matchedBooks.add(book);
                 }
             } else if (choice.equals("2")) {
-                if (book.getSubtitle().toLowerCase().contains(subtitle.toLowerCase())) {
+                if (book.getDescription().toLowerCase().contains(description.toLowerCase())) {
                     matchedBooks.add(book);
                 }
             } else {
@@ -631,7 +631,7 @@ public class Library {
             System.out.println("\nThese books are found: \n");
             System.out.println(
                     "------------------------------------------------------------------------------");
-            System.out.printf("%-5s %-40s %-30s %-30s\n", "No.", "Title", "Author", "Subtitle");
+            System.out.printf("%-5s %-40s %-30s %-30s\n", "No.", "Title", "Author", "Description");
             System.out.println(
                     "------------------------------------------------------------------------------");
 
@@ -650,7 +650,7 @@ public class Library {
 
     /**
      * Displays all the books available in the library. If the library has books, it prints the list
-     * of books with their details including the index number, title, author, and subtitle. If the
+     * of books with their details including the index number, title, author, and description. If the
      * library is empty, it informs the user that there are no books currently.
      */
     public void viewAllBooks() {
@@ -659,7 +659,7 @@ public class Library {
 
             System.out.println(
                     "------------------------------------------------------------------------------");
-            System.out.printf("%-5s %-40s %-30s %-30s\n", "No.", "Title", "Author", "Subtitle");
+            System.out.printf("%-5s %-40s %-30s %-30s\n", "No.", "Title", "Author", "Description");
             System.out.println(
                     "------------------------------------------------------------------------------");
 
@@ -807,14 +807,14 @@ public class Library {
     // Called when want access to Portal
 
     /**
-     * Creates a new book with the given title, subtitle, and author, and adds it to the library.
+     * Creates a new book with the given title, description, and author, and adds it to the library.
      *
      * @param title    the title of the book
-     * @param subtitle the subtitle of the book
+     * @param description the description of the book
      * @param author   the author of the book
      */
-    public void createBook(String title, String subtitle, String author) {
-        Book book = new Book(-1, title, subtitle, author, false, "", "");
+    public void createBook(String title, String description, String author) {
+        Book book = new Book(-1, title, description, author, false, "", "");
 
         if (addBookinLibrary(book)) {
             System.out.println("\nBook with Title " + book.getTitle() + " is successfully created.");
@@ -964,15 +964,15 @@ public class Library {
 
             do {
                 if (resultSet.getInt("BOOK_ID") != 0 && resultSet.getString("TITLE") != null
-                        && resultSet.getString("AUTHOR") != null && resultSet.getString("SUBTITLE") != null) {
+                        && resultSet.getString("AUTHOR") != null && resultSet.getString("DESCRIPTION") != null) {
                     int id = resultSet.getInt("BOOK_ID");
                     String title = resultSet.getString("TITLE");
                     String author = resultSet.getString("AUTHOR");
-                    String subtitle = resultSet.getString("SUBTITLE");
+                    String description = resultSet.getString("DESCRIPTION");
                     boolean issue = resultSet.getBoolean("IS_ISSUED");
                     String imageLink = resultSet.getString("IMAGE_LINK");
                     String previewLink = resultSet.getString("PREVIEW_LINK");
-                    Book book = new Book(id, title, subtitle, author, issue, imageLink, previewLink);
+                    Book book = new Book(id, title, description, author, issue, imageLink, previewLink);
                     addBookinLibrary(book);
 
                     if (maxID < id) {

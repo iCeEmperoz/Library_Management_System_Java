@@ -17,7 +17,7 @@ public class CardController {
   private Label bookAuthor;
 
   @FXML
-  private Label bookSubtitle;
+  private Label bookDescription;
 
   @FXML
   private Label bookTitle;
@@ -30,6 +30,6 @@ public class CardController {
     bookImage.setImage(image);
     bookTitle.setText(book.getTitle());
     bookAuthor.setText(book.getAuthor());
-//    bookSubtitle.setText(book.getSubtitle());
+//    bookDescription.setText(book.getDescription());
   }
 }

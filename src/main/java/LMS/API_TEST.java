@@ -42,8 +42,8 @@ public class API_TEST {
           book.setIsbn(volumeInfo.has("industryIdentifiers")
               && volumeInfo.get("industryIdentifiers").size() > 0 ? volumeInfo.get(
               "industryIdentifiers").get(0).get("identifier").asText() : "Unknown");
-          book.setSubtitle(volumeInfo.has("subtitle") ? volumeInfo.get("subtitle").asText()
-              : "No subtitle available"); // Thay đổi sang subtitle
+          book.setDescription(volumeInfo.has("description") ? volumeInfo.get("description").asText()
+              : "No description available"); // Thay đổi sang description
           book.setPreviewLink(volumeInfo.has("previewLink") ? volumeInfo.get("previewLink").asText()
               : "No preview link available");
           JsonNode imageLinksNode = volumeInfo.get("imageLinks");

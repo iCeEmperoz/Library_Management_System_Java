@@ -248,7 +248,7 @@
                                           <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="180.0" prefWidth="380.0" styleClass="shadow" stylesheets="@styles.css" />
                                        </children>
                                     </StackPane>
-                                    <Label fx:id="textSubTiltle" alignment="CENTER" contentDisplay="CENTER" prefHeight="254.0" prefWidth="380.0" style="-fx-background-radius: 20; -fx-border-color: #5dbdb4; -fx-border-radius: 20;" styleClass="white-background" stylesheets="@styles.css" text="subtitle" textAlignment="CENTER" wrapText="true">
+                                    <Label fx:id="textSubTiltle" alignment="CENTER" contentDisplay="CENTER" prefHeight="254.0" prefWidth="380.0" style="-fx-background-radius: 20; -fx-border-color: #5dbdb4; -fx-border-radius: 20;" styleClass="white-background" stylesheets="@styles.css" text="description" textAlignment="CENTER" wrapText="true">
                                        <font>
                                           <Font name="Roboto Condensed Black" size="18.0" />
                                        </font>

@@ -26,11 +26,11 @@ public class Book implements Subject {
   static int currentIdNumber = 0;
   private int bookID;
   private String title;
-  private String subtitle;
+  private String description;
   private String author;
   private boolean isIssued;
   private ArrayList<HoldRequest> holdRequests = new ArrayList<>();
-  private HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
+  //private HoldRequestOperations holdRequestsOperations = new HoldRequestOperations();
   private List<Observer> observers = new ArrayList<>();
   private String isbn;
   private String previewLink; //link to create QR
@@ -43,11 +43,11 @@ public class Book implements Subject {
    *
    * @param id       ID for the book, if -1 is passed, an ID will be auto-generated
    * @param title    Title of the book
-   * @param subtitle Subtitle of the book
+   * @param description Description of the book
    * @param author   Author of the book
    * @param issued   Issued status of the book
    */
-  public Book(int id, String title, String subtitle, String author, boolean issued,
+  public Book(int id, String title, String description, String author, boolean issued,
       String imageLink, String previewLink) {
     currentIdNumber++;
     if (id == 0) {
@@ -57,7 +57,7 @@ public class Book implements Subject {
     }
 
     this.title = title;
-    this.subtitle = subtitle;
+    this.description = description;
     this.author = author;
     isIssued = issued;
     this.imageLink = imageLink;
@@ -65,7 +65,7 @@ public class Book implements Subject {
     this.loan = null;
   }
 
-  public Book(String s, String title, String subtitle, String author) {
+  public Book(String s, String title, String description, String author) {
   }
 
   public Book() {
@@ -156,7 +156,7 @@ public class Book implements Subject {
    * Prints the information of the book.
    */
   public void printInfo() {
-    System.out.printf("%40s %-30s %-30s%n", title, author, subtitle);
+    System.out.printf("%40s %-30s %-30s%n", title, author, description);
   }
 
   /**
@@ -166,7 +166,7 @@ public class Book implements Subject {
    */
   public void changeBookInfo() throws IOException {
     Scanner scanner = OnTerminal.getScanner();
-    String input, newAuthor = "", newSubtitle = "", newTitle = "";
+    String input, newAuthor = "", newDescription = "", newTitle = "";
 
     System.out.println("\nUpdate Author? (y/n)");
     input = scanner.next();
@@ -176,12 +176,12 @@ public class Book implements Subject {
       newAuthor = scanner.nextLine();
     }
 
-    System.out.println("\nUpdate Subtitle? (y/n)");
+    System.out.println("\nUpdate Description? (y/n)");
     input = scanner.next();
 
     if (input.equals("y")) {
-      System.out.println("\nEnter new Subtitle: ");
-      newSubtitle = scanner.nextLine();
+      System.out.println("\nEnter new Description: ");
+      newDescription = scanner.nextLine();
     }
 
     System.out.println("\nUpdate Title? (y/n)");
@@ -192,7 +192,7 @@ public class Book implements Subject {
       newTitle = scanner.nextLine();
     }
 
-    logicalChangeBookInfo(newTitle, newAuthor, newSubtitle);
+    logicalChangeBookInfo(newTitle, newAuthor, newDescription);
 
     System.out.println("\nBook is successfully updated.");
   }
@@ -202,9 +202,9 @@ public class Book implements Subject {
    *
    * @param newTitle    The new title of the book. If empty, the title will not be changed.
    * @param newAuthor   The new author of the book. If empty, the author will not be changed.
-   * @param newSubtitle The new subtitle of the book. If empty, the subtitle will not be changed.
+   * @param newDescription The new description of the book. If empty, the description will not be changed.
    */
-  public void logicalChangeBookInfo(String newTitle, String newAuthor, String newSubtitle) {
+  public void logicalChangeBookInfo(String newTitle, String newAuthor, String newDescription) {
     if (!newTitle.equals("")) {
       setTitle(newTitle);
     }
@@ -213,8 +213,8 @@ public class Book implements Subject {
       setAuthor(newAuthor);
     }
 
-    if (!newSubtitle.equals("")) {
-      setSubtitle(newSubtitle);
+    if (!newDescription.equals("")) {
+      setDescription(newDescription);
     }
   }
 
@@ -232,16 +232,16 @@ public class Book implements Subject {
   }
 
   /**
-   * Gets the subtitle of the book.
+   * Gets the description of the book.
    *
-   * @return The subtitle of the book
+   * @return The description of the book
    */
-  public String getSubtitle() {
-    return subtitle;
+  public String getDescription() {
+    return description;
   }
 
-  public void setSubtitle(String subtitle) {
-    this.subtitle = subtitle.replaceAll("^\"|\"$", "");
+  public void setDescription(String description) {
+    this.description = description.replaceAll("^\"|\"$", "");
   }
 
   /**
@@ -502,7 +502,7 @@ public class Book implements Subject {
 
   /**
    * Compares this book to the specified object. The result is true if and only if the argument is
-   * not null and is a Book object that has the same title, author, and subtitle as this book.
+   * not null and is a Book object that has the same title, author, and description as this book.
    *
    * @param object the object to compare this Book against
    * @return true if the given object represents a Book equivalent to this book, false otherwise
@@ -512,20 +512,20 @@ public class Book implements Subject {
     if (object instanceof Book && object != null) {
       Book book = (Book) object;
       return book.title.equals(getTitle()) && book.author.equals(getAuthor())
-          && book.subtitle.equals(getSubtitle());
+          && book.description.equals(getDescription());
     }
     return false;
   }
 
   /**
-   * Generates a hash code for this book based on its title, subtitle, and author. This method is
+   * Generates a hash code for this book based on its title, description, and author. This method is
    * used to support hash tables.
    *
    * @return a hash code value for this book.
    */
   @Override
   public int hashCode() {
-    return Objects.hash(title, subtitle, author);
+    return Objects.hash(title, description, author);
   }
 
   /**
@@ -586,7 +586,7 @@ public class Book implements Subject {
 
   @Override
   public String toString() {
-    return "Title: " + title + "\nAuthor: " + author + "\nISBN: " + isbn + "\nSubtitle: " + subtitle
+    return "Title: " + title + "\nAuthor: " + author + "\nISBN: " + isbn + "\nDescription: " + description
         + "\nImageLink" + imageLink + "\nPreviewLink" + previewLink;
   }
 

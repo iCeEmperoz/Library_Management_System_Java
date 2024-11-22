@@ -18,7 +18,7 @@ public class TC {
         public static final int SEARCH_BOOK = 1;
         public static final int SEARCH_BY_TITLE = 1;
         public static final int SEARCH_BY_AUTHOR = 2;
-        public static final int SEARCH_BY_SUBTITLE = 3;
+        public static final int SEARCH_BY_DESCRIPTION = 3;
         public static final int PLACE_HOLD_REQUEST = 2;
         public static final int CHECK_PERSONAL_INFO = 3;
         public static final int CHECK_TOTAL_FINE = 4;
@@ -57,13 +57,13 @@ public class TC {
     public static class BookFail {
         public static final String TITLE = "BookFail";
         public static final String AUTHOR = "AuthorFail";
-        public static final String SUBTITLE = "SubtitleFail";
+        public static final String DESCRIPTION = "DescriptionFail";
     }
 
     public static class Book {
         public static final String TITLE = "Harry Potter and the Chamber of Secrets";
         public static final String AUTHOR = "J.K Rowling";
-        public static final String SUBTITLE = "Fiction";
+        public static final String DESCRIPTION = "Fiction";
     }
 
     public static final String PRESS_ANY_KEY = "Q";

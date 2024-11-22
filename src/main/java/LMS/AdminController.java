@@ -245,7 +245,7 @@ public class AdminController implements Initializable {
 
       // Cập nhật thông tin sách
       qrImage.setImage(selectedBook.generateQRCodeImage(selectedBook.getPreviewLink(), 150, 150));
-      textSubTiltle.setText(selectedBook.getSubtitle());
+      textSubTiltle.setText(selectedBook.getDescription());
 
       // Thay toàn bộ nội dung của StackPane
       box.getChildren().setAll(cardBox);
@@ -741,7 +741,7 @@ public class AdminController implements Initializable {
             // Thêm sách mới nếu chưa tồn tại
             System.out.println("Adding book: " + book.getTitle());
             Book newBook = new Book(book.getCurrentIdNumber() + 1, book.getTitle(),
-                book.getSubtitle(), book.getAuthor(), book.getIssuedStatus(), book.getImageLink(),
+                book.getDescription(), book.getAuthor(), book.getIssuedStatus(), book.getImageLink(),
                 book.getPreviewLink());
             bookList.add(newBook);
             library.addBookinLibrary(newBook);

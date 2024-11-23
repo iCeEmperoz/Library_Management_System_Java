@@ -4,15 +4,12 @@ import static LMS.HandleAlertOperations.showAlert;
 import static LMS.HandleAlertOperations.showConfirmation;
 
 import com.google.zxing.WriterException;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -71,150 +68,151 @@ import javafx.util.converter.IntegerStringConverter;
 import javax.imageio.ImageIO;
 
 public class AdminController implements Initializable {
-private static final Library library = Library.getInstance();
-private final ArrayList<Borrower> users = library.getBorrowers();
-private final ArrayList<Librarian> librarians = library.getLibrarians();
-private final API_TEST apiTest = new API_TEST();
-private final ObservableList<Book> apiBooksList = FXCollections.observableArrayList();
-private final AtomicReference<String> searchQuery = new AtomicReference<>("");
-private final long debounceDelay = 500;
-private final ScheduledExecutorService debounceScheduler = Executors.newSingleThreadScheduledExecutor();
-private final ExecutorService apiExecutor = Executors.newCachedThreadPool();
-private final ArrayList<Book> books = library.getBooks();
-private ScheduledFuture<?> scheduledFuture;
-private volatile long lastApiCallTime = 0;
-private ObservableList<Book> bookList;
-private FileChooser fileChooser;
-private File filePath;
+    private static final Library library = Library.getInstance();
+    private final ArrayList<Borrower> users = library.getBorrowers();
+    private final ArrayList<Librarian> librarians = library.getLibrarians();
+    private final API_TEST apiTest = new API_TEST();
+    private final ObservableList<Book> apiBooksList = FXCollections.observableArrayList();
+    private final AtomicReference<String> searchQuery = new AtomicReference<>("");
+    private final long debounceDelay = 500;
+    private final ScheduledExecutorService debounceScheduler = Executors.newSingleThreadScheduledExecutor();
+    private final ExecutorService apiExecutor = Executors.newCachedThreadPool();
+    private final ArrayList<Book> books = library.getBooks();
+    private ScheduledFuture<?> scheduledFuture;
+    private volatile long lastApiCallTime = 0;
+    private ObservableList<Book> bookList;
+    private ObservableList<Loan> loanList;
+    private FileChooser fileChooser;
+    private File filePath;
 
-@FXML
-private TableView<Book> tableAddBooks;
-@FXML
-private AnchorPane paneAddBook;
-@FXML
-private Button backButton;
-@FXML
-private Button buttonBackFromPaneAPI;
-@FXML
-private Label bookAuthor;
-@FXML
-private TableColumn<Book, String> bookAuthorColumn;
-@FXML
-private TableColumn<Book, Integer> bookIdColumn;
-@FXML
-private ImageView bookImage;
-@FXML
-private TableColumn<Book, Boolean> bookIsIssuedColumn;
-@FXML
-private TextField bookSearchTextField;
-@FXML
-private TableColumn<Book, String> bookTitleColumn;
-@FXML
-private TableColumn<Book, Void> bookOptionsColumn;
-@FXML
-private Label bookTitle;
-@FXML
-private Button btnAddBook;
-@FXML
-private Button btnAddUser;
-@FXML
-private Button btnBooks;
-@FXML
-private Button btnDashboard;
-@FXML
-private Button btnHistory;
-@FXML
-private Button btnUser;
-@FXML
-private Button btnUsers;
-@FXML
-private Button changeAvatarButton;
-@FXML
-private BorderPane formHome;
-@FXML
-private VBox formUser;
-@FXML
-private AnchorPane paneBooks;
-@FXML
-private AnchorPane paneUsers;
-@FXML
-private AnchorPane paneDashboard;
-@FXML
-private AnchorPane paneHistory;
-@FXML
-private TableView<Book> tableBooks;
-@FXML
-private TableView<Person> tableUsers;
-@FXML
-private Label textSubTiltle;
-@FXML
-private TableColumn<Borrower, String> userAddressColumn;
-@FXML
-private TableColumn<Borrower, String> userEmailColumn;
-@FXML
-private TableColumn<Borrower, Integer> userIdColumn;
-@FXML
-private ImageView userImageView;
-@FXML
-private TableColumn<Borrower, String> userNameColumn;
-@FXML
-private TableColumn<Borrower, Integer> userPhoneColumn;
-@FXML
-private TextField userSearchTextField;
-@FXML
-private TextField bookApiSearchTextField;
-@FXML
-private Label labelTotalBooks;
-@FXML
-private Label labelTotalUsers;
-@FXML
-private ImageView qrImage;
-@FXML
-private TableColumn<Book, String> addBookAuthorColumn;
-@FXML
-private TableColumn<Book, Void> addBookBtnColumn;
-@FXML
-private TableColumn<Book, String> addBookTitleColumn;
-@FXML
-private StackPane box;
-@FXML
-private BorderPane paneHome;
-@FXML
-private AnchorPane paneInformation;
-@FXML
-private TextField infoName;
-@FXML
-private TextField infoEmail;
-@FXML
-private TextField infoAddress;
-@FXML
-private TextField infoPhone;
-@FXML
-private TableView<Loan> historyTableView;
-@FXML
-private TableColumn<Loan, Integer> noColumn;
-@FXML
-private TableColumn<Loan, Integer> bookIDColumn;
-@FXML
-private TableColumn<Loan, String> titleColumn;
-@FXML
-private TableColumn<Loan, Integer> borrowerIDColumn;
-@FXML
-private TableColumn<Loan, String> borrowerColumn;
-@FXML
-private TableColumn<Loan, Integer> issuerIDColumn;
-@FXML
-private TableColumn<Loan, String> issuerColumn;
-@FXML
-private TableColumn<Loan, String> issuedDateColumn;
-@FXML
-private TableColumn<Loan, Integer> receiverIDColumn;
-@FXML
-private TableColumn<Loan, String> receiverColumn;
-@FXML
-private TableColumn<Loan, String> returnedDateColumn;
-@FXML
-private TextField historySearchTextField;
+    @FXML
+    private TableView<Book> tableAddBooks;
+    @FXML
+    private AnchorPane paneAddBook;
+    @FXML
+    private Button backButton;
+    @FXML
+    private Button buttonBackFromPaneAPI;
+    @FXML
+    private Label bookAuthor;
+    @FXML
+    private TableColumn<Book, String> bookAuthorColumn;
+    @FXML
+    private TableColumn<Book, Integer> bookIdColumn;
+    @FXML
+    private ImageView bookImage;
+    @FXML
+    private TableColumn<Book, Boolean> bookIsIssuedColumn;
+    @FXML
+    private TextField bookSearchTextField;
+    @FXML
+    private TableColumn<Book, String> bookTitleColumn;
+    @FXML
+    private TableColumn<Book, Void> bookOptionsColumn;
+    @FXML
+    private Label bookTitle;
+    @FXML
+    private Button btnAddBook;
+    @FXML
+    private Button btnAddUser;
+    @FXML
+    private Button btnBooks;
+    @FXML
+    private Button btnDashboard;
+    @FXML
+    private Button btnHistory;
+    @FXML
+    private Button btnUser;
+    @FXML
+    private Button btnUsers;
+    @FXML
+    private Button changeAvatarButton;
+    @FXML
+    private BorderPane formHome;
+    @FXML
+    private VBox formUser;
+    @FXML
+    private AnchorPane paneBooks;
+    @FXML
+    private AnchorPane paneUsers;
+    @FXML
+    private AnchorPane paneDashboard;
+    @FXML
+    private AnchorPane paneHistory;
+    @FXML
+    private TableView<Book> tableBooks;
+    @FXML
+    private TableView<Person> tableUsers;
+    @FXML
+    private Label textSubTiltle;
+    @FXML
+    private TableColumn<Borrower, String> userAddressColumn;
+    @FXML
+    private TableColumn<Borrower, String> userEmailColumn;
+    @FXML
+    private TableColumn<Borrower, Integer> userIdColumn;
+    @FXML
+    private ImageView userImageView;
+    @FXML
+    private TableColumn<Borrower, String> userNameColumn;
+    @FXML
+    private TableColumn<Borrower, Integer> userPhoneColumn;
+    @FXML
+    private TextField userSearchTextField;
+    @FXML
+    private TextField bookApiSearchTextField;
+    @FXML
+    private Label labelTotalBooks;
+    @FXML
+    private Label labelTotalUsers;
+    @FXML
+    private ImageView qrImage;
+    @FXML
+    private TableColumn<Book, String> addBookAuthorColumn;
+    @FXML
+    private TableColumn<Book, Void> addBookBtnColumn;
+    @FXML
+    private TableColumn<Book, String> addBookTitleColumn;
+    @FXML
+    private StackPane box;
+    @FXML
+    private BorderPane paneHome;
+    @FXML
+    private AnchorPane paneInformation;
+    @FXML
+    private TextField infoName;
+    @FXML
+    private TextField infoEmail;
+    @FXML
+    private TextField infoAddress;
+    @FXML
+    private TextField infoPhone;
+    @FXML
+    private TableView<Loan> historyTableView;
+    @FXML
+    private TableColumn<Loan, Integer> noColumn;
+    @FXML
+    private TableColumn<Loan, Integer> bookIDColumn;
+    @FXML
+    private TableColumn<Loan, String> titleColumn;
+    @FXML
+    private TableColumn<Loan, Integer> borrowerIDColumn;
+    @FXML
+    private TableColumn<Loan, String> borrowerColumn;
+    @FXML
+    private TableColumn<Loan, Integer> issuerIDColumn;
+    @FXML
+    private TableColumn<Loan, String> issuerColumn;
+    @FXML
+    private TableColumn<Loan, String> issuedDateColumn;
+    @FXML
+    private TableColumn<Loan, Integer> receiverIDColumn;
+    @FXML
+    private TableColumn<Loan, String> receiverColumn;
+    @FXML
+    private TableColumn<Loan, String> returnedDateColumn;
+    @FXML
+    private TextField historySearchTextField;
 
     @FXML
     void chooseImageButtonPushed(ActionEvent event) {
@@ -268,7 +266,7 @@ private TextField historySearchTextField;
 
             // Cập nhật thông tin sách
             qrImage.setImage(selectedBook.generateQRCodeImage(selectedBook.getPreviewLink(), 150, 150));
-            textSubTiltle.setText(selectedBook.getSubtitle());
+            textSubTiltle.setText(selectedBook.getDescription());
 
             // Thay toàn bộ nội dung của StackPane
             box.getChildren().setAll(cardBox);
@@ -485,15 +483,14 @@ private TextField historySearchTextField;
     }
 
     private void initializeTableHistory() {
-        // Reset the row counter every time the table is populated
-        ObservableList<Loan> loanList = FXCollections.observableArrayList(library.getLoans());
+        // Khởi tạo danh sách động từ danh sách các khoản mượn
+        loanList = FXCollections.observableArrayList(library.getLoans());
 
-        // Reset the TableView each time by clearing it
-        historyTableView.getItems().clear();
+        // Gắn danh sách này vào bảng
+        historyTableView.setItems(loanList);
 
-        // Set up columns with properties of the Loan class
+        // Cấu hình các cột (không cần thay đổi)
         noColumn.setCellValueFactory(cellData -> {
-            // Calculate the row index (1-based index)
             int index = historyTableView.getItems().indexOf(cellData.getValue()) + 1;
             return Bindings.createIntegerBinding(() -> index).asObject();
         });
@@ -511,12 +508,9 @@ private TextField historySearchTextField;
         returnedDateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
                 cellData.getValue().getReturnDate() != null ? cellData.getValue().getReturnDate().toString() : ""));
 
-        // Mark the table as editable
         historyTableView.setEditable(true);
-
-        // Assign data to the table
-        historyTableView.setItems(loanList);
     }
+
 
 
     @FXML
@@ -530,7 +524,6 @@ private TextField historySearchTextField;
 
     @FXML
     private void handleCheckOutBookAction(Book book) {
-        // Similar to handleBookIssue in OnTerminal.java
         Borrower borrower = handleFindBorrower();
         if (borrower != null) {
             String message = book.issueBook(borrower, (Librarian) library.getUser());
@@ -538,12 +531,18 @@ private TextField historySearchTextField;
             if (message.contains("Would you like to place the book on hold?") && secondConfirm) {
                 showAlert("Place Book on Hold operation", book.makeHoldRequest(borrower));
             }
+            // Thêm khoản mượn mới vào danh sách loanList và cập nhật bảng
+            Loan newLoan = book.getLoan();
+            if (newLoan != null) {
+                loanList.add(newLoan);
+            }
+            tableBooks.refresh();
         }
     }
 
+
     @FXML
     private void handleCheckInBookAction(Book book) {
-        // Similar to handleBookReturn in OnTerminal.java
         if (!book.getIssuedStatus()) {
             showAlert("Check In Operation", "This book has not been issued yet!");
         } else {
@@ -551,11 +550,30 @@ private TextField historySearchTextField;
             if (showConfirmation("Check in Confirmation",
                     "This book is now borrowed by " + loan.getBorrower().getName()
                             + ".\nCheck in this Book?")) {
+                // Trả sách và cập nhật thông tin
                 String message = book.returnBook(loan.getBorrower(), loan, (Librarian) library.getUser());
                 showAlert("Check In Operation", message);
+
+//                // Duyệt danh sách loanList và cập nhật loan
+//                for (int i = 0; i < loanList.size(); i++) {
+//                    Loan l = loanList.get(i);
+//                    if (l.getBook().getID() == loan.getBook().getID()
+//                    && l.getIssuer().getID() == loan.getIssuer().getID()) {
+//                        loanList.set(i, loan); // Cập nhật thông tin mới
+//                        break;
+//                    }
+//                }
+                initializeTableHistory();
+
+                // Làm mới bảng
+                historyTableView.refresh();
+                tableBooks.refresh();
             }
         }
     }
+
+
+
 
     @FXML
     private void handleDeleteBookAction(Book book) {
@@ -704,7 +722,9 @@ private TextField historySearchTextField;
                         borrower = library.logicalFindBorrower(Integer.parseInt(searchValue));
                         break;
                     case "Name":
-//                        borrower = library.findBorrowerByName(searchValue);
+                        borrower = library.findBorrowerByName(searchValue);
+                        break;
+                    default:
                         break;
                 }
 
@@ -747,8 +767,6 @@ private TextField historySearchTextField;
         infoAddress.setText(librarian.getAddress());
         infoPhone.setText(String.valueOf(librarian.getPhoneNo()));
     }
-
-
 
 
     private void showPane(AnchorPane paneToShow) {
@@ -800,7 +818,7 @@ private TextField historySearchTextField;
                         // Thêm sách mới nếu chưa tồn tại
                         System.out.println("Adding book: " + book.getTitle());
                         Book newBook = new Book(book.getCurrentIdNumber() + 1, book.getTitle(),
-                                book.getSubtitle(), book.getAuthor(), book.getIssuedStatus(), book.getImageLink(),
+                                book.getDescription(), book.getAuthor(), book.getIssuedStatus(), book.getImageLink(),
                                 book.getPreviewLink());
                         bookList.add(newBook);
                         library.addBookinLibrary(newBook);

@@ -38,7 +38,7 @@ public class Library {
     private final ArrayList<Book> booksInLibrary;
     public int bookReturnDeadline;
     private String name;
-    private API_TEST googleAPI; // Khai báo đối tượng GoogleAPI
+    private API_TEST googleAPI;
 
     /**
      * Represents a Library with a collection of books, librarians, and borrowers. This class is
@@ -427,6 +427,16 @@ public class Library {
     public Borrower logicalFindBorrower(int id) {
         for (Borrower borrower : borrowers) {
             if (borrower.getID() == id) {
+                return borrower;
+            }
+        }
+
+        return null;
+    }
+
+    public Borrower findBorrowerByName(String name) {
+        for (Borrower borrower : borrowers) {
+            if (borrower.getName().equals(name)) {
                 return borrower;
             }
         }

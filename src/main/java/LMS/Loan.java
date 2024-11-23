@@ -1,123 +1,121 @@
 package LMS;
 
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.Scanner;
 
 /**
  * Represents a Loan in the library management system (LMS).
  */
 public class Loan {
 
-    private Borrower borrower;
-    private Book book;
-    private Librarian issuer;
-    private Date issuedDate;
-    private Date dateReturned;
-    private Librarian receiver;
+  private Borrower borrower;
+  private Book book;
+  private Librarian issuer;
+  private Date issuedDate;
+  private Date dateReturned;
+  private Librarian receiver;
 
-    /**
-     * Constructs a Loan object with the given parameters.
-     *
-     * @param borrower    The borrower of the book.
-     * @param book        The book being borrowed.
-     * @param iLibrarrian The librarian who issued the book.
-     * @param rLibrarrian The librarian who received the returned book.
-     * @param iDate       The date the book was issued.
-     * @param rDate       The date the book was returned.
-     */
-    public Loan(Borrower borrower, Book book, Librarian iLibrarrian, Librarian rLibrarrian,
-                Date iDate, Date rDate) {
-        this.borrower = borrower;
-        this.book = book;
-        this.issuer = iLibrarrian;
-        this.receiver = rLibrarrian;
-        this.issuedDate = iDate;
-        this.dateReturned = rDate;
-    }
+  /**
+   * Constructs a Loan object with the given parameters.
+   *
+   * @param borrower    The borrower of the book.
+   * @param book        The book being borrowed.
+   * @param iLibrarrian The librarian who issued the book.
+   * @param rLibrarrian The librarian who received the returned book.
+   * @param iDate       The date the book was issued.
+   * @param rDate       The date the book was returned.
+   */
+  public Loan(Borrower borrower, Book book, Librarian iLibrarrian, Librarian rLibrarrian,
+      Date iDate, Date rDate) {
+    this.borrower = borrower;
+    this.book = book;
+    this.issuer = iLibrarrian;
+    this.receiver = rLibrarrian;
+    this.issuedDate = iDate;
+    this.dateReturned = rDate;
+  }
 
-    /**
-     * Gets the book associated with this loan.
-     *
-     * @return The book.
-     */
-    public Book getBook() {
-        return book;
-    }
+  /**
+   * Gets the book associated with this loan.
+   *
+   * @return The book.
+   */
+  public Book getBook() {
+    return book;
+  }
 
-    /**
-     * Gets the librarian who issued the book.
-     *
-     * @return The librarian who issued the book.
-     */
-    public Librarian getIssuer() {
-        return issuer;
-    }
+  /**
+   * Gets the librarian who issued the book.
+   *
+   * @return The librarian who issued the book.
+   */
+  public Librarian getIssuer() {
+    return issuer;
+  }
 
-    /**
-     * Gets the librarian who received the returned book.
-     *
-     * @return The librarian who received the returned book.
-     */
-    public Librarian getReceiver() {
-        return receiver;
-    }
+  /**
+   * Gets the librarian who received the returned book.
+   *
+   * @return The librarian who received the returned book.
+   */
+  public Librarian getReceiver() {
+    return receiver;
+  }
 
-    /**
-     * Sets the librarian who received the returned book.
-     *
-     * @param librarian The librarian who received the returned book.
-     */
-    public void setReceiver(Librarian librarian) {
-        receiver = librarian;
-    }
+  /**
+   * Sets the librarian who received the returned book.
+   *
+   * @param librarian The librarian who received the returned book.
+   */
+  public void setReceiver(Librarian librarian) {
+    receiver = librarian;
+  }
 
-    /**
-     * Gets the date the book was issued.
-     *
-     * @return The issued date.
-     */
-    public Date getIssuedDate() {
-        return issuedDate;
-    }
+  /**
+   * Gets the date the book was issued.
+   *
+   * @return The issued date.
+   */
+  public Date getIssuedDate() {
+    return issuedDate;
+  }
 
-    /**
-     * Gets the date the book was returned.
-     *
-     * @return The return date.
-     */
-    public Date getReturnDate() {
-        return dateReturned;
-    }
+  /**
+   * Gets the date the book was returned.
+   *
+   * @return The return date.
+   */
+  public Date getReturnDate() {
+    return dateReturned;
+  }
 
-    /**
-     * Gets the borrower of the book.
-     *
-     * @return The borrower.
-     */
-    public Borrower getBorrower() {
-        return borrower;
-    }
+  /**
+   * Gets the borrower of the book.
+   *
+   * @return The borrower.
+   */
+  public Borrower getBorrower() {
+    return borrower;
+  }
 
-    /**
-     * Sets the date the book was returned.
-     *
-     * @param dReturned The return date.
-     */
-    public void setReturnedDate(Date dReturned) {
-        dateReturned = dReturned;
-    }
+  /**
+   * Sets the date the book was returned.
+   *
+   * @param dReturned The return date.
+   */
+  public void setReturnedDate(Date dReturned) {
+    dateReturned = dReturned;
+  }
 
-    /**
-     * Extends the issued date of the book.
-     *
-     * @param iDate The new issued date.
-     */
-    public void renewIssuedBook(Date iDate) {
-        issuedDate = iDate;
+  /**
+   * Extends the issued date of the book.
+   *
+   * @param iDate The new issued date.
+   */
+  public void renewIssuedBook(Date iDate) {
+    issuedDate = iDate;
 
-        System.out.println(
-                "\nThe deadline of the book " + getBook().getTitle() + " has been extended.");
-        System.out.println("Issued Book is successfully renewed!\n");
-    }
+    System.out.println(
+        "\nThe deadline of the book " + getBook().getTitle() + " has been extended.");
+    System.out.println("Issued Book is successfully renewed!\n");
+  }
 }

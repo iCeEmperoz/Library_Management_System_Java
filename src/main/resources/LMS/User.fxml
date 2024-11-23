@@ -24,7 +24,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1096.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LMS.UserController">
    <children>
-      <BorderPane fx:id="paneHome" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1096.0" visible="false">
+      <BorderPane fx:id="paneHome" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1096.0">
          <top>
             <HBox prefHeight="50.0" prefWidth="200.0" styleClass="white-background" stylesheets="@styles.css" BorderPane.alignment="CENTER">
                <children>
@@ -58,7 +58,7 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="141.0" layoutY="14.0" text="Welcome, Username">
+                        <Label fx:id="labelWelcome" alignment="CENTER" contentDisplay="CENTER" layoutX="141.0" layoutY="14.0" text="Welcome, Username">
                            <font>
                               <Font name="Roboto Condensed Black" size="18.0" />
                            </font>
@@ -219,7 +219,7 @@
                               </ScrollPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="paneBooks" prefHeight="590.0" prefWidth="886.0">
+                        <AnchorPane fx:id="paneBooks" prefHeight="590.0" prefWidth="886.0" visible="false">
                            <children>
                               <Separator layoutX="440.0" orientation="VERTICAL" prefHeight="590.0" prefWidth="10.0" />
                               <GridPane layoutX="14.0" layoutY="31.0" prefHeight="538.0" prefWidth="409.0">
@@ -259,13 +259,13 @@
                                     </HBox>
                                  </children>
                               </GridPane>
-                              <ScrollPane layoutX="444.0" prefHeight="590.0" styleClass="transparent" stylesheets="@styles.css">
+                              <ScrollPane fx:id="paneBookInfo1" layoutX="444.0" prefHeight="590.0" styleClass="transparent" stylesheets="@styles.css">
                                  <content>
                                     <VBox alignment="TOP_CENTER" prefHeight="1024.0" prefWidth="441.0">
                                        <children>
                                           <StackPane fx:id="box" prefHeight="179.0" prefWidth="442.0">
                                              <children>
-                                                <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="180.0" prefWidth="380.0" style="-fx-background-color: #C3A3D3;" styleClass="shadow" stylesheets="@styles.css">
+                                                <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="180.0" prefWidth="380.0" styleClass="shadow" stylesheets="@styles.css">
                                                    <StackPane.margin>
                                                       <Insets />
                                                    </StackPane.margin>
@@ -285,9 +285,77 @@
                                                 </Button>
                                              </children>
                                           </HBox>
-                                          <Label fx:id="textSubTiltle" alignment="CENTER" prefHeight="256.0" prefWidth="380.0" style="-fx-background-radius: 20; -fx-border-color: #5dbdb4; -fx-border-radius: 20;" styleClass="white-background" stylesheets="@styles.css" text="description" textAlignment="CENTER" wrapText="true">
+                                          <Label fx:id="textSubTiltle" alignment="CENTER" prefHeight="256.0" prefWidth="380.0" style="-fx-background-radius: 20; -fx-border-color: #5dbdb4; -fx-border-radius: 20;" styleClass="white-background" stylesheets="@styles.css" textAlignment="CENTER" wrapText="true">
                                              <font>
-                                                <Font name="Roboto Condensed Black" size="18.0" />
+                                                <Font name="Roboto Condensed Black" size="14.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                       <padding>
+                                          <Insets top="50.0" />
+                                       </padding>
+                                    </VBox>
+                                 </content>
+                              </ScrollPane>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="paneHistory" prefHeight="590.0" prefWidth="890.0" visible="false" />
+                        <AnchorPane fx:id="paneYourShelf" prefHeight="590.0" prefWidth="886.0">
+                           <children>
+                              <Separator layoutX="440.0" orientation="VERTICAL" prefHeight="590.0" prefWidth="10.0" />
+                              <GridPane layoutX="14.0" layoutY="31.0" prefHeight="538.0" prefWidth="409.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="160.19998779296876" minHeight="10.0" prefHeight="99.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="439.20000000000005" minHeight="10.0" prefHeight="439.20000000000005" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <TableView fx:id="tableBookShelf" editable="true" prefHeight="439.0" prefWidth="406.0" styleClass="white-background" stylesheets="@styles.css" GridPane.rowIndex="1">
+                                       <columns>
+                                          <TableColumn fx:id="bookShelfIdColumn" prefWidth="75.0" text="ID" />
+                                          <TableColumn fx:id="bookShelfTitleColumn" prefWidth="118.40003204345703" text="Title" />
+                                          <TableColumn fx:id="bookShelfAuthorColumn" prefWidth="118.40008544921875" text="Author" />
+                                       </columns>
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
+                                    </TableView>
+                                    <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="35.0" prefWidth="200.0" spacing="10.0" styleClass="round-layout">
+                                       <children>
+                                          <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../images/search.png" />
+                                             </image>
+                                          </ImageView>
+                                          <TextField fx:id="bookShelfSearchTextField" prefHeight="30.0" prefWidth="297.0" promptText="Search" stylesheets="@styles.css">
+                                             <styleClass>
+                                                <String fx:value="transparent" />
+                                                <String fx:value="round-layout" />
+                                             </styleClass>
+                                          </TextField>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </GridPane>
+                              <ScrollPane fx:id="paneBookInfo2" layoutX="444.0" prefHeight="590.0" styleClass="transparent" stylesheets="@styles.css">
+                                 <content>
+                                    <VBox alignment="TOP_CENTER" prefHeight="1024.0" prefWidth="441.0">
+                                       <children>
+                                          <StackPane fx:id="boxLoan" prefHeight="179.0" prefWidth="442.0">
+                                             <children>
+                                                <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="180.0" prefWidth="380.0" styleClass="shadow" stylesheets="@styles.css">
+                                                   <StackPane.margin>
+                                                      <Insets />
+                                                   </StackPane.margin>
+                                                </HBox>
+                                             </children>
+                                          </StackPane>
+                                          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" />
+                                          <Label fx:id="textLoanDescription" alignment="CENTER" prefHeight="256.0" prefWidth="380.0" style="-fx-background-radius: 20; -fx-border-color: #5dbdb4; -fx-border-radius: 20;" styleClass="white-background" stylesheets="@styles.css" textAlignment="CENTER" wrapText="true">
+                                             <font>
+                                                <Font name="Roboto Condensed Black" size="14.0" />
                                              </font>
                                           </Label>
                                           <Label text="QR Code">
@@ -305,49 +373,13 @@
                               </ScrollPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="paneYourShelf" prefHeight="590.0" prefWidth="890.0" visible="false">
-                           <children>
-                              <Label layoutX="0.800000011920929" prefHeight="41.0" prefWidth="162.0" text="Recently Added">
-                                 <font>
-                                    <Font name="Roboto Condensed Black" size="18.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </padding>
-                              </Label>
-                              <ScrollPane layoutY="44.0" prefHeight="200.0" prefWidth="890.0" styleClass="transparent" stylesheets="@styles.css">
-                                 <content>
-                                    <HBox fx:id="cardLayout1" prefHeight="200.0" prefWidth="1200.0" styleClass="transparent" stylesheets="@styles.css" />
-                                 </content>
-                              </ScrollPane>
-                              <Label layoutX="0.800000011920929" layoutY="244.0" prefHeight="41.0" prefWidth="162.0" text="Recommended">
-                                 <font>
-                                    <Font name="Roboto Condensed Black" size="18.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </padding>
-                              </Label>
-                              <ScrollPane layoutY="288.0" prefHeight="200.0" prefWidth="890.0" styleClass="transparent" stylesheets="@styles.css">
-                                 <content>
-                                    <GridPane fx:id="bookContainer1">
-                                       <columnConstraints>
-                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                       </columnConstraints>
-                                    </GridPane>
-                                 </content>
-                              </ScrollPane>
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane fx:id="paneHistory" prefHeight="590.0" prefWidth="890.0" visible="false" />
                      </children>
                   </AnchorPane>
                </children>
             </VBox>
          </center>
       </BorderPane>
-      <AnchorPane fx:id="paneInformation">
+      <AnchorPane fx:id="paneInformation" visible="false">
          <children>
             <VBox prefHeight="640.0" prefWidth="1096.0">
                <children>

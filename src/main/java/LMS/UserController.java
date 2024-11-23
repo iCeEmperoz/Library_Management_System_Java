@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -49,6 +51,7 @@ public class UserController implements Initializable {
 
   private final ArrayList<Book> books = library.getBooks();
 
+  private ObservableList<Loan> loanBookList;
   private ObservableList<Book> bookList;
 
   private List<Book> recentlyAdded;
@@ -59,6 +62,9 @@ public class UserController implements Initializable {
 
   private File filePath;
   @FXML
+  private TableView<Loan> tableBookShelf;
+
+  @FXML
   private HBox cardLayout;
 
   @FXML
@@ -68,7 +74,6 @@ public class UserController implements Initializable {
   private ImageView userImageView;
 
   @FXML
-
   private BorderPane paneHome;
   @FXML
   private AnchorPane paneInformation;
@@ -97,7 +102,11 @@ public class UserController implements Initializable {
   @FXML
   private Label textSubTiltle;
   @FXML
+  private Label textLoanDescription;
+  @FXML
   private StackPane box;
+  @FXML
+  private StackPane boxLoan;
   @FXML
   private TextField infoName;
   @FXML
@@ -106,6 +115,22 @@ public class UserController implements Initializable {
   private TextField infoAddress;
   @FXML
   private TextField infoPhone;
+  @FXML
+  private Label labelWelcome;
+  @FXML
+  private TableColumn<Loan, String> bookShelfAuthorColumn;
+
+  @FXML
+  private TableColumn<Loan, Integer> bookShelfIdColumn;
+
+  @FXML
+  private TableColumn<Loan, Boolean> bookShelfIsIssuedColumn;
+
+  @FXML
+  private TextField bookShelfSearchTextField;
+
+  @FXML
+  private TableColumn<Loan, String> bookShelfTitleColumn;
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -146,7 +171,10 @@ public class UserController implements Initializable {
     userImageView.setClip(clip);
 
     initializeTableBooks();
+    initializeTableLoanBooks();
+    initializeInformation();
   }
+
 
   private void showBookDetails(Book selectedBook) {
     try {
@@ -157,11 +185,29 @@ public class UserController implements Initializable {
       cardController.setData(selectedBook);
 
       // Cập nhật thông tin sách
-      qrImage.setImage(selectedBook.generateQRCodeImage(selectedBook.getPreviewLink(), 150, 150));
-      textSubTiltle.setText(selectedBook.getTitle());
+      textSubTiltle.setText(selectedBook.getDescription());
 
       // Thay toàn bộ nội dung của StackPane
       box.getChildren().setAll(cardBox);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void showFullBookDetails(Book selectedBook) {
+    try {
+      FXMLLoader fxmlLoader = new FXMLLoader();
+      fxmlLoader.setLocation(getClass().getResource("/LMS/Card.fxml"));
+      HBox cardBox = fxmlLoader.load();
+      CardController cardController = fxmlLoader.getController();
+      cardController.setData(selectedBook);
+
+      // Cập nhật thông tin sách
+      qrImage.setImage(selectedBook.generateQRCodeImage(selectedBook.getPreviewLink(), 150, 150));
+      textLoanDescription.setText(selectedBook.getDescription());
+
+      // Thay toàn bộ nội dung của StackPane
+      boxLoan.getChildren().setAll(cardBox);
     } catch (IOException | WriterException e) {
       e.printStackTrace();
     }
@@ -213,19 +259,75 @@ public class UserController implements Initializable {
         });
   }
 
+  private void initializeTableLoanBooks() {
+    Borrower borrower = (Borrower) library.getUser();
+
+    // Thiết lập các cột với thuộc tính của lớp Loan
+    bookShelfIdColumn.setCellValueFactory(
+        cellData -> new SimpleIntegerProperty(cellData.getValue().getBook().getID()).asObject());
+    bookShelfTitleColumn.setCellValueFactory(
+        cellData -> new SimpleStringProperty(cellData.getValue().getBook().getTitle()));
+    bookShelfAuthorColumn.setCellValueFactory(
+        cellData -> new SimpleStringProperty(cellData.getValue().getBook().getAuthor()));
+
+    loanBookList = FXCollections.observableArrayList(borrower.getBorrowedBooks());
+
+    // Tạo FilteredList để hỗ trợ tìm kiếm
+    FilteredList<Loan> filteredData = new FilteredList<>(loanBookList, b -> true);
+
+    // Lắng nghe sự thay đổi từ trường tìm kiếm (searchTextField)
+    bookShelfSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+      filteredData.setPredicate(loan -> {
+        // Nếu thanh tìm kiếm trống, hiển thị toàn bộ danh sách
+        if (newValue == null || newValue.isEmpty()) {
+          return true;
+        }
+
+        // Chuyển từ khóa sang chữ thường để so khớp không phân biệt hoa/thường
+        String lowerCaseFilter = newValue.toLowerCase();
+
+        // So khớp từ khóa với các thuộc tính của Loan
+        return loan.getBook().getTitle().toLowerCase().contains(lowerCaseFilter)
+            || loan.getBook().getAuthor().toLowerCase().contains(lowerCaseFilter)
+            || String.valueOf(loan.getBook().getID()).contains(lowerCaseFilter);
+      });
+    });
+
+    // Thiết lập dữ liệu cho bảng
+    tableBookShelf.setItems(filteredData);
+
+    // Lắng nghe sự thay đổi khi chọn một mục trong bảng
+    tableBookShelf.getSelectionModel().selectedItemProperty()
+        .addListener((observable, oldValue, newValue) -> {
+          if (newValue != null) {
+            showFullBookDetails(newValue.getBook());
+          }
+        });
+  }
+
+
+  private void initializeInformation() {
+    Borrower librarian = (Borrower) library.getUser();
+    infoName.setText(librarian.getName());
+    infoEmail.setText(librarian.getEmail());
+    infoAddress.setText(librarian.getAddress());
+    infoPhone.setText(String.valueOf(librarian.getPhoneNo()));
+    labelWelcome.setText("Welcome, " + librarian.getName());
+  }
+
   @FXML
   public void handleHoldBookAction(ActionEvent event) {
     Borrower borrower = (Borrower) library.getUser();
     Book selectedBook = tableBooks.getSelectionModel().getSelectedItem();
     if (selectedBook.getHoldRequests().isEmpty()) {
-      if (showConfirmation("Borrow Book", "Do you want to want to borrow this Book?" +
-          "\nYou will have to wait for acceptance from our Librarians.")) {
+      if (showConfirmation("Borrow Book", "Do you want to want to borrow this Book?"
+          + "\nYou will have to wait for acceptance from our Librarians.")) {
         String response = selectedBook.makeHoldRequest(borrower);
         // Notify librarians about borrow action
       }
     } else {
-      if (showConfirmation("Place Book on Hold", "There are earlier requests." +
-          "\nDo you want to place it on hold?")) {
+      if (showConfirmation("Place Book on Hold",
+          "There are earlier requests." + "\nDo you want to place it on hold?")) {
         showAlert("Place Book on Hold operation", selectedBook.makeHoldRequest(borrower));
       }
     }
@@ -286,12 +388,6 @@ public class UserController implements Initializable {
   void handleShowInformation(ActionEvent event) {
     paneHome.setVisible(false);
     paneInformation.setVisible(true);
-
-    Borrower librarian = (Borrower) library.getUser();
-    infoName.setText(librarian.getName());
-    infoEmail.setText(librarian.getEmail());
-    infoAddress.setText(librarian.getAddress());
-    infoPhone.setText(String.valueOf(librarian.getPhoneNo()));
   }
 
   @FXML

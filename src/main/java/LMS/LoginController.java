@@ -193,6 +193,8 @@ public class LoginController {
       login_form.setVisible(false);
       main_form.setVisible(true);
       if (user instanceof Borrower) {
+        library.setUser(user);
+
         Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
         // Tải file FXML của dashboard
@@ -201,11 +203,12 @@ public class LoginController {
         Scene userScene = new Scene(adminLoader.load(), 1096, 640);
 
         primaryStage.setTitle("Library Administration");
-        library.setUser(user);
 
         // Chuyển sang Scene của dashboard
         primaryStage.setScene(userScene);
       } else {
+        library.setUser(user);
+
         Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
         // Tải file FXML của dashboard
@@ -214,7 +217,6 @@ public class LoginController {
         Scene adminScene = new Scene(adminLoader.load(), 1096, 640);
 
         primaryStage.setTitle("Library");
-        library.setUser(user);
 
         // Chuyển sang Scene của dashboard
         primaryStage.setScene(adminScene);

@@ -43,7 +43,7 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Label fx:id="labelWelcome" alignment="CENTER" contentDisplay="CENTER" layoutX="343.0" layoutY="14.0" prefHeight="21.0" prefWidth="185.0" text="Welcome, AdminName">
+                        <Label fx:id="labelWelcome" contentDisplay="CENTER" layoutX="454.0" layoutY="14.0" prefHeight="27.0" prefWidth="346.0" text="Welcome, AdminName">
                            <font>
                               <Font name="Roboto Condensed Black" size="18.0" />
                            </font>
@@ -99,6 +99,18 @@
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../images/history.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <font>
+                              <Font name="Roboto Condensed Black" size="18.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="btnNotifications" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleNotifications" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Notifications">
+                           <graphic>
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/notifications.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -408,6 +420,39 @@
                   </AnchorPane>
                   <AnchorPane fx:id="paneSearchBorrower" prefHeight="100.0" prefWidth="500.0" visible="false">
 
+                  </AnchorPane>
+                  <AnchorPane fx:id="paneNotifications" prefHeight="590.0" prefWidth="887.0" visible="false">
+                     <children>
+                        <VBox prefHeight="590.0" prefWidth="886.0">
+                           <children>
+                              <VBox prefHeight="41.0" prefWidth="886.0" />
+                              <VBox prefHeight="34.0" prefWidth="886.0">
+                                 <children>
+                                    <HBox prefHeight="34.0" prefWidth="647.0">
+                                       <children>
+                                          <HBox prefHeight="34.0" prefWidth="959.0" />
+                                          <HBox prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <Button fx:id="btnClearNotifications" alignment="CENTER_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#handleClearNotifications" text="Clear" textAlignment="CENTER" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <VBox prefHeight="514.0" prefWidth="886.0">
+                                 <children>
+                                    <TableView fx:id="tableNotifications" prefHeight="481.0" prefWidth="886.0">
+                                      <columns>
+                                        <TableColumn fx:id="notificationsNoColumn" prefWidth="75.0" text="No." />
+                                        <TableColumn fx:id="notificationsMessageColumn" prefWidth="810.3999923706054" text="Message" />
+                                      </columns>
+                                    </TableView>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                     </children>
                   </AnchorPane>
                </children>
             </AnchorPane>

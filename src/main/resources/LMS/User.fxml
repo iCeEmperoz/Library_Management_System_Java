@@ -28,28 +28,13 @@
          <top>
             <HBox prefHeight="50.0" prefWidth="200.0" styleClass="white-background" stylesheets="@styles.css" BorderPane.alignment="CENTER">
                <children>
-                  <Label alignment="CENTER" prefHeight="50.0" prefWidth="200.0" text="Library" />
-                  <Separator orientation="VERTICAL" prefHeight="200.0">
-                     <HBox.margin>
-                        <Insets left="10.0" right="10.0" />
-                     </HBox.margin>
-                  </Separator>
-                  <HBox alignment="CENTER" maxHeight="-Infinity" prefHeight="35.0" prefWidth="200.0" styleClass="round-layout" stylesheets="@styles.css">
+                  <Label alignment="CENTER" prefHeight="50.0" prefWidth="200.0" text="Library" textFill="#268b9e">
+                     <font>
+                        <Font name="Berlin Sans FB" size="36.0" />
+                     </font></Label>
+                  <Pane prefHeight="50.0" prefWidth="894.0">
                      <children>
-                        <TextField prefHeight="25.0" prefWidth="160.0" promptText="Search" styleClass="transparent" stylesheets="@styles.css" />
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/search.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                     <HBox.margin>
-                        <Insets top="5.0" />
-                     </HBox.margin>
-                  </HBox>
-                  <Pane prefHeight="50.0" prefWidth="676.0">
-                     <children>
-                        <Button layoutX="604.0" layoutY="1.0" mnemonicParsing="false" onAction="#handleShowInformation" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-border-width: 2;" styleClass="btn" stylesheets="@styles.css">
+                        <Button layoutX="818.0" layoutY="1.0" mnemonicParsing="false" onAction="#handleShowInformation" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-border-width: 2;" styleClass="btn" stylesheets="@styles.css">
                            <graphic>
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -58,20 +43,11 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Label fx:id="labelWelcome" alignment="CENTER" contentDisplay="CENTER" layoutX="141.0" layoutY="14.0" text="Welcome, Username">
+                        <Label fx:id="labelWelcome" contentDisplay="CENTER" layoutX="454.0" layoutY="14.0" prefHeight="27.0" prefWidth="346.0" text="Welcome, Username">
                            <font>
                               <Font name="Roboto Condensed Black" size="18.0" />
                            </font>
                         </Label>
-                        <Button fx:id="btnNotification" layoutX="526.0" layoutY="1.0" mnemonicParsing="false" onAction="#handleNotification" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-border-width: 2;" styleClass="btn" stylesheets="@styles.css">
-                           <graphic>
-                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/notification_black.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
                      </children>
                   </Pane>
                </children>
@@ -82,29 +58,7 @@
                <children>
                   <VBox prefHeight="189.0" prefWidth="210.0" spacing="5.0">
                      <children>
-                        <Label maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="20.0" prefWidth="90.0" text="Browse">
-                           <padding>
-                              <Insets left="10.0" />
-                           </padding>
-                           <font>
-                              <Font name="Roboto Condensed Black" size="18.0" />
-                           </font>
-                           <VBox.margin>
-                              <Insets left="10.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Button fx:id="btnTopBooks" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleTopBooks" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Top Books">
-                           <graphic>
-                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/Star.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                           <font>
-                              <Font name="Roboto Condensed Black" size="18.0" />
-                           </font>
-                        </Button>
+                        <Separator prefWidth="200.0" />
                         <Button fx:id="btnBooks" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleBooks" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Books">
                            <graphic>
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
@@ -117,22 +71,6 @@
                               <Font name="Roboto Condensed Black" size="18.0" />
                            </font>
                         </Button>
-                     </children>
-                  </VBox>
-                  <Separator prefWidth="200.0" />
-                  <VBox layoutX="10.0" layoutY="10.0" prefHeight="189.0" prefWidth="210.0" spacing="5.0">
-                     <children>
-                        <Label maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="22.0" prefWidth="106.0" text="Your Books">
-                           <padding>
-                              <Insets left="10.0" />
-                           </padding>
-                           <font>
-                              <Font name="Roboto Condensed Black" size="18.0" />
-                           </font>
-                           <VBox.margin>
-                              <Insets left="10.0" />
-                           </VBox.margin>
-                        </Label>
                         <Button fx:id="btnYourShelf" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleYourShelf" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Your Shelf">
                            <graphic>
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
@@ -145,6 +83,11 @@
                               <Font name="Roboto Condensed Black" size="18.0" />
                            </font>
                         </Button>
+                     </children>
+                  </VBox>
+                  <Separator prefWidth="200.0" />
+                  <VBox layoutX="10.0" layoutY="10.0" prefHeight="189.0" prefWidth="210.0" spacing="5.0">
+                     <children>
                         <Button fx:id="btnHistory" alignment="TOP_LEFT" graphicTextGap="25.0" layoutX="10.0" layoutY="96.0" mnemonicParsing="false" onAction="#handleHistory" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="History">
                            <graphic>
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
@@ -157,9 +100,20 @@
                               <Font name="Roboto Condensed Black" size="18.0" />
                            </font>
                         </Button>
+                        <Button fx:id="btnNotifications" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleNotifications" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Notifications">
+                           <graphic>
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/notifications.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <font>
+                              <Font name="Roboto Condensed Black" size="18.0" />
+                           </font>
+                        </Button>
                      </children>
                   </VBox>
-                  <Separator prefWidth="200.0" />
                   <VBox alignment="BOTTOM_LEFT" prefHeight="189.0" prefWidth="210.0" spacing="5.0">
                      <children>
                         <Button fx:id="btnLogOut" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleLogOut" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Log Out">
@@ -184,41 +138,6 @@
                <children>
                   <AnchorPane prefHeight="590.0" prefWidth="890.0">
                      <children>
-                        <AnchorPane fx:id="paneTopBooks" prefHeight="590.0" prefWidth="890.0" visible="false">
-                           <children>
-                              <Label layoutX="0.800000011920929" prefHeight="41.0" prefWidth="162.0" text="Recently Added">
-                                 <font>
-                                    <Font name="Roboto Condensed Black" size="18.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </padding>
-                              </Label>
-                              <ScrollPane layoutY="44.0" prefHeight="200.0" prefWidth="890.0" styleClass="transparent" stylesheets="@styles.css">
-                                 <content>
-                                    <HBox fx:id="cardLayout" prefHeight="200.0" prefWidth="1200.0" styleClass="transparent" stylesheets="@styles.css" />
-                                 </content>
-                              </ScrollPane>
-                              <Label layoutX="0.800000011920929" layoutY="244.0" prefHeight="41.0" prefWidth="162.0" text="Recommended">
-                                 <font>
-                                    <Font name="Roboto Condensed Black" size="18.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </padding>
-                              </Label>
-                              <ScrollPane layoutY="288.0" prefHeight="200.0" prefWidth="890.0" styleClass="transparent" stylesheets="@styles.css">
-                                 <content>
-                                    <GridPane fx:id="bookContainer">
-                                       <columnConstraints>
-                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                       </columnConstraints>
-                                    </GridPane>
-                                 </content>
-                              </ScrollPane>
-                           </children>
-                        </AnchorPane>
                         <AnchorPane fx:id="paneBooks" prefHeight="590.0" prefWidth="886.0" visible="false">
                            <children>
                               <Separator layoutX="440.0" orientation="VERTICAL" prefHeight="590.0" prefWidth="10.0" />
@@ -299,7 +218,6 @@
                               </ScrollPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="paneHistory" prefHeight="590.0" prefWidth="890.0" visible="false" />
                         <AnchorPane fx:id="paneYourShelf" prefHeight="590.0" prefWidth="886.0">
                            <children>
                               <Separator layoutX="440.0" orientation="VERTICAL" prefHeight="590.0" prefWidth="10.0" />
@@ -371,6 +289,40 @@
                                     </VBox>
                                  </content>
                               </ScrollPane>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="paneHistory" prefHeight="590.0" prefWidth="890.0" visible="false" />
+                        <AnchorPane fx:id="paneNotifications" prefHeight="590.0" prefWidth="887.0" visible="false">
+                           <children>
+                              <VBox prefHeight="590.0" prefWidth="886.0">
+                                 <children>
+                                    <VBox prefHeight="41.0" prefWidth="886.0" />
+                                    <VBox prefHeight="34.0" prefWidth="886.0">
+                                       <children>
+                                          <HBox prefHeight="34.0" prefWidth="647.0">
+                                             <children>
+                                                <HBox prefHeight="34.0" prefWidth="959.0" />
+                                                <HBox prefHeight="100.0" prefWidth="200.0">
+                                                   <children>
+                                                      <Button fx:id="btnClearNotifications" alignment="CENTER_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#handleClearNotifications" text="Clear" textAlignment="CENTER" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox prefHeight="514.0" prefWidth="886.0">
+                                       <children>
+                                          <TableView fx:id="tableNotifications" prefHeight="481.0" prefWidth="886.0">
+                                             <columns>
+                                                <TableColumn fx:id="notificationsNoColumn" prefWidth="75.0" text="No." />
+                                                <TableColumn fx:id="notificationsMessageColumn" prefWidth="810.3999923706054" text="Message" />
+                                             </columns>
+                                          </TableView>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </VBox>
                            </children>
                         </AnchorPane>
                      </children>

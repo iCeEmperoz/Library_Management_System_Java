@@ -219,6 +219,17 @@ public class AdminController implements Initializable {
     private TextField historySearchTextField;
     @FXML
     private Label labelWelcome;
+    @FXML
+    private AnchorPane paneNotifications;
+    @FXML
+    private TableView<String> tableNotifications;
+    @FXML
+    private TableColumn<String, Integer> notificationsNoColumn;
+    @FXML
+    private TableColumn<String, String> notificationsMessageColumn;
+    @FXML
+    private Button btnClearNotifications;
+
 
     @FXML
     void chooseImageButtonPushed(ActionEvent event) {
@@ -259,6 +270,7 @@ public class AdminController implements Initializable {
         initializeTableUsers();
         initializeTableHistory();
         initializeInformation();
+        initializeTableNotifications();
     }
 
     private void showBookDetails(Book selectedBook) {
@@ -592,6 +604,34 @@ public class AdminController implements Initializable {
         historyTableView.setEditable(true);
     }
 
+private void initializeTableNotifications() {
+    ArrayList<String> notifications = library.getUser().getNotifications();
+    ObservableList<String> notificationList = FXCollections.observableArrayList(notifications);
+    tableNotifications.setItems(notificationList);
+
+    // Set up the columns
+    notificationsNoColumn.setCellValueFactory(cellData -> {
+        int index = tableNotifications.getItems().indexOf(cellData.getValue()) + 1;
+        return Bindings.createIntegerBinding(() -> index).asObject();
+    });
+    notificationsNoColumn.setPrefWidth(30);
+
+    notificationsMessageColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()));
+
+    // Use a custom cell factory to ensure the row numbers are updated correctly
+    notificationsNoColumn.setCellFactory(column -> new TableCell<>() {
+        @Override
+        protected void updateItem(Integer item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty) {
+                setText(null);
+            } else {
+                setText(String.valueOf(getIndex() + 1));
+            }
+        }
+    });
+}
+
     private void initializeInformation() {
 
         Librarian librarian = (Librarian) library.getUser();
@@ -854,6 +894,13 @@ public class AdminController implements Initializable {
         return null;
     }
 
+    @FXML
+    private void handleClearNotifications(ActionEvent event) {
+        if (showConfirmation("Clear Notifications", "Are you sure you want to clear all notifications?")) {
+            library.getUser().clearNotifications();
+            tableNotifications.getItems().clear();
+        }
+    }
 
     @FXML
     private void handleShowInfo(ActionEvent event) {
@@ -1013,7 +1060,11 @@ public class AdminController implements Initializable {
     @FXML
     void handleHistory(ActionEvent event) {
         showPane(paneHistory);
+    }
 
+    @FXML
+    void handleNotifications(ActionEvent event) {
+        showPane(paneNotifications);
     }
 
     @FXML

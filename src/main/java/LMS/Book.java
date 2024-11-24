@@ -566,7 +566,7 @@ public class Book implements Subject {
             // When a book is issued or returned, notify the borrowers who placed the hold request
             // Notify the librarians to check the hold requests when a book is available
             if (message.contains("available") && observer instanceof Librarian) {
-                observer.update(message + ". Check the hold requests and service them.");
+                observer.update(message + " Check the hold requests and service them.");
             } else if (message.contains("service")) {
                 if (observer instanceof Librarian) {
                     observer.update(message);   // Notify only the librarians to service the hold request

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -27,12 +28,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -53,6 +49,7 @@ public class UserController implements Initializable {
     private static final Library library = Library.getInstance();
 
     private final ArrayList<Book> books = library.getBooks();
+    public Button btnNotifications;
 
     private ObservableList<Loan> loanBookList;
     private ObservableList<Book> bookList;
@@ -98,8 +95,6 @@ public class UserController implements Initializable {
     @FXML
     private AnchorPane paneHistory;
     @FXML
-    private AnchorPane paneTopBooks;
-    @FXML
     private AnchorPane paneYourShelf;
     @FXML
     private ImageView qrImage;
@@ -135,6 +130,16 @@ public class UserController implements Initializable {
 
     @FXML
     private TableColumn<Loan, String> bookShelfTitleColumn;
+    @FXML
+    private AnchorPane paneNotifications;
+    @FXML
+    private TableView<String> tableNotifications;
+    @FXML
+    private TableColumn<String, Integer> notificationsNoColumn;
+    @FXML
+    private TableColumn<String, String> notificationsMessageColumn;
+    @FXML
+    private Button btnClearNotifications;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -177,6 +182,7 @@ public class UserController implements Initializable {
         initializeTableBooks();
         initializeTableLoanBooks();
         initializeInformation();
+        initializeTableNotifications();
     }
 
     private void showBookDetails(Book selectedBook) {
@@ -308,6 +314,34 @@ public class UserController implements Initializable {
                 });
     }
 
+    private void initializeTableNotifications() {
+        ArrayList<String> notifications = library.getUser().getNotifications();
+        ObservableList<String> notificationList = FXCollections.observableArrayList(notifications);
+        tableNotifications.setItems(notificationList);
+
+        // Set up the columns
+        notificationsNoColumn.setCellValueFactory(cellData -> {
+            int index = tableNotifications.getItems().indexOf(cellData.getValue()) + 1;
+            return Bindings.createIntegerBinding(() -> index).asObject();
+        });
+        notificationsNoColumn.setPrefWidth(30);
+
+        notificationsMessageColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()));
+
+        // Use a custom cell factory to ensure the row numbers are updated correctly
+        notificationsNoColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(String.valueOf(getIndex() + 1));
+                }
+            }
+        });
+    }
+
 
     private void initializeInformation() {
         Borrower librarian = (Borrower) library.getUser();
@@ -376,7 +410,6 @@ public class UserController implements Initializable {
     }
 
     private void showPane(AnchorPane paneToShow) {
-        paneTopBooks.setVisible(false);
         paneBooks.setVisible(false);
         paneYourShelf.setVisible(false);
         paneHistory.setVisible(false);
@@ -408,18 +441,21 @@ public class UserController implements Initializable {
     }
 
     @FXML
-    void handleTopBooks(ActionEvent event) {
-        showPane(paneTopBooks);
-    }
-
-    @FXML
     void handleYourShelf(ActionEvent event) {
         showPane(paneYourShelf);
     }
 
     @FXML
-    void handleNotification(ActionEvent event) {
+    void handleNotifications(ActionEvent event) {
+        showPane(paneNotifications);
+    }
 
+    @FXML
+    private void handleClearNotifications(ActionEvent event) {
+        if (showConfirmation("Clear Notifications", "Are you sure you want to clear all notifications?")) {
+            library.getUser().clearNotifications();
+            tableNotifications.getItems().clear();
+        }
     }
 
     @FXML

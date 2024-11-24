@@ -915,6 +915,7 @@ private void initializeTableNotifications() {
         paneDashboard.setVisible(false);
         paneHistory.setVisible(false);
         paneAddBook.setVisible(false);
+        paneNotifications.setVisible(false);
         paneToShow.setVisible(true);
     }
 

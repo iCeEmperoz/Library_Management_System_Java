@@ -119,14 +119,11 @@ public class UserController implements Initializable {
     @FXML
     private TableColumn<Loan, String> bookShelfAuthorColumn;
 
-    @FXML
-    private TableColumn<Loan, Integer> bookShelfIdColumn;
+  @FXML
+  private TableColumn<Loan, Integer> bookShelfIdColumn;
 
-    @FXML
-    private TableColumn<Loan, Boolean> bookShelfIsIssuedColumn;
-
-    @FXML
-    private TextField bookShelfSearchTextField;
+  @FXML
+  private TextField bookShelfSearchTextField;
 
     @FXML
     private TableColumn<Loan, String> bookShelfTitleColumn;
@@ -413,6 +410,7 @@ public class UserController implements Initializable {
         paneBooks.setVisible(false);
         paneYourShelf.setVisible(false);
         paneHistory.setVisible(false);
+        paneNotifications.setVisible(false);
         paneToShow.setVisible(true);
     }
 

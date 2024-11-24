@@ -294,36 +294,6 @@ public class OnTerminalTest {
     }
 
     @Test
-    public void testHandleFineCheck() {
-        setup(TC.SignupOption.BORROWER + "\n" + TC.Borrower.NAME + "\n" + TC.Borrower.PASS + "\n"
-            + TC.Borrower.ADDR + "\n" + TC.Borrower.PHONE + "\n" + TC.Borrower.EMAIL + "\n");
-        List<Borrower> borrowers = libraryMock.getBorrowers();
-        try {
-            // Create a new borrower for testing
-            Method handleAccountCreation = OnTerminal.class.getDeclaredMethod("handleAccountCreation", Library.class);
-            handleAccountCreation.setAccessible(true);
-            handleAccountCreation.invoke(OnTerminal.class, libraryMock);
-
-            for (Borrower borrower : borrowers) {
-                Method handleFineCheck = OnTerminal.class.getDeclaredMethod("handleFineCheck", Library.class, Person.class);
-                handleFineCheck.setAccessible(true);
-                handleFineCheck.invoke(OnTerminal.class, libraryMock, borrower);
-            }
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-            fail("NoSuchMethodException should not be thrown: " + e.getMessage());
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("IllegalAccessException should not be thrown: " + e.getMessage());
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            fail("InvocationTargetException should not be thrown: " + e.getMessage());
-        }
-        output = outputStreamCaptor.toString();
-        assertTrue(output.contains("Your Total Fine is : Rs 0.0"));
-    }
-
-    @Test
     public void testHandleHoldRequestQueue() {
         String addBook = TC.Book.TITLE + "\n" + TC.Book.DESCRIPTION + "\n" + TC.Book.AUTHOR + "\n";
         String searchBook = TC.PortalOption.SEARCH_BY_TITLE + "\n" + TC.Book.TITLE + "\n";

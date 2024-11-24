@@ -260,6 +260,17 @@ public class Library {
                 }
             }
         }
+        for (Librarian librarian : librarians) {
+            for (String detail : librarian.getNotifications()) {
+                String template = "INSERT INTO NOTIFICATIONS (NOTIFICATION_ID, PERSON_ID, MESSAGE) values (?, ?, ?)";
+                try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                    stmt.setInt(1, y++);
+                    stmt.setInt(2, librarian.getID());
+                    stmt.setString(3, detail);
+                    stmt.executeUpdate();
+                }
+            }
+        }
     } // Filling Done!
 
     /**
@@ -595,7 +606,7 @@ public class Library {
 
         while (true) {
             System.out.println(
-                    "\nEnter either '1' or '2' or '3' for search by Title, Description or Author of Book respectively: ");
+                    "\nEnter either '1' or '2' for search by Title or Author of Book respectively: ");
             choice = scanner.next();
             scanner.nextLine();
 
@@ -610,9 +621,6 @@ public class Library {
             System.out.println("\nEnter the Title of the Book: ");
             title = scanner.nextLine();
         } else if (choice.equals("2")) {
-            System.out.println("\nEnter the Description of the Book: ");
-            description = scanner.nextLine();
-        } else {
             System.out.println("\nEnter the Author of the Book: ");
             author = scanner.nextLine();
         }
@@ -626,10 +634,6 @@ public class Library {
                     matchedBooks.add(book);
                 }
             } else if (choice.equals("2")) {
-                if (book.getDescription().toLowerCase().contains(description.toLowerCase())) {
-                    matchedBooks.add(book);
-                }
-            } else {
                 if (book.getAuthor().toLowerCase().contains(author.toLowerCase())) {
                     matchedBooks.add(book);
                 }
@@ -658,6 +662,17 @@ public class Library {
         }
     }
 
+    /**
+     * Searches for a book in the library based on the book's title.
+     *
+     * @param id@return the Book object if found, or null if no book with the specified title is found
+     */
+    public Book searchForBookByID(int id) {
+        if (id > 0 && id <= booksInLibrary.size()) {
+            return booksInLibrary.get(id - 1);
+        }
+        return null;
+    }
     /**
      * Displays all the books available in the library. If the library has books, it prints the list
      * of books with their details including the index number, title, author, and description. If the
@@ -1001,6 +1016,7 @@ public class Library {
         if (!resultSet.next()) {
             System.out.println("No Librarian Found in Library");
         } else {
+            ArrayList<Book> books = library.getBooks();
             do {
                 int id = resultSet.getInt("ID");
                 String name = resultSet.getString("NAME");
@@ -1014,6 +1030,10 @@ public class Library {
 
                 Library.addLibrarian(librarian);
 
+                // Attach librarians as observers to books
+                for (Book book : books) {
+                    book.attach(librarian);
+                }
             } while (resultSet.next());
 
         }
@@ -1059,6 +1079,12 @@ public class Library {
                         getBorrowers().get(i).addNotification(message);
                     }
                 }
+
+                for (int i = 0; i < getLibrarians().size(); i++) {
+                    if (getLibrarians().get(i).getID() == personID) {
+                        getLibrarians().get(i).addNotification(message);
+                    }
+                }
             } while (resultSet.next());
         }
 
@@ -1086,8 +1112,6 @@ public class Library {
                 } else {
                     rdate = null;
                 }
-
-                boolean fineStatus = resultSet.getBoolean("fine_paid");
 
                 boolean set = true;
                 Borrower borower = null;
@@ -1172,7 +1196,6 @@ public class Library {
                     if (book.getID() == bookId) {
                         set = false;
                         HoldRequest hbook = new HoldRequest(borower, book, off);
-//                        holdRequestsOperations.addHoldRequest(hbook);
                         book.addHoldRequest(hbook);
                         borower.addHoldRequest(hbook);
 
@@ -1214,15 +1237,12 @@ public class Library {
 
                 set = true;
 
-                ArrayList<Loan> books = loans;
-
-                for (int i = 0; i < books.size() && set; i++) {
-                    if (books.get(i).getBook().getID() == bookID && books.get(i).getReceiver() == null) {
+                for (int i = 0; i < loans.size() && set; i++) {
+                    Loan loan = loans.get(i);
+                    if (loan.getBook().getID() == bookID && loan.getReceiver() == null) {
                         set = false;
-                        Loan loan = new Loan(borower, books.get(i).getBook(), books.get(i).getIssuer(), null,
-                                books.get(i).getIssuedDate(), null);
                         borower.addBorrowedBook(loan);
-                        books.get(i).getBook().setLoan(loan);
+                        loans.get(i).getBook().setLoan(loan);
                     }
                 }
 

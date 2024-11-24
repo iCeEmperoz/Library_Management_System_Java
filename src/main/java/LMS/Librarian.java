@@ -11,7 +11,7 @@ import java.util.Objects;
  *
  * @see Person
  */
-public class Librarian extends Person {
+public class Librarian extends Person implements Observer {
     protected double salary;
 
     /**
@@ -76,4 +76,8 @@ public class Librarian extends Person {
         return Objects.hash(getEmail());
     }
 
+    @Override
+    public void update(String message) {
+        notifications.add(message);
+    }
 }

@@ -615,30 +615,40 @@ public class AdminController implements Initializable {
 
     @FXML
     private void handleCheckOutBookAction(Book book) {
-        if (book.getHoldRequests() != null) {
+        if (book.getHoldRequests() == null || book.getHoldRequests().isEmpty()) {
+            showAlert("Check Out Operation", "This book has not been requested by any borrower yet.");
+            return;
+        }
+        if (book.getHoldRequests() != null && !book.getHoldRequests().isEmpty()) {
+            HoldRequest firstRequest = book.getHoldRequests().get(0);
             if (showConfirmation("Check Out Book Operation",
-                    "This book has been firstly requested by " + book.getHoldRequests().get(0).getBorrower().getName()
-                            + " (ID: " + book.getHoldRequests().get(0).getBorrower().getID() + ")"
+                    "This book has been firstly requested by " + firstRequest.getBorrower().getName()
+                            + " (ID: " + firstRequest.getBorrower().getID() + ")"
                             + ".\nCheck out this book?")) {
-                HoldRequest holdRequest = book.getHoldRequests().get(0);
-                showAlert("Check Out Book Operation", book.issueBook(holdRequest.getBorrower(), (Librarian) library.getUser()));
+                showAlert("Check Out Book Operation", book.issueBook(firstRequest.getBorrower(), (Librarian) library.getUser()));
             }
+            Loan newLoan = book.getLoan();
+            if (newLoan != null) {
+                loanList.add(newLoan);
+            }
+            tableBooks.refresh();
             return;
         }
 
+        // Phần xử lý khi danh sách holdRequests rỗng hoặc null
         Borrower borrower = handleFindBorrower();
         if (borrower != null) {
             if (showConfirmation("Check Out Book Operation",
                     "Issue book to this borrower: " + borrower.getName() + ", ID: " + borrower.getID() + "?")) {
                 showAlert("Place Book on Hold operation", book.issueBook(borrower, (Librarian) library.getUser()));
             }
-            // Thêm khoản mượn mới vào danh sách loanList và cập nhật bảng
+
             Loan newLoan = book.getLoan();
             if (newLoan != null) {
                 loanList.add(newLoan);
             }
-            tableBooks.refresh();
         }
+        tableBooks.refresh();
     }
 
 
@@ -657,7 +667,6 @@ public class AdminController implements Initializable {
 
                 initializeTableHistory();
 
-                // Làm mới bảng
                 historyTableView.refresh();
                 tableBooks.refresh();
             }

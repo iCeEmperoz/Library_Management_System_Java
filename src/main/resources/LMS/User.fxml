@@ -138,7 +138,7 @@
                <children>
                   <AnchorPane prefHeight="590.0" prefWidth="890.0">
                      <children>
-                        <AnchorPane fx:id="paneBooks" prefHeight="590.0" prefWidth="886.0" visible="false">
+                        <AnchorPane fx:id="paneBooks" prefHeight="590.0" prefWidth="886.0">
                            <children>
                               <Separator layoutX="440.0" orientation="VERTICAL" prefHeight="590.0" prefWidth="10.0" />
                               <GridPane layoutX="14.0" layoutY="31.0" prefHeight="538.0" prefWidth="409.0">
@@ -218,7 +218,7 @@
                               </ScrollPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="paneYourShelf" prefHeight="590.0" prefWidth="886.0">
+                        <AnchorPane fx:id="paneYourShelf" prefHeight="590.0" prefWidth="886.0" visible="false">
                            <children>
                               <Separator layoutX="440.0" orientation="VERTICAL" prefHeight="590.0" prefWidth="10.0" />
                               <GridPane layoutX="14.0" layoutY="31.0" prefHeight="538.0" prefWidth="409.0">
@@ -291,7 +291,22 @@
                               </ScrollPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="paneHistory" prefHeight="590.0" prefWidth="890.0" visible="false" />
+                        <AnchorPane fx:id="paneHistory" prefHeight="590.0" prefWidth="890.0" visible="false">
+                           <children>
+                              <VBox prefHeight="591.0" prefWidth="889.0">
+                                 <children>
+                                    <TableView fx:id="historyTableView" prefHeight="591.0" prefWidth="890.0">
+                                      <columns>
+                                          <TableColumn fx:id="bookIDColumn" prefWidth="118.4000244140625" text="Book_ID" />
+                                          <TableColumn fx:id="titleColumn" prefWidth="390.4000244140625" text="Title" />
+                                        <TableColumn fx:id="librarianIDColumn" prefWidth="89.5999755859375" text="Librarian_ID" />
+                                        <TableColumn fx:id="issuedDateColumn" prefWidth="124.800048828125" text="I_Date" />
+                                          <TableColumn fx:id="returnedDateColumn" prefWidth="123.199951171875" text="R_Date" />
+                                      </columns>
+                                    </TableView>
+                                 </children>
+                              </VBox>
+                           </children></AnchorPane>
                         <AnchorPane fx:id="paneNotifications" prefHeight="590.0" prefWidth="887.0" visible="false">
                            <children>
                               <VBox prefHeight="590.0" prefWidth="886.0">

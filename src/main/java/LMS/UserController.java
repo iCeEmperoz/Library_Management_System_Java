@@ -9,10 +9,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -55,7 +55,7 @@ public class UserController implements Initializable {
     private ObservableList<Book> bookList;
 
     private List<Book> recentlyAdded;
-
+    private ObservableList<Loan> loanList;
     private List<Book> recommended;
 
     private FileChooser fileChooser;
@@ -138,6 +138,37 @@ public class UserController implements Initializable {
     @FXML
     private Button btnClearNotifications;
 
+    @FXML
+    private TableView<Loan> historyTableView;
+    @FXML
+    private TableColumn<Loan, Integer> noColumn;
+    @FXML
+    private TableColumn<Loan, Integer> bookIDColumn;
+    @FXML
+    private TableColumn<Loan, String> titleColumn;
+    @FXML
+    private TableColumn<Loan, Integer> borrowerIDColumn;
+    @FXML
+    private TableColumn<Loan, String> borrowerColumn;
+    @FXML
+    private TableColumn<Loan, String> issuerIDColumn;
+    @FXML
+    private TableColumn<Loan, String> issuerColumn;
+    @FXML
+    private TableColumn<Loan, String> issuedDateColumn;
+    @FXML
+    private TableColumn<Loan, String> receiverIDColumn;
+    @FXML
+    private TableColumn<Loan, String> librarianIDColumn;
+    @FXML
+    private TableColumn<Loan, String> receiverColumn;
+    @FXML
+    private TableColumn<Loan, String> returnedDateColumn;
+    @FXML
+    private TextField historySearchTextField;
+
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         recentlyAdded = recentlyAdded();
@@ -180,6 +211,7 @@ public class UserController implements Initializable {
         initializeTableLoanBooks();
         initializeInformation();
         initializeTableNotifications();
+        initializeTableHistory();
     }
 
     private void showBookDetails(Book selectedBook) {
@@ -338,6 +370,76 @@ public class UserController implements Initializable {
             }
         });
     }
+
+
+    private void initializeTableHistory() {
+        // Khởi tạo danh sách động từ danh sách các khoản mượn
+        loanList = FXCollections.observableArrayList(library.getLoans());
+
+        FilteredList<Loan> filteredData = new FilteredList<>(loanList, b -> true);
+
+        // Gắn danh sách này vào bảng
+        historyTableView.setItems(filteredData);
+
+        // Cấu hình các cột
+        bookIDColumn.setCellValueFactory(
+                cellData -> new SimpleIntegerProperty(cellData.getValue().getBook().getID()).asObject());
+
+        titleColumn.setCellValueFactory(
+                cellData -> new SimpleStringProperty(cellData.getValue().getBook().getTitle()));
+
+        librarianIDColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
+                String.valueOf(cellData.getValue().getIssuer().getID())));
+
+        issuedDateColumn.setCellValueFactory(cellData -> {
+            LocalDate issuedDate = cellData.getValue().getIssuedDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            return new SimpleStringProperty(issuedDate.format(formatter));
+        });
+
+        returnedDateColumn.setCellValueFactory(cellData -> {
+            Date returnedDate = cellData.getValue().getReturnDate();
+            if (returnedDate != null) {
+                LocalDate localDate = returnedDate.toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                return new SimpleStringProperty(localDate.format(formatter));
+            } else {
+                return new SimpleStringProperty("");
+            }
+        });
+
+        // Add a listener to the search text field to filter the table
+//        historySearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+//            filteredData.setPredicate(loan -> {
+//                if (newValue == null || newValue.isEmpty()) {
+//                    return true;
+//                }
+//                String lowerCaseFilter = newValue.toLowerCase();
+//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+//                String issuedDate = loan.getIssuedDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().format(formatter);
+//                String returnDate = loan.getReturnDate() != null ? loan.getReturnDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().format(formatter) : "";
+//
+//                // Lọc theo các thuộc tính cần thiết
+//                if (String.valueOf(loan.getBook().getID()).contains(lowerCaseFilter)) {
+//                    return true;
+//                } else if (loan.getBook().getTitle().toLowerCase().contains(lowerCaseFilter)) {
+//                    return true;
+//                } else if (String.valueOf(loan.getIssuer().getID()).contains(lowerCaseFilter)) {
+//                    return true;
+//                } else if (issuedDate.contains(lowerCaseFilter)) {
+//                    return true;
+//                } else if (returnDate.contains(lowerCaseFilter)) {
+//                    return true;
+//                }
+//                return false;
+//            });
+//        });
+
+        historyTableView.setEditable(true);
+    }
+
 
 
     private void initializeInformation() {

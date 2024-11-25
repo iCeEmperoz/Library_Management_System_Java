@@ -108,7 +108,10 @@
                         </Button>
                         <Button fx:id="btnNotifications" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleNotifications" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Notifications">
                            <graphic>
-                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/notifications.png" />
+                                 </image></ImageView>
                            </graphic>
                            <font>
                               <Font name="Roboto Condensed Black" size="18.0" />
@@ -134,7 +137,7 @@
          <center>
             <AnchorPane prefHeight="590.0" prefWidth="886.0" BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane fx:id="paneDashboard" prefHeight="590.0" prefWidth="886.0">
+                  <AnchorPane fx:id="paneDashboard" prefHeight="590.0" prefWidth="886.0" visible="false">
                      <children>
                         <Separator layoutX="446.0" layoutY="2.0" orientation="VERTICAL" prefHeight="586.0" prefWidth="0.0" />
                         <VBox alignment="CENTER" prefHeight="590.0" prefWidth="446.0">
@@ -276,7 +279,7 @@
                         </ScrollPane>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="paneUsers" prefHeight="590.0" prefWidth="886.0" visible="false">
+                  <AnchorPane fx:id="paneUsers" prefHeight="590.0" prefWidth="886.0">
                      <children>
                         <GridPane layoutX="4.0" layoutY="52.0" prefHeight="538.0" prefWidth="878.0">
                            <columnConstraints>
@@ -313,15 +316,6 @@
                                           <String fx:value="round-layout" />
                                        </styleClass>
                                     </TextField>
-                                    <Button fx:id="btnAddUser" graphicTextGap="10.0" mnemonicParsing="false" onAction="#handleAddUser" prefHeight="30.0" prefWidth="219.0" style="-fx-background-color: #5dbdb4;" text="Add " textAlignment="CENTER">
-                                       <graphic>
-                                          <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../images/add.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Button>
                                  </children>
                               </HBox>
                            </children>
@@ -413,9 +407,6 @@
                            </graphic>
                         </Button>
                      </children>
-                  </AnchorPane>
-                  <AnchorPane fx:id="paneSearchBorrower" prefHeight="100.0" prefWidth="500.0" visible="false">
-
                   </AnchorPane>
                   <AnchorPane fx:id="paneNotifications" prefHeight="590.0" prefWidth="887.0" visible="false">
                      <children>

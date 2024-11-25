@@ -38,7 +38,7 @@ public class Library {
     private final ArrayList<Book> booksInLibrary;
     public int bookReturnDeadline;
     private String name;
-    private API_TEST googleAPI;
+    private API googleAPI;
 
     /**
      * Represents a Library with a collection of books, librarians, and borrowers. This class is
@@ -54,7 +54,7 @@ public class Library {
         borrowers = new ArrayList<>();
         booksInLibrary = new ArrayList<>();
         loans = new ArrayList<>();
-        this.googleAPI = new API_TEST();
+        this.googleAPI = new API();
     }
 
     /*---------------------------------------------------------------------*/

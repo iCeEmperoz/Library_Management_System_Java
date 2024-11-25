@@ -26,7 +26,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.embed.swing.SwingFXUtils;
@@ -75,7 +74,7 @@ public class AdminController implements Initializable {
     private static final Library library = Library.getInstance();
     private final ArrayList<Borrower> users = library.getBorrowers();
     private final ArrayList<Librarian> librarians = library.getLibrarians();
-    private final API_TEST apiTest = new API_TEST();
+    private final API apiTest = new API();
     private final ObservableList<Book> apiBooksList = FXCollections.observableArrayList();
     private final AtomicReference<String> searchQuery = new AtomicReference<>("");
     private final long debounceDelay = 500;

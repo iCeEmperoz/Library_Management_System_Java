@@ -10,25 +10,9 @@ import java.util.Scanner;
  */
 public class OnTerminal {
     public static final int lineOnScreen = 20;
-    private static Scanner scanner = new Scanner(System.in);
-    private static Library library = Library.getInstance();
     private static Boolean onTest = false;
-
-    public static void setScanner(Scanner scanner) {
-        OnTerminal.scanner = scanner;
-    }
-
-    public static Scanner getScanner() {
-        return scanner;
-    }
-
-    public static void setLibrary(Library library) {
-        OnTerminal.library = library;
-    }
-
-    public static void setOnTest(boolean onTest) {
-        OnTerminal.onTest = onTest;
-    }
+    private static Library library = Library.getInstance();
+    private static Scanner scanner = new Scanner(System.in);
 
     /**
      * The main entry point for the terminal application.
@@ -139,6 +123,33 @@ public class OnTerminal {
     }
 
     /**
+     * Handles the account creation process.
+     *
+     * @param library The library instance.
+     * @throws IOException If an input or output exception occurred.
+     */
+    private static void handleAccountCreation(Library library) throws IOException {
+        System.out.println("Choose work session: ");
+        System.out.println("1- Borrower.");
+        System.out.println("2- Librarian.");
+        System.out.println("3- Back.");
+
+        int ch = takeInput(0, 4);
+        if (ch == 1) {
+            library.createBorrower();
+        } else if (ch == 2) {;
+            System.out.print("Please enter system's password: ");
+            String pass = scanner.next();
+            scanner.nextLine();
+            if (pass.equals(Library.LMS_PASSWORD)) {
+                library.createLibrarian();
+            } else {
+                System.out.println("Wrong password.");
+            }
+        }
+    }
+
+    /**
      * Handles the login process for the user.
      *
      * @param library The library instance.
@@ -170,6 +181,22 @@ public class OnTerminal {
     }
 
     /**
+     * Runs the librarian portal.
+     *
+     * @param user The librarian user.
+     * @throws IOException If an input or output exception occurred.
+     */
+    private static void runLibrarianPortal(Person user) throws IOException {
+        while (true) {
+            clearScreen();
+            displayLibrarianMenu();
+            int choice = takeInput(0, 16);
+            if (choice == 15) break;
+            allFunctionalities(user, choice);
+        }
+    }
+
+    /**
      * Displays the borrower menu.
      */
     private static void displayBorrowerMenu() {
@@ -184,22 +211,6 @@ public class OnTerminal {
         System.out.println("5- Check Hold Requests Queue of a Book");
         System.out.println("6- Logout");
         System.out.println("--------------------------------------------------------");
-    }
-
-    /**
-     * Runs the librarian portal.
-     *
-     * @param user The librarian user.
-     * @throws IOException If an input or output exception occurred.
-     */
-    private static void runLibrarianPortal(Person user) throws IOException {
-        while (true) {
-            clearScreen();
-            displayLibrarianMenu();
-            int choice = takeInput(0, 17);
-            if (choice == 16) break;
-            allFunctionalities(user, choice);
-        }
     }
 
     /**
@@ -227,68 +238,6 @@ public class OnTerminal {
         System.out.println("15- View All Books in Library");
         System.out.println("16- Logout");
         System.out.println("--------------------------------------------------------");
-    }
-
-    /**
-     * Handles the account creation process.
-     *
-     * @param library The library instance.
-     * @throws IOException If an input or output exception occurred.
-     */
-    private static void handleAccountCreation(Library library) throws IOException {
-        System.out.println("Choose work session: ");
-        System.out.println("1- Borrower.");
-        System.out.println("2- Librarian.");
-        System.out.println("3- Back.");
-
-        int ch = takeInput(0, 4);
-        if (ch == 1) {
-            library.createBorrower();
-        } else if (ch == 2) {;
-            System.out.print("Please enter system's password: ");
-            String pass = scanner.next();
-            scanner.nextLine();
-            if (pass.equals(Library.LMS_PASSWORD)) {
-                library.createLibrarian();
-            } else {
-                System.out.println("Wrong password.");
-            }
-        }
-    }
-
-    /**
-     * Clears the terminal screen by printing empty lines.
-     */
-    public static void clearScreen() {
-        for (int i = 0; i < lineOnScreen; i++) {
-            System.out.println();
-        }
-    }
-
-    /**
-     * Takes input from the user within a specified range.
-     *
-     * @param min The minimum valid input value.
-     * @param max The maximum valid input value.
-     * @return The valid input value.
-     */
-    public static int takeInput(int min, int max) {
-        while (true) {
-            System.out.print("Please enter your choice: ");
-            String choice = scanner.next();
-            scanner.nextLine();
-
-            try {
-                int intChoice = Integer.parseInt(choice);
-                if (intChoice > min && intChoice < max) {
-                    return intChoice;
-                } else {
-                    System.out.println("Invalid input. Please enter an integer between " + (min + 1) + " and " + (max - 1) + ".");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid integer.");
-            }
-        }
     }
 
     /**
@@ -324,27 +273,24 @@ public class OnTerminal {
                 handleBookReturn(library, person);
                 break;
             case 8:
-                handleBookRenewal(library, person);
-                break;
-            case 9:
                 library.createBorrower();
                 break;
-            case 10:
+            case 9:
                 handleBorrowerInfoUpdate(library);
                 break;
-            case 11:
+            case 10:
                 handleBookCreation(library);
                 break;
-            case 12:
+            case 11:
                 handleBookRemoval(library);
                 break;
-            case 13:
+            case 12:
                 handleBookInfoChange(library);
                 break;
-            case 14:
+            case 13:
                 library.viewHistory();
                 break;
-            case 15:
+            case 14:
                 library.viewAllBooks();
                 break;
         }
@@ -354,77 +300,62 @@ public class OnTerminal {
     }
 
     /**
-     * Handles the notifications for a person.
-     * Prints notifications and optionally clears them.
+     * Takes input from the user within a specified range.
      *
-     * @param person The person whose notifications are to be handled.
+     * @param min The minimum valid input value.
+     * @param max The maximum valid input value.
+     * @return The valid input value.
      */
-    private static void handleNotifications(Person person) {
-        person.printNotifications();
-        if (!person.notifications.isEmpty()) {
-            System.out.println("Do you want to clear notifications? (y/n)");
+    public static int takeInput(int min, int max) {
+        while (true) {
+            System.out.print("Please enter your choice: ");
             String choice = scanner.next();
             scanner.nextLine();
 
-            if (choice.equals("y") || choice.equals("Y")) {
-                person.clearNotifications();
-                clearScreen();
-                System.out.println("Notifications cleared.");
-            }
-        }
-    }
-
-    /**
-     * Handles the hold request for a book.
-     *
-     * @param library The library instance.
-     * @param person The person making the hold request.
-     * @throws IOException If an input or output exception occurred.
-     */
-    private static void handleHoldRequest(Library library, Person person) throws IOException {
-        ArrayList<Book> books = library.searchForBooks();
-        if (books != null) {
-            int input = takeInput(-1, books.size());
-            Book book = books.get(input);
-
-            if ("Librarian".equals(person.getClass().getSimpleName())) {
-                Borrower borrower = library.findBorrower();
-                if (borrower != null) {
-                    System.out.print(book.makeHoldRequest(borrower));
+            try {
+                int intChoice = Integer.parseInt(choice);
+                if (intChoice > min && intChoice < max) {
+                    return intChoice;
+                } else {
+                    System.out.println("Invalid input. Please enter an integer between " + (min + 1) + " and " + (max - 1) + ".");
                 }
-            } else {
-                System.out.print(book.makeHoldRequest((Borrower) person));
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid integer.");
             }
         }
     }
 
+
     /**
-     * Handles the display of personal information.
+     * Handles the creation of a new book.
      *
      * @param library The library instance.
-     * @param person The person whose information is to be displayed.
      * @throws IOException If an input or output exception occurred.
      */
-    private static void handlePersonalInfo(Library library, Person person) throws IOException {
-        if ("Librarian".equals(person.getClass().getSimpleName())) {
-            Borrower borrower = library.findBorrower();
-            if (borrower != null) borrower.printInfo();
-        } else {
-            person.printInfo();
-        }
+    private static void handleBookCreation(Library library) throws IOException {
+        System.out.println("\nEnter Title:");
+        String title = scanner.nextLine();
+
+        System.out.println("\nEnter Description:");
+        String description = scanner.nextLine();
+
+        System.out.println("\nEnter Author:");
+        String author = scanner.nextLine();
+
+        library.createBook(title, description, author);
     }
 
     /**
-     * Handles the display of hold request queue for a book.
+     * Handles the change of book information.
      *
      * @param library The library instance.
      * @throws IOException If an input or output exception occurred.
      */
-    private static void handleHoldRequestQueue(Library library) throws IOException {
+    private static void handleBookInfoChange(Library library) throws IOException {
         ArrayList<Book> books = library.searchForBooks();
         if (books != null) {
             int input = takeInput(-1, books.size());
-            books.get(input).printHoldRequests();
+            books.get(input).changeBookInfo();
         }
     }
 
@@ -458,6 +389,20 @@ public class OnTerminal {
     }
 
     /**
+     * Handles the removal of a book from the library.
+     *
+     * @param library The library instance.
+     * @throws IOException If an input or output exception occurred.
+     */
+    private static void handleBookRemoval(Library library) throws IOException {
+        ArrayList<Book> books = library.searchForBooks();
+        if (books != null) {
+            int input = takeInput(-1, books.size());
+            System.out.print(library.removeBookfromLibrary(books.get(input)));
+        }
+    }
+
+    /**
      * Handles the book return process.
      *
      * @param library The library instance.
@@ -480,27 +425,6 @@ public class OnTerminal {
     }
 
     /**
-     * Handles the book renewal process.
-     *
-     * @param library The library instance.
-     * @param person The librarian handling the renewal.
-     * @throws IOException If an input or output exception occurred.
-     */
-    private static void handleBookRenewal(Library library, Person person) throws IOException {
-        Borrower borrower = library.findBorrower();
-        if (borrower != null) {
-            borrower.printBorrowedBooks();
-            ArrayList<Loan> loans = borrower.getBorrowedBooks();
-            if (!loans.isEmpty()) {
-                int input = takeInput(-1, loans.size());
-                loans.get(input).renewIssuedBook(new java.util.Date());
-            } else {
-                System.out.println("\nThis borrower " + borrower.getName() + " has no issued book which can be renewed.");
-            }
-        }
-    }
-
-    /**
      * Handles the update of borrower information.
      *
      * @param library The library instance.
@@ -512,49 +436,112 @@ public class OnTerminal {
     }
 
     /**
-     * Handles the creation of a new book.
+     * Handles the hold request for a book.
      *
      * @param library The library instance.
+     * @param person The person making the hold request.
      * @throws IOException If an input or output exception occurred.
      */
-    private static void handleBookCreation(Library library) throws IOException {
-        System.out.println("\nEnter Title:");
-        String title = scanner.nextLine();
-
-        System.out.println("\nEnter Description:");
-        String description = scanner.nextLine();
-        
-        System.out.println("\nEnter Author:");
-        String author = scanner.nextLine();
-        
-        library.createBook(title, description, author);
-    }
-
-    /**
-     * Handles the removal of a book from the library.
-     *
-     * @param library The library instance.
-     * @throws IOException If an input or output exception occurred.
-     */
-    private static void handleBookRemoval(Library library) throws IOException {
+    private static void handleHoldRequest(Library library, Person person) throws IOException {
         ArrayList<Book> books = library.searchForBooks();
         if (books != null) {
             int input = takeInput(-1, books.size());
-            System.out.print(library.removeBookfromLibrary(books.get(input)));
+            Book book = books.get(input);
+
+            if ("Librarian".equals(person.getClass().getSimpleName())) {
+                Borrower borrower = library.findBorrower();
+                if (borrower != null) {
+                    System.out.print(book.makeHoldRequest(borrower));
+                }
+            } else {
+                System.out.print(book.makeHoldRequest((Borrower) person));
+            }
         }
     }
 
     /**
-     * Handles the change of book information.
+     * Handles the display of hold request queue for a book.
      *
      * @param library The library instance.
      * @throws IOException If an input or output exception occurred.
      */
-    private static void handleBookInfoChange(Library library) throws IOException {
+    private static void handleHoldRequestQueue(Library library) throws IOException {
         ArrayList<Book> books = library.searchForBooks();
         if (books != null) {
             int input = takeInput(-1, books.size());
-            books.get(input).changeBookInfo();
+            books.get(input).printHoldRequests();
         }
+    }
+
+    /**
+     * Handles the notifications for a person.
+     * Prints notifications and optionally clears them.
+     *
+     * @param person The person whose notifications are to be handled.
+     */
+    private static void handleNotifications(Person person) {
+        person.printNotifications();
+        if (!person.notifications.isEmpty()) {
+            System.out.println("Do you want to clear notifications? (y/n)");
+            String choice = scanner.next();
+            scanner.nextLine();
+
+            if (choice.equals("y") || choice.equals("Y")) {
+                person.clearNotifications();
+                clearScreen();
+                System.out.println("Notifications cleared.");
+            }
+        }
+    }
+
+    /**
+     * Handles the display of personal information.
+     *
+     * @param library The library instance.
+     * @param person The person whose information is to be displayed.
+     * @throws IOException If an input or output exception occurred.
+     */
+    private static void handlePersonalInfo(Library library, Person person) throws IOException {
+        if ("Librarian".equals(person.getClass().getSimpleName())) {
+            Borrower borrower = library.findBorrower();
+            if (borrower != null) borrower.printInfo();
+        } else {
+            person.printInfo();
+        }
+    }
+
+    /**
+     * Clears the terminal screen by printing empty lines.
+     */
+    public static void clearScreen() {
+        for (int i = 0; i < lineOnScreen; i++) {
+            System.out.println();
+        }
+    }
+
+    /**
+     * Sets the onTest flag.
+     *
+     * @param onTest The flag to set.
+     */
+    public static void setOnTest(boolean onTest) {
+        OnTerminal.onTest = onTest;
+    }
+
+    /**
+     * Sets the scanner to the given scanner.
+     *
+     * @param scanner The scanner to set.
+     */
+    public static void setScanner(Scanner scanner) {
+        OnTerminal.scanner = scanner;
+    }
+
+    /**
+     * Gets the scanner.
+     * @return The scanner.
+     */
+    public static Scanner getScanner() {
+        return scanner;
     }
 }

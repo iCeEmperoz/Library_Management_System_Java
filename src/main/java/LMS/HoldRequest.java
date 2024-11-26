@@ -7,20 +7,8 @@ import java.util.Date;
  * It contains information about the borrower, the book, and the date the request was made.
  */
 public class HoldRequest {
-
-    /**
-     * The borrower who made the hold request.
-     */
-    Borrower borrower;
-
-    /**
-     * The book that is being requested to hold.
-     */
     Book book;
-
-    /**
-     * The date when the hold request was made.
-     */
+    Borrower borrower;
     Date requestDate;
 
     /**

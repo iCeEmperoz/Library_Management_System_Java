@@ -183,7 +183,7 @@ public class Book implements Subject {
      * Prints the information of the book.
      */
     public void printInfo() {
-        System.out.printf("%40s %-30s %-30s%n", title, author, description);
+        System.out.printf("%-50s %-30s%n", title, author);
     }
 
     /**

@@ -78,6 +78,4 @@ public class API {
         }
         return previewLink;
     }
-
-
 }

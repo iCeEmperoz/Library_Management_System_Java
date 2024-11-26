@@ -2,24 +2,30 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="614.0" prefWidth="393.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LMS.LoginController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1096.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LMS.LoginController">
    <children>
       <AnchorPane fx:id="main_form" prefHeight="200.0" prefWidth="200.0" styleClass="white-bg" stylesheets="@design.css">
          <children>
-            <AnchorPane fx:id="login_form" layoutX="11.0" layoutY="10.0" prefHeight="594.0" prefWidth="372.0">
+            <ImageView fitHeight="640.0" fitWidth="1096.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/loginBackground.png" />
+               </image>
+            </ImageView>
+            <AnchorPane fx:id="login_form" layoutX="700.0" layoutY="25.0" prefHeight="594.0" prefWidth="372.0">
                <children>
                   <Label layoutX="106.0" layoutY="132.0" text="Sign In Account" textFill="#0c5d63">
                      <font>
-                        <Font name="Gill Sans MT" size="25.0" />
+                        <Font name="Roboto Condensed Black" size="25.0" />
                      </font>
                   </Label>
                   <TextField fx:id="login_username" layoutX="50.0" layoutY="206.0" prefHeight="45.0" prefWidth="272.0" promptText="Email" styleClass="textfield" />
@@ -32,12 +38,12 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <Label layoutX="56.0" layoutY="514.0" text="Don't have an account yet?">
+                  <Label layoutX="56.0" layoutY="489.0" text="Don't have an account yet?">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <Hyperlink fx:id="hyperlink_createAccount" layoutX="236.0" layoutY="511.0" onAction="#handleSignUp" text="Create one.">
+                  <Hyperlink fx:id="hyperlink_createAccount" layoutX="236.0" layoutY="486.0" onAction="#handleSignUp" text="Create one.">
                      <font>
                         <Font size="15.0" />
                      </font>
@@ -45,7 +51,7 @@
                   <Button fx:id="login_createAccount" layoutX="50.0" layoutY="545.0" mnemonicParsing="false" onAction="#handleCreateAccount" prefHeight="30.0" prefWidth="272.0" styleClass="btn" text="Create Account" visible="false" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="signup_form" layoutX="11.0" layoutY="10.0" prefHeight="594.0" prefWidth="372.0" visible="false">
+            <AnchorPane fx:id="signup_form" layoutX="700.0" layoutY="25.0" prefHeight="594.0" prefWidth="372.0" visible="false">
                <children>
                   <Label layoutX="147.0" layoutY="29.0" text="Sign Up" textFill="#0c5d63">
                      <font>

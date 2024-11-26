@@ -1,9 +1,7 @@
 package LMS;
 
 import static LMS.HandleAlertOperations.showAlert;
-
 import java.sql.Connection;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -60,7 +58,7 @@ public class Main extends Application {
 
         FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/LMS/Login.fxml"));
 
-        Scene loginScene = new Scene(loginLoader.load(), 372, 594);
+        Scene loginScene = new Scene(loginLoader.load(), 1096 , 640);
 
         primaryStage.setTitle("Login");
         primaryStage.setScene(loginScene);

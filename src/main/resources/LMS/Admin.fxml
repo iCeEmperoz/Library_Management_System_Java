@@ -504,24 +504,18 @@
                         </Button>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" prefHeight="251.0" prefWidth="1096.0">
+                  <HBox alignment="CENTER" prefHeight="205.0" prefWidth="1096.0">
                      <children>
                         <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0">
                            <children>
-                              <Pane maxHeight="200.0" maxWidth="200.0" prefHeight="200.0" prefWidth="200.0" style="-fx-border-radius: 100; -fx-border-color: #12b4a6; -fx-background-radius: 100; -fx-border-width: 3;" stylesheets="@styles.css">
+                              <Pane maxHeight="150.0" maxWidth="150.0" prefHeight="150.0" prefWidth="150.0" style="-fx-background-radius: 100; -fx-border-width: 3;" stylesheets="@styles.css">
                                  <children>
-                                    <ImageView fx:id="userImageView" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                    <ImageView fx:id="userImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/icon100.png" />
+                                       </image></ImageView>
                                  </children>
                               </Pane>
-                              <Button fx:id="changeAvatarButton" mnemonicParsing="false" onAction="#chooseImageButtonPushed" styleClass="btn" stylesheets="@styles.css" text="Change Avatar">
-                                 <graphic>
-                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../images/camera24.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                              </Button>
                            </children>
                         </VBox>
                      </children>

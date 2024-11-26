@@ -54,8 +54,6 @@ public class Library {
         this.googleAPI = new API();
     }
 
-    /*---------------------------------------------------------------------*/
-
     /**
      * Returns the singleton instance of the Library class. If the instance does not exist, it creates
      * a new one.
@@ -70,8 +68,8 @@ public class Library {
         return obj;
     }
 
-
-    /*------------Setter FUNCs.------------*/
+    //-----------------------------------------------------------------------------------------------//
+    /* Library Management ---------------------------------------------------------------------------*/
 
     /**
      * Adds a new librarian to the list of librarians.
@@ -90,223 +88,6 @@ public class Library {
     }
 
     /**
-     * Fills the database tables with the current state of the library.
-     * <p>
-     * This method performs the following steps:
-     * 1. Clears the existing data from the tables: BOOK, BORROWER, HOLD_REQUEST, LIBRARIAN, LOAN, and
-     * PERSON.
-     * 2. Inserts the current borrowers and librarians into the PERSON table.
-     * 3. Inserts the current librarians into the LIBRARIAN table.
-     * 4. Inserts the current borrowers into the BORROWER table.
-     * 5. Inserts the current books into the BOOK table.
-     * 6. Inserts the current loans into the LOAN table.
-     * 7. Inserts the current hold requests into the HOLD_REQUEST table.
-     * 8. Inserts the currently borrowed books into the BORROWED_BOOK table.
-     *
-     * @param connection The database connection to use for executing the SQL statements.
-     * @throws SQLException If any SQL error occurs during the execution of the statements.
-     */
-    @SuppressWarnings("exports")
-    public static void fillItBack(Connection connection) throws SQLException {
-        // Clear Tables
-        String[] tables = {
-                "HOLD_REQUEST", //xoa hold_request truoc de tranh tham chieu den !!
-                "LOAN",
-                "NOTIFICATIONS",
-                "BOOK",
-                "BORROWER",
-                "LIBRARIAN",
-                "PERSON"
-        };
-
-        for (String table : tables) {
-            String template = "DELETE FROM " + table;
-            try (PreparedStatement stmt = connection.prepareStatement(template)) {
-                stmt.executeUpdate();
-            }
-        }
-
-        Library library = Library.getInstance();
-
-        // Filling Person's Table
-        for (Borrower borrower : borrowers) {
-            String template = "INSERT INTO PERSON (ID, NAME, PASSWORD, EMAIL, ADDRESS, PHONE_NO) values (?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement stmt = connection.prepareStatement(template)) {
-                stmt.setInt(1, borrower.getID());
-                stmt.setString(2, borrower.getName());
-                stmt.setString(3, borrower.getPassword());
-                stmt.setString(4, borrower.getEmail());
-                stmt.setString(5, borrower.getAddress());
-                stmt.setInt(6, borrower.getPhoneNo());
-                stmt.executeUpdate();
-            }
-        }
-
-        for (Librarian librarian : librarians) {
-            String template = "INSERT INTO PERSON (ID, NAME, PASSWORD, EMAIL, ADDRESS, PHONE_NO) values (?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement stmt = connection.prepareStatement(template)) {
-                stmt.setInt(1, librarian.getID());
-                stmt.setString(2, librarian.getName());
-                stmt.setString(3, librarian.getPassword());
-                stmt.setString(4, librarian.getEmail());
-                stmt.setString(5, librarian.getAddress());
-                stmt.setInt(6, librarian.getPhoneNo());
-                stmt.executeUpdate();
-            }
-        }
-
-        // Filling Librarian Table
-        for (Librarian librarian : librarians) {
-            String template = "INSERT INTO LIBRARIAN (LIBRARIAN_ID, SALARY) values (?, ?)";
-            try (PreparedStatement stmt = connection.prepareStatement(template)) {
-                stmt.setInt(1, librarian.getID());
-                stmt.setDouble(2, librarian.getSalary());
-                stmt.executeUpdate();
-            }
-        }
-
-        // Filling Borrower's Table
-        for (Borrower borrower : borrowers) {
-            String template = "INSERT INTO BORROWER (BORROWER_ID) values (?)";
-            try (PreparedStatement stmt = connection.prepareStatement(template)) {
-                stmt.setInt(1, borrower.getID());
-                stmt.executeUpdate();
-            }
-        }
-
-        // Filling Book's Table
-        for (Book book : library.getBooks()) {
-            String template = "INSERT INTO BOOK (BOOK_ID, TITLE, AUTHOR, DESCRIPTION, IS_ISSUED, IMAGE_LINK, PREVIEW_LINK) values (?, ?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement stmt = connection.prepareStatement(template)) {
-                stmt.setInt(1, book.getID());
-                stmt.setString(2, book.getTitle());
-                stmt.setString(3, book.getAuthor());
-                stmt.setString(4, book.getDescription());
-                stmt.setBoolean(5, book.getIssuedStatus());
-                stmt.setString(6, book.getImageLink());
-                stmt.setString(7, book.getPreviewLink());
-                stmt.executeUpdate();
-            }
-        }
-
-        // Filling Loan Book's Table
-        for (int i = 0; i < loans.size(); i++) {
-            String template = "INSERT INTO LOAN (LOAN_ID, BORROWER_ID, BOOK_ID, I_LIBRARIAN_ID, ISSUED_DATE, R_LIBRARIAN_ID, DATE_RETURNED) values (?, ?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement stmt = connection.prepareStatement(template)) {
-                Loan loan = loans.get(i);
-                stmt.setInt(1, i + 1);
-                stmt.setInt(2, loan.getBorrower().getID());
-                stmt.setInt(3, loan.getBook().getID());
-                stmt.setInt(4, loan.getIssuer().getID());
-                stmt.setTimestamp(5, new Timestamp(loan.getIssuedDate().getTime()));
-                if (loan.getReceiver() == null) {
-                    stmt.setNull(6, Types.INTEGER);
-                    stmt.setDate(7, null);
-                } else {
-                    stmt.setInt(6, loan.getReceiver().getID());
-                    stmt.setTimestamp(7, new Timestamp(loan.getReturnDate().getTime()));
-                }
-                stmt.executeUpdate();
-            }
-        }
-
-        Set<String> processedRequests = new HashSet<>();
-        int x = 1;
-        for (Book book : library.getBooks()) {
-            for (HoldRequest holdRequest : book.getHoldRequests()) {
-                String key = book.getID() + "-" + holdRequest.getBorrower().getID();
-
-                if (!processedRequests.contains(key)) {
-                    String checkIdTemplate = "SELECT COUNT(*) FROM HOLD_REQUEST WHERE BOOK_ID = ? AND BORROWER_ID = ?";
-                    try (PreparedStatement checkStmt = connection.prepareStatement(checkIdTemplate)) {
-                        checkStmt.setInt(1, holdRequest.getBook().getID());
-                        checkStmt.setInt(2, holdRequest.getBorrower().getID());
-
-                        try (ResultSet rs = checkStmt.executeQuery()) {
-                            if (rs.next() && rs.getInt(1) == 0) {
-                                String insertTemplate = "INSERT INTO HOLD_REQUEST (HOLD_REQUEST_ID, BOOK_ID, BORROWER_ID, REQUEST_DATE) values (?, ?, ?, ?)";
-                                try (PreparedStatement insertStmt = connection.prepareStatement(insertTemplate)) {
-                                    insertStmt.setInt(1, x);
-                                    insertStmt.setInt(2, holdRequest.getBook().getID());
-                                    insertStmt.setInt(3, holdRequest.getBorrower().getID());
-                                    insertStmt.setDate(4, new java.sql.Date(holdRequest.getRequestDate().getTime()));
-
-                                    insertStmt.executeUpdate();
-
-                                    processedRequests.add(key);
-
-                                    x++;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Filling Notifications table
-        int y = 1;
-        for (Borrower borrower : borrowers) {
-            for (String detail : borrower.getNotifications()) {
-                String template = "INSERT INTO NOTIFICATIONS (NOTIFICATION_ID, PERSON_ID, MESSAGE) values (?, ?, ?)";
-                try (PreparedStatement stmt = connection.prepareStatement(template)) {
-                    stmt.setInt(1, y++);
-                    stmt.setInt(2, borrower.getID());
-                    stmt.setString(3, detail);
-                    stmt.executeUpdate();
-                }
-            }
-        }
-        for (Librarian librarian : librarians) {
-            for (String detail : librarian.getNotifications()) {
-                String template = "INSERT INTO NOTIFICATIONS (NOTIFICATION_ID, PERSON_ID, MESSAGE) values (?, ?, ?)";
-                try (PreparedStatement stmt = connection.prepareStatement(template)) {
-                    stmt.setInt(1, y++);
-                    stmt.setInt(2, librarian.getID());
-                    stmt.setString(3, detail);
-                    stmt.executeUpdate();
-                }
-            }
-        }
-    } // Filling Done!
-
-    /*--------------------------------------*/
-
-    // Setter Func.
-    public void setBooksInLibrary(int index, Book newBook) {
-        booksInLibrary.set(index, newBook);
-    }
-
-    /*-----------Getter FUNCs.------------*/
-
-    /**
-     * Retrieves the User
-     *
-     * @return the user
-     */
-    public Person getUser() {
-        return user;
-    }
-
-    /**
-     * Sets the User
-     *
-     * @param user the User using application
-     */
-    public void setUser(Person user) {
-        this.user = user;
-    }
-
-    /**
-     * Retrieves the list of borrowers.
-     *
-     * @return An ArrayList containing Borrower objects.
-     */
-    public ArrayList<Borrower> getBorrowers() {
-        return borrowers;
-    }
-
-    /**
      * Retrieves the list of librarians.
      *
      * @return an ArrayList containing all the librarians.
@@ -316,24 +97,78 @@ public class Library {
     }
 
     /**
-     * Retrieves the list of loans.
-     * @return an ArrayList of Loan objects representing the loans in the library.
+     * Creates a new librarian by prompting the user for various details such as name, password,
+     * address, phone number, email, and salary. The method reads input from the console and handles
+     * potential input mismatches and IO exceptions. After collecting the necessary information, it
+     * creates a Librarian object and adds it to the library system. Finally, it confirms the creation
+     * of the librarian and displays the email and password.
+     * <p>
+     * Input:
+     * - Name: String
+     * - Password: String
+     * - Address: String
+     * - Phone Number: int
+     * - Email: String
+     * - Salary: double
+     * <p>
+     * Exceptions:
+     * - IOException: If an input or output exception occurs while reading from the console.
+     * - InputMismatchException: If the input does not match the expected type for phone number, or
+     * salary number.
      */
-    public ArrayList<Loan> getLoans() {
-        return loans;
+    public void createLibrarian() {
+        Scanner scanner = OnTerminal.getScanner();
+
+        System.out.println("\nEnter Name: ");
+        String name = scanner.nextLine();
+
+        System.out.println("\nEnter Password: ");
+        String password = scanner.nextLine();
+
+        System.out.println("Enter Address: ");
+        String address = scanner.nextLine();
+
+        int phone = 0;
+        while (true) {
+            try {
+                System.out.println("Enter Phone Number: ");
+                phone = scanner.nextInt();
+                scanner.nextLine();
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("\nInvalid Input. Please enter a valid phone number.");
+                scanner.next();
+            }
+        }
+
+        System.out.println("Enter Email: ");
+        String email = scanner.nextLine();
+
+        System.out.println("Enter Salary: ");
+        double salary = 0.0;
+        while (true) {
+            try {
+                salary = scanner.nextDouble();
+                scanner.nextLine();
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("\nInvalid Input. Please enter a valid salary.");
+                scanner.next();
+            }
+        }
+
+        Librarian librarian = new Librarian(-1, name, password, address, phone, email, salary);
+        if (addLibrarian(librarian)) {
+            System.out.println("\nLibrarian with name " + name + " created successfully.");
+            System.out.println("\nYour Email is : " + librarian.getEmail());
+            System.out.println("Your Password is : " + librarian.getPassword());
+        } else {
+            System.out.println("This email is already in use.");
+        }
     }
 
-    /*---------------------------------------*/
-
-    /*-----Adding other People in Library----*/
-    /**
-     * Retrieves the list of books available in the library.
-     *
-     * @return an ArrayList of Book objects representing the books in the library.
-     */
-    public ArrayList<Book> getBooks() {
-        return booksInLibrary;
-    }
+    //-----------------------------------------------------------------------------------------------//
+    /* Borrower Management --------------------------------------------------------------------------*/
 
     /**
      * Adds a borrower to the list of borrowers.
@@ -351,15 +186,13 @@ public class Library {
         return false;
     }
 
-    /*----------------------------------------------*/
-
     /**
-     * Adds a loan to the list of loans.
+     * Retrieves the list of borrowers.
      *
-     * @param loan the loan to be added
+     * @return An ArrayList containing Borrower objects.
      */
-    public void addLoan(Loan loan) {
-        loans.add(loan);
+    public ArrayList<Borrower> getBorrowers() {
+        return borrowers;
     }
 
     /**
@@ -386,7 +219,7 @@ public class Library {
             scanner.next();
         }
 
-        Borrower borrower = logicalFindBorrower(id);
+        Borrower borrower = findBorrowerById(id);
 
         if (borrower == null) {
             System.out.println("\nSorry this ID didn't match any Borrower's ID.");
@@ -403,7 +236,7 @@ public class Library {
      * @param id the ID of the borrower to find
      * @return the borrower with the specified ID, or null if no such borrower exists
      */
-    public Borrower logicalFindBorrower(int id) {
+    public Borrower findBorrowerById(int id) {
         for (Borrower borrower : borrowers) {
             if (borrower.getID() == id) {
                 return borrower;
@@ -413,6 +246,11 @@ public class Library {
         return null;
     }
 
+    /**
+     * Finds a librarian by their ID.
+     * @param name the name of the librarian to find
+     * @return the librarian with the matching name, or {@code null} if no match is found
+     */
     public Borrower findBorrowerByName(String name) {
         for (Borrower borrower : borrowers) {
             if (borrower.getName().equals(name)) {
@@ -422,6 +260,69 @@ public class Library {
 
         return null;
     }
+
+    /**
+     * This method prompts the user to enter details for creating a new borrower. It collects the
+     * borrower's name, password, address, phone number, and email. After collecting the information,
+     * it creates a new Borrower object and adds it to the system.
+     *
+     * <p>Steps involved:</p>
+     * <ul>
+     *   <li>Prompts the user to enter their name, password, address, phone number, and email.</li>
+     *   <li>Handles potential IOExceptions during input reading.</li>
+     *   <li>Handles potential InputMismatchException for phone number input.</li>
+     *   <li>Creates a new Borrower object with the collected information.</li>
+     *   <li>Adds the new Borrower to the system.</li>
+     *   <li>Prints confirmation messages with the borrower's email and password.</li>
+     * </ul>
+     *
+     * <p>Exceptions handled:</p>
+     * <ul>
+     *   <li>IOException: If an input or output exception occurred.</li>
+     *   <li>InputMismatchException: If the input for the phone number is not a valid integer.</li>
+     * </ul>
+     */
+    public void createBorrower() {
+        Scanner scanner = OnTerminal.getScanner();
+
+        System.out.println("\nEnter Name: ");
+        String name = scanner.nextLine();
+
+        System.out.println("\nEnter Password: ");
+        String password = scanner.nextLine();
+
+        System.out.println("Enter Address: ");
+        String address = scanner.nextLine();
+
+        int phone = 0;
+        while (true) {
+            try {
+                System.out.println("Enter Phone Number: ");
+                phone = scanner.nextInt();
+                scanner.nextLine();
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("\nInvalid Input. Please enter a valid phone number.");
+                scanner.next();
+            }
+        }
+
+        System.out.println("Enter Email: ");
+        String email = scanner.nextLine();
+
+        Borrower borrower = new Borrower(-1, name, password, address, phone, email);
+
+        if (addBorrower(borrower)) {
+            System.out.println("\nBorrower with name " + name + " created successfully.");
+            System.out.println("\nEmail : " + borrower.getEmail());
+            System.out.println("Password : " + borrower.getPassword());
+        } else {
+            System.out.println("This email is already in use.");
+        }
+    }
+
+    //-----------------------------------------------------------------------------------------------//
+    /* Book Management ------------------------------------------------------------------------------*/
 
     /**
      * Adds a book to the library's collection.
@@ -481,76 +382,6 @@ public class Library {
             return true;
         }
     }
-
-//     public ArrayList<Book> searchForBooks() throws IOException {
-//         String choice;
-//         String title = "", subject = "", author = "";
-//         Scanner scanner = OnTerminal.getScanner();
-//
-//         while (true) {
-//             System.out.println("\nEnter either '1' or '2' or '3' for search by Title, Subject or Author of Book respectively: ");
-//             choice = scanner.next();
-//             scanner.nextLine();
-//
-//             if (choice.equals("1") || choice.equals("2") || choice.equals("3")) {
-//                 break;
-//             } else {
-//                 System.out.println("\nWrong Input!");
-//             }
-//         }
-//
-//         if (choice.equals("1")) {
-//             System.out.println("\nEnter the Title of the Book: ");
-//             title = scanner.nextLine();
-//         } else if (choice.equals("2")) {
-//             System.out.println("\nEnter the Subject of the Book: ");
-//             subject = scanner.nextLine();
-//         } else {
-//             System.out.println("\nEnter the Author of the Book: ");
-//             author = scanner.nextLine();
-//         }
-//
-//         ArrayList<Book> matchedBooks = new ArrayList<>();
-//
-//         // Tạo URL tìm kiếm theo tiêu chí
-//         String api = "https://www.googleapis.com/books/v1/volumes?q=";
-//         String query;
-//
-//         // Tạo truy vấn tùy theo lựa chọn của người dùng
-//         if (choice.equals("1")) {
-//             query = "intitle:" + title.replace(" ", "+");
-//         } else if (choice.equals("2")) {
-//             query = "subject:" + subject.replace(" ", "+");
-//         } else {
-//             query = "inauthor:" + author.replace(" ", "+");
-//         }
-//
-//         // Gọi API Google Books
-//         String jsonResponse = googleAPI.getHttpResponse(api + query);
-//
-//         if (jsonResponse != null) {
-//             matchedBooks.addAll(googleAPI.getBooksFromJson(jsonResponse)); // Giả sử bạn có phương thức này
-//         }
-//
-//         // In thông tin sách tìm được
-//         if (!matchedBooks.isEmpty()) {
-//             System.out.println("\nThese books are found: \n");
-//             System.out.println("------------------------------------------------------------------------------");
-//             System.out.printf("%-5s %-30s %-30s %-30s\n", "No.", "Title", "Author", "Subject");
-//             System.out.println("------------------------------------------------------------------------------");
-//
-//             for (int i = 0; i < matchedBooks.size(); i++) {
-//                 System.out.printf("%-5d ", i);
-//                 matchedBooks.get(i).printInfo(); // Giả sử bạn có phương thức này
-//                 System.out.print("\n");
-//             }
-//
-//             return matchedBooks;
-//         } else {
-//             System.out.println("\nSorry. No Books were found related to your query.");
-//             return null;
-//         }
-//     }
 
     /**
      * Searches for books in the library based on the user's input criteria (Title, Description, or
@@ -631,9 +462,10 @@ public class Library {
     }
 
     /**
-     * Searches for a book in the library based on the book's title.
+     * Searches for a book in the library based on the book's id.
      *
-     * @param id@return the Book object if found, or null if no book with the specified title is found
+     * @param id
+     * @return the Book object if found, or null if no book with the specified title is found
      */
     public Book searchForBookByID(int id) {
         if (id > 0 && id <= booksInLibrary.size()) {
@@ -641,6 +473,7 @@ public class Library {
         }
         return null;
     }
+
     /**
      * Displays all the books available in the library. If the library has books, it prints the list
      * of books with their details including the index number, title, author, and description. If the
@@ -667,137 +500,13 @@ public class Library {
     }
 
     /**
-     * This method prompts the user to enter details for creating a new borrower. It collects the
-     * borrower's name, password, address, phone number, and email. After collecting the information,
-     * it creates a new Borrower object and adds it to the system.
+     * Retrieves the list of books available in the library.
      *
-     * <p>Steps involved:</p>
-     * <ul>
-     *   <li>Prompts the user to enter their name, password, address, phone number, and email.</li>
-     *   <li>Handles potential IOExceptions during input reading.</li>
-     *   <li>Handles potential InputMismatchException for phone number input.</li>
-     *   <li>Creates a new Borrower object with the collected information.</li>
-     *   <li>Adds the new Borrower to the system.</li>
-     *   <li>Prints confirmation messages with the borrower's email and password.</li>
-     * </ul>
-     *
-     * <p>Exceptions handled:</p>
-     * <ul>
-     *   <li>IOException: If an input or output exception occurred.</li>
-     *   <li>InputMismatchException: If the input for the phone number is not a valid integer.</li>
-     * </ul>
+     * @return an ArrayList of Book objects representing the books in the library.
      */
-    public void createBorrower() {
-        Scanner scanner = OnTerminal.getScanner();
-
-        System.out.println("\nEnter Name: ");
-        String name = scanner.nextLine();
-
-        System.out.println("\nEnter Password: ");
-        String password = scanner.nextLine();
-
-        System.out.println("Enter Address: ");
-        String address = scanner.nextLine();
-
-        int phone = 0;
-        while (true) {
-            try {
-                System.out.println("Enter Phone Number: ");
-                phone = scanner.nextInt();
-                scanner.nextLine();
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println("\nInvalid Input. Please enter a valid phone number.");
-                scanner.next();
-            }
-        }
-
-        System.out.println("Enter Email: ");
-        String email = scanner.nextLine();
-
-        Borrower borrower = new Borrower(-1, name, password, address, phone, email);
-
-        if (addBorrower(borrower)) {
-            System.out.println("\nBorrower with name " + name + " created successfully.");
-            System.out.println("\nEmail : " + borrower.getEmail());
-            System.out.println("Password : " + borrower.getPassword());
-        } else {
-            System.out.println("This email is already in use.");
-        }
+    public ArrayList<Book> getBooks() {
+        return booksInLibrary;
     }
-
-    /**
-     * Creates a new librarian by prompting the user for various details such as name, password,
-     * address, phone number, email, and salary. The method reads input from the console and handles
-     * potential input mismatches and IO exceptions. After collecting the necessary information, it
-     * creates a Librarian object and adds it to the library system. Finally, it confirms the creation
-     * of the librarian and displays the email and password.
-     * <p>
-     * Input:
-     * - Name: String
-     * - Password: String
-     * - Address: String
-     * - Phone Number: int
-     * - Email: String
-     * - Salary: double
-     * <p>
-     * Exceptions:
-     * - IOException: If an input or output exception occurs while reading from the console.
-     * - InputMismatchException: If the input does not match the expected type for phone number, or
-     * salary number.
-     */
-    public void createLibrarian() {
-        Scanner scanner = OnTerminal.getScanner();
-
-        System.out.println("\nEnter Name: ");
-        String name = scanner.nextLine();
-
-        System.out.println("\nEnter Password: ");
-        String password = scanner.nextLine();
-
-        System.out.println("Enter Address: ");
-        String address = scanner.nextLine();
-
-        int phone = 0;
-        while (true) {
-            try {
-                System.out.println("Enter Phone Number: ");
-                phone = scanner.nextInt();
-                scanner.nextLine();
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println("\nInvalid Input. Please enter a valid phone number.");
-                scanner.next();
-            }
-        }
-
-        System.out.println("Enter Email: ");
-        String email = scanner.nextLine();
-
-        System.out.println("Enter Salary: ");
-        double salary = 0.0;
-        while (true) {
-            try {
-                salary = scanner.nextDouble();
-                scanner.nextLine();
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println("\nInvalid Input. Please enter a valid salary.");
-                scanner.next();
-            }
-        }
-
-        Librarian librarian = new Librarian(-1, name, password, address, phone, email, salary);
-        if (addLibrarian(librarian)) {
-            System.out.println("\nLibrarian with name " + name + " created successfully.");
-            System.out.println("\nYour Email is : " + librarian.getEmail());
-            System.out.println("Your Password is : " + librarian.getPassword());
-        } else {
-            System.out.println("This email is already in use.");
-        }
-    }
-
-    // Called when want access to Portal
 
     /**
      * Creates a new book with the given title, description, and author, and adds it to the library.
@@ -817,66 +526,33 @@ public class Library {
     }
 
     /**
-     * This method handles the login process for a borrower. It prompts the user to enter their email
-     * and password, and then checks these credentials against the list of registered borrowers and
-     * librarians.
-     *
-     * @return Person object if the login is successful, otherwise returns null.
+     * Retrieves the list of books available in the library.
+     * @param index the index of the book to retrieve
+     * @param newBook the new book to replace the existing book
      */
-    public Person Login() {
-        // Use the Scanner instance from OnTerminal
-        Scanner scanner = OnTerminal.getScanner();
-        String email;
-        String password;
-
-        System.out.println("\nEnter Email: ");
-        email = scanner.next();
-        System.out.println("Enter Password: ");
-        password = scanner.next();
-
-        Person person = logicalLogin(email, password);
-
-        if (person == null) {
-            System.out.println("\nSorry! Wrong ID or Password");
-            scanner.nextLine();
-        }
-
-        return person;
+    public void setBooksInLibrary(int index, Book newBook) {
+        booksInLibrary.set(index, newBook);
     }
 
-    // History when a Book was Issued and was Returned!
+    //-----------------------------------------------------------------------------------------------//
+    /* Loan Managemnet ------------------------------------------------------------------------------*/
 
     /**
-     * Authenticates a user based on their email and password.
-     * <p>
-     * This method iterates through the list of borrowers and librarians to find a match for the
-     * provided email and password. If a match is found, the corresponding user (either a Borrower or
-     * a Librarian) is returned. If no match is found, the method returns null.
+     * Adds a loan to the list of loans.
      *
-     * @param email    The email address of the user attempting to log in.
-     * @param password The password of the user attempting to log in.
-     * @return A Person object representing the authenticated user, or null if authentication fails.
+     * @param loan the loan to be added
      */
-    public Person logicalLogin(String email, String password) {
-        for (Borrower borrower : borrowers) {
-            if (borrower.getEmail().equals(email) && borrower.getPassword().equals(password)) {
-                System.out.println("\n[Borrower] Login Successful.");
-                return borrower;
-            }
-        }
-
-        for (Librarian librarian : librarians) {
-            if (librarian.getEmail().equals(email) && librarian.getPassword().equals(password)) {
-                System.out.println("\n[Librarian] Login Successful.");
-                return librarian;
-            }
-        }
-
-        return null;
+    public void addLoan(Loan loan) {
+        loans.add(loan);
     }
 
-    //---------------------------------------------------------------------------------------//
-    /*--------------------------------IN- COLLABORATION WITH DATA BASE------------------------------------------*/
+    /**
+     * Retrieves the list of loans.
+     * @return an ArrayList of Loan objects representing the loans in the library.
+     */
+    public ArrayList<Loan> getLoans() {
+        return loans;
+    }
 
     /**
      * Displays the history of issued books.
@@ -913,6 +589,90 @@ public class Library {
             System.out.println("\nNo issued books.");
         }
     }
+
+    //-----------------------------------------------------------------------------------------------//
+    /* User Management ------------------------------------------------------------------------------*/
+
+    /**
+     * Retrieves the User
+     *
+     * @return the user
+     */
+    public Person getUser() {
+        return user;
+    }
+
+    /**
+     * Sets the User
+     *
+     * @param user the User using application
+     */
+    public void setUser(Person user) {
+        this.user = user;
+    }
+
+    //-----------------------------------------------------------------------------------------------//
+    /* Login ----------------------------------------------------------------------------------------*/
+
+    /**
+     * This method handles the login process for a borrower. It prompts the user to enter their email
+     * and password, and then checks these credentials against the list of registered borrowers and
+     * librarians.
+     *
+     * @return Person object if the login is successful, otherwise returns null.
+     */
+    public Person Login() {
+        // Use the Scanner instance from OnTerminal
+        Scanner scanner = OnTerminal.getScanner();
+        String email;
+        String password;
+
+        System.out.println("\nEnter Email: ");
+        email = scanner.next();
+        System.out.println("Enter Password: ");
+        password = scanner.next();
+
+        Person person = logicalLogin(email, password);
+
+        if (person == null) {
+            System.out.println("\nSorry! Wrong ID or Password");
+            scanner.nextLine();
+        }
+
+        return person;
+    }
+
+    /**
+     * Authenticates a user based on their email and password.
+     * <p>
+     * This method iterates through the list of borrowers and librarians to find a match for the
+     * provided email and password. If a match is found, the corresponding user (either a Borrower or
+     * a Librarian) is returned. If no match is found, the method returns null.
+     *
+     * @param email    The email address of the user attempting to log in.
+     * @param password The password of the user attempting to log in.
+     * @return A Person object representing the authenticated user, or null if authentication fails.
+     */
+    public Person logicalLogin(String email, String password) {
+        for (Borrower borrower : borrowers) {
+            if (borrower.getEmail().equals(email) && borrower.getPassword().equals(password)) {
+                System.out.println("\n[Borrower] Login Successful.");
+                return borrower;
+            }
+        }
+
+        for (Librarian librarian : librarians) {
+            if (librarian.getEmail().equals(email) && librarian.getPassword().equals(password)) {
+                System.out.println("\n[Librarian] Login Successful.");
+                return librarian;
+            }
+        }
+
+        return null;
+    }
+
+    //-----------------------------------------------------------------------------------------------//
+    /* Database Operations --------------------------------------------------------------------------*/
 
     /**
      * Establishes a connection to the library database.
@@ -1229,4 +989,185 @@ public class Library {
             }
         }
     }
+
+    /**
+     * Fills the database tables with the current state of the library.
+     * <p>
+     * This method performs the following steps:
+     * 1. Clears the existing data from the tables: BOOK, BORROWER, HOLD_REQUEST, LIBRARIAN, LOAN, and
+     * PERSON.
+     * 2. Inserts the current borrowers and librarians into the PERSON table.
+     * 3. Inserts the current librarians into the LIBRARIAN table.
+     * 4. Inserts the current borrowers into the BORROWER table.
+     * 5. Inserts the current books into the BOOK table.
+     * 6. Inserts the current loans into the LOAN table.
+     * 7. Inserts the current hold requests into the HOLD_REQUEST table.
+     * 8. Inserts the currently borrowed books into the BORROWED_BOOK table.
+     *
+     * @param connection The database connection to use for executing the SQL statements.
+     * @throws SQLException If any SQL error occurs during the execution of the statements.
+     */
+    @SuppressWarnings("exports")
+    public static void fillItBack(Connection connection) throws SQLException {
+        // Clear Tables
+        String[] tables = {
+                "HOLD_REQUEST", //xoa hold_request truoc de tranh tham chieu den !!
+                "LOAN",
+                "NOTIFICATIONS",
+                "BOOK",
+                "BORROWER",
+                "LIBRARIAN",
+                "PERSON"
+        };
+
+        for (String table : tables) {
+            String template = "DELETE FROM " + table;
+            try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                stmt.executeUpdate();
+            }
+        }
+
+        Library library = Library.getInstance();
+
+        // Filling Person's Table
+        for (Borrower borrower : borrowers) {
+            String template = "INSERT INTO PERSON (ID, NAME, PASSWORD, EMAIL, ADDRESS, PHONE_NO) values (?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                stmt.setInt(1, borrower.getID());
+                stmt.setString(2, borrower.getName());
+                stmt.setString(3, borrower.getPassword());
+                stmt.setString(4, borrower.getEmail());
+                stmt.setString(5, borrower.getAddress());
+                stmt.setInt(6, borrower.getPhoneNo());
+                stmt.executeUpdate();
+            }
+        }
+
+        for (Librarian librarian : librarians) {
+            String template = "INSERT INTO PERSON (ID, NAME, PASSWORD, EMAIL, ADDRESS, PHONE_NO) values (?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                stmt.setInt(1, librarian.getID());
+                stmt.setString(2, librarian.getName());
+                stmt.setString(3, librarian.getPassword());
+                stmt.setString(4, librarian.getEmail());
+                stmt.setString(5, librarian.getAddress());
+                stmt.setInt(6, librarian.getPhoneNo());
+                stmt.executeUpdate();
+            }
+        }
+
+        // Filling Librarian Table
+        for (Librarian librarian : librarians) {
+            String template = "INSERT INTO LIBRARIAN (LIBRARIAN_ID, SALARY) values (?, ?)";
+            try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                stmt.setInt(1, librarian.getID());
+                stmt.setDouble(2, librarian.getSalary());
+                stmt.executeUpdate();
+            }
+        }
+
+        // Filling Borrower's Table
+        for (Borrower borrower : borrowers) {
+            String template = "INSERT INTO BORROWER (BORROWER_ID) values (?)";
+            try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                stmt.setInt(1, borrower.getID());
+                stmt.executeUpdate();
+            }
+        }
+
+        // Filling Book's Table
+        for (Book book : library.getBooks()) {
+            String template = "INSERT INTO BOOK (BOOK_ID, TITLE, AUTHOR, DESCRIPTION, IS_ISSUED, IMAGE_LINK, PREVIEW_LINK) values (?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                stmt.setInt(1, book.getID());
+                stmt.setString(2, book.getTitle());
+                stmt.setString(3, book.getAuthor());
+                stmt.setString(4, book.getDescription());
+                stmt.setBoolean(5, book.getIssuedStatus());
+                stmt.setString(6, book.getImageLink());
+                stmt.setString(7, book.getPreviewLink());
+                stmt.executeUpdate();
+            }
+        }
+
+        // Filling Loan Book's Table
+        for (int i = 0; i < loans.size(); i++) {
+            String template = "INSERT INTO LOAN (LOAN_ID, BORROWER_ID, BOOK_ID, I_LIBRARIAN_ID, ISSUED_DATE, R_LIBRARIAN_ID, DATE_RETURNED) values (?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                Loan loan = loans.get(i);
+                stmt.setInt(1, i + 1);
+                stmt.setInt(2, loan.getBorrower().getID());
+                stmt.setInt(3, loan.getBook().getID());
+                stmt.setInt(4, loan.getIssuer().getID());
+                stmt.setTimestamp(5, new Timestamp(loan.getIssuedDate().getTime()));
+                if (loan.getReceiver() == null) {
+                    stmt.setNull(6, Types.INTEGER);
+                    stmt.setDate(7, null);
+                } else {
+                    stmt.setInt(6, loan.getReceiver().getID());
+                    stmt.setTimestamp(7, new Timestamp(loan.getReturnDate().getTime()));
+                }
+                stmt.executeUpdate();
+            }
+        }
+
+        Set<String> processedRequests = new HashSet<>();
+        int x = 1;
+        for (Book book : library.getBooks()) {
+            for (HoldRequest holdRequest : book.getHoldRequests()) {
+                String key = book.getID() + "-" + holdRequest.getBorrower().getID();
+
+                if (!processedRequests.contains(key)) {
+                    String checkIdTemplate = "SELECT COUNT(*) FROM HOLD_REQUEST WHERE BOOK_ID = ? AND BORROWER_ID = ?";
+                    try (PreparedStatement checkStmt = connection.prepareStatement(checkIdTemplate)) {
+                        checkStmt.setInt(1, holdRequest.getBook().getID());
+                        checkStmt.setInt(2, holdRequest.getBorrower().getID());
+
+                        try (ResultSet rs = checkStmt.executeQuery()) {
+                            if (rs.next() && rs.getInt(1) == 0) {
+                                String insertTemplate = "INSERT INTO HOLD_REQUEST (HOLD_REQUEST_ID, BOOK_ID, BORROWER_ID, REQUEST_DATE) values (?, ?, ?, ?)";
+                                try (PreparedStatement insertStmt = connection.prepareStatement(insertTemplate)) {
+                                    insertStmt.setInt(1, x);
+                                    insertStmt.setInt(2, holdRequest.getBook().getID());
+                                    insertStmt.setInt(3, holdRequest.getBorrower().getID());
+                                    insertStmt.setDate(4, new java.sql.Date(holdRequest.getRequestDate().getTime()));
+
+                                    insertStmt.executeUpdate();
+
+                                    processedRequests.add(key);
+
+                                    x++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Filling Notifications table
+        int y = 1;
+        for (Borrower borrower : borrowers) {
+            for (String detail : borrower.getNotifications()) {
+                String template = "INSERT INTO NOTIFICATIONS (NOTIFICATION_ID, PERSON_ID, MESSAGE) values (?, ?, ?)";
+                try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                    stmt.setInt(1, y++);
+                    stmt.setInt(2, borrower.getID());
+                    stmt.setString(3, detail);
+                    stmt.executeUpdate();
+                }
+            }
+        }
+        for (Librarian librarian : librarians) {
+            for (String detail : librarian.getNotifications()) {
+                String template = "INSERT INTO NOTIFICATIONS (NOTIFICATION_ID, PERSON_ID, MESSAGE) values (?, ?, ?)";
+                try (PreparedStatement stmt = connection.prepareStatement(template)) {
+                    stmt.setInt(1, y++);
+                    stmt.setInt(2, librarian.getID());
+                    stmt.setString(3, detail);
+                    stmt.executeUpdate();
+                }
+            }
+        }
+    } // Filling Done!
 }

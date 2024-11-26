@@ -105,17 +105,4 @@ public class Loan {
   public void setReturnedDate(Date dReturned) {
     dateReturned = dReturned;
   }
-
-  /**
-   * Extends the issued date of the book.
-   *
-   * @param iDate The new issued date.
-   */
-  public void renewIssuedBook(Date iDate) {
-    issuedDate = iDate;
-
-    System.out.println(
-        "\nThe deadline of the book " + getBook().getTitle() + " has been extended.");
-    System.out.println("Issued Book is successfully renewed!\n");
-  }
 }

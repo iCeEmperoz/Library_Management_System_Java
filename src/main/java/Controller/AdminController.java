@@ -858,7 +858,7 @@ private void initializeTableNotifications() {
             try {
                 switch (searchType) {
                     case "ID":
-                        borrower = library.logicalFindBorrower(Integer.parseInt(searchValue));
+                        borrower = library.findBorrowerById(Integer.parseInt(searchValue));
                         break;
                     case "Name":
                         borrower = library.findBorrowerByName(searchValue);

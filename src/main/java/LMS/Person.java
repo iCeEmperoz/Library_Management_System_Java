@@ -78,6 +78,11 @@ public abstract class Person {
     return id;
   }
 
+  /**
+   * Sets the ID of the person.
+   *
+   * @param id ID to be set
+   */
   public void setID(int id) {
     this.id = id;
   }
@@ -171,7 +176,7 @@ public abstract class Person {
    * prints each one to the console.
    */
   public void printNotifications() {
-    if (notifications.size() == 0) {
+    if (notifications.isEmpty()) {
       System.out.println("\nThere is no notification.");
     } else {
       System.out.println("\nNotifications: ");

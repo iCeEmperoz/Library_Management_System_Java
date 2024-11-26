@@ -1,3 +1,7 @@
+.chart-bar {
+  -fx-bar-fill: #5fc3d8; /* Change this color to your desired bar color */
+}
+
 .white-background {
   -fx-background-color: #FFFFFF;
 }

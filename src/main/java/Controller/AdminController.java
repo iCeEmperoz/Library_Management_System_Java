@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +31,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,6 +39,10 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
@@ -82,6 +88,8 @@ public class AdminController implements Initializable {
     private final ScheduledExecutorService debounceScheduler = Executors.newSingleThreadScheduledExecutor();
     private final ExecutorService apiExecutor = Executors.newCachedThreadPool();
     private final ArrayList<Book> books = library.getBooks();
+    public VBox barChart;
+    public BarChart<String, Number> borrowedBookChart;
     private ScheduledFuture<?> scheduledFuture;
     private volatile long lastApiCallTime = 0;
     private ObservableList<Book> bookList;
@@ -271,6 +279,7 @@ public class AdminController implements Initializable {
         initializeTableHistory();
         initializeInformation();
         initializeTableNotifications();
+        initializeBarChart();
     }
 
     private void showBookDetails(Book selectedBook) {
@@ -642,6 +651,66 @@ private void initializeTableNotifications() {
         labelWelcome.setText("Welcome, " + librarian.getName());
         Circle clip = new Circle(100, 100, 100);
         userImageView.setClip(clip);
+    }
+
+    private void initializeBarChart() {
+        CompletableFuture.runAsync(() -> {
+            List<Loan> loans = library.getLoans();
+            Map<String, Integer> bookCounts = new HashMap<>();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            // Tạo mảng để lưu số lượng sách cho mượn mỗi ngày trong tuần gần nhất
+            Calendar calendar = Calendar.getInstance();
+
+            // Lấy ngày hiện tại và lùi lại 7 ngày
+            Date today = new Date();
+            calendar.setTime(today);
+            calendar.add(Calendar.DAY_OF_YEAR, -7);
+            Date weekAgo = calendar.getTime();
+
+            // Đếm số lượng sách cho mượn mỗi ngày
+            for (Loan loan : loans) {
+                Date issuedDate = loan.getIssuedDate();
+                if (issuedDate.after(weekAgo) && issuedDate.before(today)) {
+                    String dateLabel = dateFormat.format(issuedDate);
+                    bookCounts.put(dateLabel, bookCounts.getOrDefault(dateLabel, 0) + 1);
+                }
+            }
+
+            // Update the UI on the JavaFX Application Thread
+            Platform.runLater(() -> {
+                borrowedBookChart.getData().clear();
+                XYChart.Series<String, Number> series = new XYChart.Series<>();
+                series.setName("Number of books");
+
+                calendar.setTime(weekAgo);
+                List<String> dates = new ArrayList<>();
+                for (int i = 0; i < 7; i++) {
+                    String dateLabel = dateFormat.format(calendar.getTime());
+                    series.getData().add(new XYChart.Data<>(dateLabel, bookCounts.getOrDefault(dateLabel, 0)));
+                    dates.add(dateLabel);
+                    calendar.add(Calendar.DAY_OF_YEAR, 1);
+                }
+
+                // Update CategoryAxis and NumberAxis
+                CategoryAxis xAxis = (CategoryAxis) borrowedBookChart.getXAxis();
+                xAxis.setCategories(FXCollections.observableArrayList(dates));
+                NumberAxis yAxis = (NumberAxis) borrowedBookChart.getYAxis();
+                yAxis.setAutoRanging(false);
+                yAxis.setLowerBound(0);
+                yAxis.setUpperBound(Collections.max(bookCounts.values()) + 1);
+                yAxis.setTickUnit(1);
+                yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis) {
+                    @Override
+                    public String toString(Number object) {
+                        return String.format("%d", object.intValue());
+                    }
+                });
+
+                // Update the BarChart with the series
+                borrowedBookChart.getData().setAll(series);
+            });
+        });
     }
 
     @FXML
@@ -1082,7 +1151,7 @@ private void initializeTableNotifications() {
     void handleLogOut(ActionEvent event) throws IOException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Logout");
-        alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
+        alert.setHeaderText("Do you want to log out?");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

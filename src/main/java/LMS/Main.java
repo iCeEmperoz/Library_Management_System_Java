@@ -28,7 +28,7 @@ public class Main extends Application {
         Connection connection = OnTerminal.initialize(library);
         if (connection == null) {
             showAlert("Error", "Database connection failed. Exiting application.");
-
+            return;
         }
 
         launch(args);

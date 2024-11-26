@@ -2,6 +2,9 @@
 
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -140,8 +143,8 @@
                <children>
                   <AnchorPane fx:id="paneDashboard" prefHeight="590.0" prefWidth="886.0">
                      <children>
-                        <Separator layoutX="446.0" layoutY="2.0" orientation="VERTICAL" prefHeight="586.0" prefWidth="0.0" />
-                        <VBox alignment="CENTER" prefHeight="590.0" prefWidth="446.0">
+                        <Separator layoutX="227.0" layoutY="2.0" orientation="VERTICAL" prefHeight="586.0" prefWidth="0.0" />
+                        <VBox alignment="CENTER" prefHeight="590.0" prefWidth="230.0">
                            <children>
                               <HBox alignment="CENTER" prefHeight="150.0" prefWidth="394.0">
                                  <children>
@@ -191,6 +194,20 @@
                               </HBox>
                            </children>
                         </VBox>
+                        <VBox fx:id="barChart" layoutX="233.0" layoutY="2.0" prefHeight="586.0" prefWidth="650.0">
+                           <children>
+                              <BarChart fx:id="borrowedBookChart" prefHeight="588.0" prefWidth="650.0" stylesheets="@styles.css" title="Number of Books borrowed in the last 7 days">
+                                <xAxis>
+                                  <CategoryAxis side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                  <NumberAxis side="LEFT" />
+                                </yAxis>
+                              </BarChart>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding></VBox>
                      </children>
                   </AnchorPane>
                   <AnchorPane fx:id="paneBooks" prefHeight="590.0" prefWidth="886.0" visible="false">

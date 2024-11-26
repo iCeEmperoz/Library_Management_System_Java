@@ -27,17 +27,15 @@ import java.util.Set;
 public class Library {
 
     public static final String LMS_PASSWORD = "LMS_Password";
-    private static ArrayList<Loan> loans;
     private static final String JDBC_URL = "jdbc:h2:file:";
     private static final String USER = "sa";
     private static final String PASSWORD = "";
-    private static ArrayList<Librarian> librarians;
+    private final ArrayList<Book> booksInLibrary;
     private static ArrayList<Borrower> borrowers;
+    private static ArrayList<Librarian> librarians;
+    private static ArrayList<Loan> loans;
     private static Library obj;
     private static Person user;
-    private final ArrayList<Book> booksInLibrary;
-    public int bookReturnDeadline;
-    private String name;
     private API googleAPI;
 
     /**
@@ -49,7 +47,6 @@ public class Library {
      * loans.
      */
     private Library() {
-        name = null;
         librarians = new ArrayList<>();
         borrowers = new ArrayList<>();
         booksInLibrary = new ArrayList<>();
@@ -273,28 +270,9 @@ public class Library {
         }
     } // Filling Done!
 
-    /**
-     * Sets the return deadline for books.
-     *
-     * @param deadline the number of days until the book must be returned
-     */
-    public void setReturnDeadline(int deadline) {
-        bookReturnDeadline = deadline;
-    }
-
     /*--------------------------------------*/
 
     // Setter Func.
-
-    /**
-     * Sets the name of the library.
-     *
-     * @param name the name to set for the library
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setBooksInLibrary(int index, Book newBook) {
         booksInLibrary.set(index, newBook);
     }
@@ -348,16 +326,6 @@ public class Library {
     /*---------------------------------------*/
 
     /*-----Adding other People in Library----*/
-
-    /**
-     * Retrieves the name of the library.
-     *
-     * @return the name of the library as a String.
-     */
-    public String getLibraryName() {
-        return name;
-    }
-
     /**
      * Retrieves the list of books available in the library.
      *

@@ -410,33 +410,6 @@ public class UserController implements Initializable {
             }
         });
 
-        // Add a listener to the search text field to filter the table
-//        historySearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-//            filteredData.setPredicate(loan -> {
-//                if (newValue == null || newValue.isEmpty()) {
-//                    return true;
-//                }
-//                String lowerCaseFilter = newValue.toLowerCase();
-//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-//                String issuedDate = loan.getIssuedDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().format(formatter);
-//                String returnDate = loan.getReturnDate() != null ? loan.getReturnDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().format(formatter) : "";
-//
-//                // Lọc theo các thuộc tính cần thiết
-//                if (String.valueOf(loan.getBook().getID()).contains(lowerCaseFilter)) {
-//                    return true;
-//                } else if (loan.getBook().getTitle().toLowerCase().contains(lowerCaseFilter)) {
-//                    return true;
-//                } else if (String.valueOf(loan.getIssuer().getID()).contains(lowerCaseFilter)) {
-//                    return true;
-//                } else if (issuedDate.contains(lowerCaseFilter)) {
-//                    return true;
-//                } else if (returnDate.contains(lowerCaseFilter)) {
-//                    return true;
-//                }
-//                return false;
-//            });
-//        });
-
         historyTableView.setEditable(true);
     }
 

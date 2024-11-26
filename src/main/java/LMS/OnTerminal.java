@@ -65,7 +65,6 @@ public class OnTerminal {
      */
     public static Connection initialize(Library lib) {
         try {
-            setupLibrary(lib);
             Connection connection = lib.makeConnection();
             if (connection == null) {
                 System.out.println("\nError connecting to Database. Exiting.");
@@ -92,16 +91,6 @@ public class OnTerminal {
                 System.out.println("Error closing connection: " + e.getMessage());
             }
         }
-    }
-
-    /**
-     * Sets up the library with initial configurations.
-     *
-     * @param library The library instance.
-     */
-    private static void setupLibrary(Library library) {
-        library.setReturnDeadline(5);
-        library.setName("Library");
     }
 
     /**

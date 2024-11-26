@@ -78,6 +78,7 @@ public class Librarian extends Person implements Observer {
 
     @Override
     public void update(String message) {
-        notifications.add(message);
+        // Add the message to the top of the notifications list
+        notifications.add(0, message);
     }
 }

@@ -473,7 +473,7 @@ public class Book implements Subject {
             // Notify borrower about successful issuance
             borrower.notifications.add("The book " + title + " has been issued to you.");
             // Notify observers that the book is now issued
-            notifyObservers("The book " + title + " has been issued to " + borrower.getName());
+            notifyObservers("The book " + getTitle() + " (ID: " + getID() + ") has been issued to " + borrower.getName());
         }
 
         return output.toString();
@@ -488,22 +488,23 @@ public class Book implements Subject {
      */
     public String returnBook(Borrower borrower, Loan loan, Librarian librarian) {
         StringBuilder output = new StringBuilder();
+        Book book = loan.getBook();
 
-        loan.getBook().setIssuedStatus(false);
+        book.setIssuedStatus(false);
         loan.setReturnedDate(new Date());
         loan.setReceiver(librarian);
-        loan.getBook().setLoan(null);
+        book.setLoan(null);
 
         borrower.removeBorrowedBook(loan);
 
-        output.append("\nThe book ").append(loan.getBook().getTitle())
+        output.append("\nThe book ").append(book.getTitle())
                 .append(" is successfully returned by ").append(borrower.getName()).append(".\n");
         output.append("\nReceived by: ").append(librarian.getName()).append("\n");
 
         // Notify borrower about successful return
-        borrower.notifications.add("The book " + loan.getBook().getTitle() + " has been returned by you.");
+        borrower.notifications.add("The book " + book.getTitle() + " (ID: " + book.getID() + ") has been returned by you.");
         // Notify observers that the book is now available
-        notifyObservers("The book " + loan.getBook().getTitle() + " is now available.");
+        notifyObservers("The book " + loan.getBook().getTitle() + " (ID: " + book.getID() + ") is now available.");
         return output.toString();
     }
 

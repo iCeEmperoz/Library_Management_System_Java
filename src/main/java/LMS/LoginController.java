@@ -224,8 +224,6 @@ public class LoginController {
     } else {
       showAlert("Error", "Invalid username or password.");
     }
-
-
   }
 
   /**

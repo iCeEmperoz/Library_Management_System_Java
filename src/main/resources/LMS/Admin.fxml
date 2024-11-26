@@ -58,6 +58,7 @@
                <children>
                   <VBox layoutX="10.0" layoutY="10.0" prefHeight="546.0" prefWidth="210.0" spacing="5.0">
                      <children>
+                        <Separator prefWidth="200.0" />
                         <Button fx:id="btnDashboard" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleDashBoard" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Dashboard">
                            <graphic>
                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
@@ -108,7 +109,10 @@
                         </Button>
                         <Button fx:id="btnNotifications" alignment="TOP_LEFT" graphicTextGap="25.0" mnemonicParsing="false" onAction="#handleNotifications" prefHeight="40.0" prefWidth="250.0" styleClass="btn" stylesheets="@styles.css" text="Notifications">
                            <graphic>
-                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/notifications.png" />
+                                 </image></ImageView>
                            </graphic>
                            <font>
                               <Font name="Roboto Condensed Black" size="18.0" />
@@ -329,7 +333,7 @@
                      </children>
                   </AnchorPane>
                   <AnchorPane fx:id="paneHistory" visible="false" xmlns:fx="http://javafx.com/fxml">
-                     <ScrollPane fitToHeight="true" fitToWidth="true" layoutY="84.0" prefHeight="498.0" prefWidth="882.0">
+                     <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="4.0" layoutY="84.0" prefHeight="498.0" prefWidth="878.0">
                         <content>
                            <TableView fx:id="historyTableView" prefHeight="580.0" prefWidth="880.0">
                               <columns>
@@ -347,6 +351,9 @@
                               </columns>
                            </TableView>
                         </content>
+                        <padding>
+                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                        </padding>
                      </ScrollPane>
                      <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="49.0" pickOnBounds="true" preserveRatio="true">
                         <image>
@@ -419,10 +426,10 @@
                   </AnchorPane>
                   <AnchorPane fx:id="paneNotifications" prefHeight="590.0" prefWidth="887.0" visible="false">
                      <children>
-                        <VBox prefHeight="590.0" prefWidth="886.0">
+                        <VBox layoutX="4.0" prefHeight="590.0" prefWidth="878.0">
                            <children>
                               <VBox prefHeight="41.0" prefWidth="886.0" />
-                              <VBox prefHeight="34.0" prefWidth="886.0">
+                              <VBox layoutX="4.0" prefHeight="34.0" prefWidth="878.0">
                                  <children>
                                     <HBox prefHeight="34.0" prefWidth="647.0">
                                        <children>
@@ -435,8 +442,11 @@
                                        </children>
                                     </HBox>
                                  </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
                               </VBox>
-                              <VBox prefHeight="514.0" prefWidth="886.0">
+                              <VBox layoutX="4.0" prefHeight="514.0" prefWidth="878.0">
                                  <children>
                                     <TableView fx:id="tableNotifications" prefHeight="481.0" prefWidth="886.0">
                                       <columns>
@@ -445,6 +455,9 @@
                                       </columns>
                                     </TableView>
                                  </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
                               </VBox>
                            </children>
                         </VBox>

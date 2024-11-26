@@ -460,7 +460,8 @@ public class UserController implements Initializable {
                     + "\nYou will have to wait for acceptance from our Librarians.")) {
                 String response = selectedBook.makeHoldRequest(borrower);
                 // Notify librarians about borrow action
-                selectedBook.notifyObservers("Please service the hold request for " + selectedBook.getTitle() + " by " + borrower.getName() + " (ID: " + borrower.getID() + ").");
+                selectedBook.notifyObservers("Please service the hold request for " + selectedBook.getTitle()
+                        + " (ID: " + selectedBook.getID() + ") by " + borrower.getName() + " (ID: " + borrower.getID() + ").");
             }
         } else {
             if (showConfirmation("Place Book on Hold", "There are earlier requests." +

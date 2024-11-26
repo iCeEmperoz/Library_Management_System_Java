@@ -1,5 +1,7 @@
 package LMS;
 
+import Interface.Observer;
+
 import java.util.Objects;
 
 /**

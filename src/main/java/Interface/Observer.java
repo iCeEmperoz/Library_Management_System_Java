@@ -1,4 +1,4 @@
-package LMS;
+package Interface;
 
 /**
  * Interface representing an observer in the observer design pattern.

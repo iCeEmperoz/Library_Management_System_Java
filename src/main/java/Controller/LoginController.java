@@ -1,10 +1,15 @@
-package LMS;
+package Controller;
 
 import static LMS.HandleAlertOperations.showAlert;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import LMS.Borrower;
+import LMS.Librarian;
+import LMS.Library;
+import LMS.Person;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;

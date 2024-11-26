@@ -923,7 +923,7 @@ public class Library {
     @SuppressWarnings("exports")
     public Connection makeConnection() throws UnsupportedEncodingException {
         try {
-            String dbPath = Paths.get("src/main/resources/LibraryDB").toAbsolutePath().toString();
+            String dbPath = Paths.get("src/main/resources/Database/LibraryDB").toAbsolutePath().toString();
             return DriverManager.getConnection(JDBC_URL + dbPath, USER, PASSWORD);
         } catch (SQLException exception) {
             System.out.println(exception.getMessage());

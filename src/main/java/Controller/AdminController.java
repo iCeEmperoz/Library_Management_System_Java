@@ -1,8 +1,9 @@
-package LMS;
+package Controller;
 
 import static LMS.HandleAlertOperations.showAlert;
 import static LMS.HandleAlertOperations.showConfirmation;
 
+import LMS.*;
 import com.google.zxing.WriterException;
 
 import java.awt.image.BufferedImage;

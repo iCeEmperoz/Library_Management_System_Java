@@ -1,4 +1,4 @@
-package LMS;
+package Interface;
 
 public interface Subject {
 

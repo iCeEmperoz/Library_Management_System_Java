@@ -21,4 +21,8 @@ module group {
 
   opens LMS to javafx.fxml;
   exports LMS;
+  opens Controller to javafx.fxml;
+  exports Controller;
+  exports Interface;
+  opens Interface to javafx.fxml;
 }

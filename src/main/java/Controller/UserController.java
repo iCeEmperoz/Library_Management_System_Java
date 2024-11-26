@@ -1,8 +1,12 @@
-package LMS;
+package Controller;
 
 import static LMS.HandleAlertOperations.showAlert;
 import static LMS.HandleAlertOperations.showConfirmation;
 
+import LMS.Book;
+import LMS.Borrower;
+import LMS.Library;
+import LMS.Loan;
 import com.google.zxing.WriterException;
 
 import java.awt.image.BufferedImage;

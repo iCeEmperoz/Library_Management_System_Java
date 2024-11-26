@@ -1,8 +1,8 @@
 package LMS;
 
-import java.io.BufferedReader;
+import Interface.Observer;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;

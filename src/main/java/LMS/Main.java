@@ -1,9 +1,7 @@
 package LMS;
 
 import static LMS.HandleAlertOperations.showAlert;
-
 import java.sql.Connection;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;

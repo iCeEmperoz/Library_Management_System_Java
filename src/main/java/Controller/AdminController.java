@@ -11,12 +11,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -863,7 +858,7 @@ public class AdminController implements Initializable {
       try {
         switch (searchType) {
           case "ID":
-            borrower = library.logicalFindBorrower(Integer.parseInt(searchValue));
+            borrower = library.findBorrowerById(Integer.parseInt(searchValue));
             break;
           case "Name":
             borrower = library.findBorrowerByName(searchValue);

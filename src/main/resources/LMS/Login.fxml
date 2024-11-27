@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.ColorAdjust?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -21,8 +22,15 @@
                   <Image url="@../images/loginBackground.png" />
                </image>
             </ImageView>
-            <AnchorPane fx:id="login_form" layoutX="700.0" layoutY="25.0" prefHeight="594.0" prefWidth="372.0">
+            <AnchorPane fx:id="login_form" layoutX="619.0" layoutY="14.0" prefHeight="594.0" prefWidth="372.0">
                <children>
+                  <ImageView fitHeight="594.0" fitWidth="372.0" opacity="0.66" pickOnBounds="true">
+                     <image>
+                        <Image url="@../images/white.png" />
+                     </image>
+                     <effect>
+                        <ColorAdjust brightness="-0.64" contrast="1.0" hue="1.0" saturation="-1.0" />
+                     </effect></ImageView>
                   <Label layoutX="106.0" layoutY="132.0" text="Sign In Account" textFill="#0c5d63">
                      <font>
                         <Font name="Roboto Condensed Black" size="25.0" />
@@ -38,12 +46,12 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <Label layoutX="56.0" layoutY="489.0" text="Don't have an account yet?">
+                  <Label layoutX="53.0" layoutY="486.0" text="Don't have an account yet?">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <Hyperlink fx:id="hyperlink_createAccount" layoutX="236.0" layoutY="486.0" onAction="#handleSignUp" text="Create one.">
+                  <Hyperlink fx:id="hyperlink_createAccount" layoutX="234.0" layoutY="483.0" onAction="#handleSignUp" text="Create one.">
                      <font>
                         <Font size="15.0" />
                      </font>

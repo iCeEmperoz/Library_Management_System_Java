@@ -21,9 +21,9 @@
 
 ## 🏷️Introduction
 ### Login Scene
-![Login](src\main\resources\images\loginScene.png)
+![Login](src/main/resources/images/loginScene.png)
 ### Dashboard Scene
-![Dashboard](src\main\resources\images\dashboardScene.png)
+![Dashboard](src/main/resources/images/dashboardScene.png)
 
 ## 🏷️Documentation
 

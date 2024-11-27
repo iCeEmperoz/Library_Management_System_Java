@@ -78,6 +78,12 @@ public class Librarian extends Person implements Observer {
         return Objects.hash(getEmail());
     }
 
+    /**
+     * Updates this Librarian with the specified message.
+     * This method adds the message to the notifications list for this Librarian.
+     *
+     * @param message the message to be added to the notifications
+     */
     @Override
     public void update(String message) {
         // Add the message to the top of the notifications list

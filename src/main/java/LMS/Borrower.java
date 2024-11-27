@@ -13,7 +13,6 @@ import java.util.Scanner;
  * requests.
  */
 public class Borrower extends Person implements Observer {
-
     private ArrayList<Loan> borrowedBooks;
     private ArrayList<HoldRequest> onHoldBooks;
 

@@ -1,121 +1,105 @@
-# Library Management System
-## h2
-### h3
+# 📚 Library Management System 📖
 
-### Sessions and Functionalities:
+- This project is a **Library Management System** built using Java and JavaFX. It allows users to manage books, borrowers, librarians, and loans within a library.
 
-1. **Main Session:**
-   - **Entry Point:** [`main(String[] args)`]
-   - **Description:** Initializes the library, sets up the database connection, and provides the main menu for the terminal application.
-   - **Options:**
-     - Login
-     - Create new account
-     - Exit
-     - **Interface:**
-       - **Library Portal:**
-         - ![Interface](resources\images\dashboardScene.png)
-       - **Book Scene:**
-         - ![Interface](resources\images\bookScene.png)
+## 🏷️Features
 
-2. **Login Session:**
-   - **Method:** [`library.Login()`]
-   - **Description:** Handles user login and directs the user to either the Borrower's Portal or the Librarian's Portal based on their role.
+- **User Authentication**: Login and sign-up functionality for borrowers and librarians.
+- **Book Management**: View, search, and manage books in the library.
+- **Loan Management**: Borrow and return books, view loan history.
+- **Notifications**: Receive and manage notifications for various actions.
+- **Observer Pattern**: Implemented using `Observer` and `Subject` interfaces for notifications.
 
-3. **Create New Account Session:**
-   - **Method:** [`library.createBorrower()`] or [`library.createLibrarian()`]
-   - **Description:** Allows the creation of a new Borrower or Librarian account based on user input and password verification for Librarian creation.
+## 🏷️Project Structure
 
-4. **Borrower's Portal:**
-   - **Description:** Provides functionalities specific to borrowers.
-   - **Options:**
-     - Search a Book
-     - Place a Book on hold
-     - Check Personal Info of Borrower
-     - Check Total Fine of Borrower
-     - Check Hold Requests Queue of a Book
-     - Logout
+- **Controller**: Contains JavaFX controllers for handling UI interactions.
+- **Interface**: Contains interfaces for the observer pattern.
+- **LMS**: Contains core classes for the library management system.
 
-5. **Librarian's Portal:**
-   - **Description:** Provides functionalities specific to librarians.
-   - **Options:**
-     - Search a Book
-     - Place a Book on hold
-     - Check Personal Info of Borrower
-     - Check Total Fine of Borrower
-     - Check Hold Requests Queue of a Book
-     - Check out a Book
-     - Check in a Book
-     - Renew a Book
-     - Add a new Borrower
-     - Update a Borrower's Info
-     - Add new Book
-     - Remove a Book
-     - Change a Book's Info
-     - View Issued Books History
-     - View All Books in Library
-     - Logout
+## 🏷️Class Diagram
+- The **Class Diagram** of the project is also provided, the class diagram file can be opened using [Draw.io](https://www.drawio.com/).
 
-### Detailed Breakdown of Functionalities:
+## 🏷️Introduction
+### Login Scene
+![Login](src\main\resources\images\loginScene.png)
+### Dashboard Scene
+![Dashboard](src\main\resources\images\dashboardScene.png)
 
-1. **Search a Book:**
-   - **Method:** [`library.searchForBooks()`]
-   - **Description:** Allows users to search for books in the library.
+## 🏷️Documentation
 
-2. **Place a Book on Hold:**
-   - **Method:** `Book.makeHoldRequest(Borrower borrower)`
-   - **Description:** Allows users to place a hold request on a book.
+- Detailed Javadocs for classes and methods can be viewed here:  
+[Library Management System Javadocs](https://docs.google.com/document/d/1dpwNwJr13Be74AY0pTZnNamHlOz3A6TwXpwWe9NqIvc/edit?tab=t.0#heading=h.15w6miidwyig)
 
-3. **Check Personal Info of Borrower:**
-   - **Method:** [`person.printInfo()`]
-   - **Description:** Displays personal information of the borrower.
 
-4. **Check Total Fine of Borrower:**
-   - **Method:** [`library.computeFine2(Borrower borrower)`]
-   - **Description:** Computes and displays the total fine for the borrower.
+## 🏷️Key Classes
 
-5. **Check Hold Requests Queue of a Book:**
-   - **Method:** `Book.printHoldRequests()`
-   - **Description:** Displays the hold requests queue for a book.
+### Controller
 
-6. **Check out a Book:**
-   - **Method:** `Book.issueBook(Borrower borrower, Librarian librarian)`
-   - **Description:** Allows librarians to check out a book to a borrower.
+- **CardController**: Manages the display of book details in a card format.
+- **LoginController**: Handles user authentication and account creation.
+- **UserController**: Manages the user interface for borrowers, including book and loan management.
 
-7. **Check in a Book:**
-   - **Method:** `Book.returnBook(Borrower borrower, Loan loan, Librarian librarian)`
-   - **Description:** Allows librarians to check in a book returned by a borrower.
+### Interface
 
-8. **Renew a Book:**
-   - **Method:** `Loan.renewIssuedBook(Date newDate)`
-   - **Description:** Allows borrowers to renew an issued book.
+- **Observer**: Interface for observers in the observer pattern.
+- **Subject**: Interface for subjects in the observer pattern.
 
-9. **Add a new Borrower:**
-   - **Method:** [`library.createBorrower()`]
-   - **Description:** Allows librarians to add a new borrower.
+### LMS
 
-10. **Update a Borrower's Info:**
-    - **Method:** `Borrower.updateBorrowerInfo()`
-    - **Description:** Allows librarians to update a borrower's information.
+- **Library**: Singleton class that manages the library's data and operations.
+- **Book**: Represents a book in the library.
+- **Borrower**: Represents a borrower in the library.
+- **Librarian**: Represents a librarian in the library.
+- **Loan**: Represents a loan of a book to a borrower.
+- **HoldRequest**: Represents a hold request for a book.
 
-11. **Add new Book:**
-    - **Method:** [`library.createBook(String title, String subject, String author)`]
-    - **Description:** Allows librarians to add a new book to the library.
+## 🏷️Setup
 
-12. **Remove a Book:**
-    - **Method:** [`library.removeBookfromLibrary(Book book)`]
-    - **Description:** Allows librarians to remove a book from the library.
+### Prerequisites
 
-13. **Change a Book's Info:**
-    - **Method:** `Book.changeBookInfo()`
-    - **Description:** Allows librarians to change the information of a book.
+- Java 11 or higher
+- Maven
+- JavaFX
 
-14. **View Issued Books History:**
-    - **Method:** [`library.viewHistory()`]
-    - **Description:** Allows librarians to view the history of issued books.
+### Installation
 
-15. **View All Books in Library:**
-    - **Method:** [`library.viewAllBooks()`]
-    - **Description:** Allows librarians to view all books in the library.
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/kiennkt05/library-management-system.git
+   ```
+2. Navigate to the project directory:
+   ```sh
+   cd library-management-system
+   ```
+3. Build the project using Maven:
+   ```sh
+   mvn clean install
+   ```
 
-### Summary:
-The [`OnTerminal`] class provides a terminal-based interface for the Library Management System, allowing users to log in as either borrowers or librarians and perform various library-related functions. The main sessions include the main menu, login session, create new account session, borrower's portal, and librarian's portal, each offering specific functionalities to manage the library system effectively.
+### Running the Application
+
+1. Run the application using Maven:
+   ```sh
+   mvn javafx:run
+   ```
+
+## 🏷️Usage
+
+- **Login**: Use the login form to authenticate as a borrower or librarian.
+- **Sign Up**: Create a new account using the sign-up form.
+- **Manage Books**: View and search for books in the library.
+- **Borrow Books**: Place hold requests and borrow books.
+- **View Loans**: View your loan history and current loans.
+- **Notifications**: Manage and clear notifications.
+
+## 🏷️Contributing
+
+Contributions are welcome! Please fork the repository and create a pull request with your changes.
+
+## 🏷️License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+## 🏷️Contact
+
+For any questions or issues, please contact [kiennkt05](https://github.com/kiennkt05).

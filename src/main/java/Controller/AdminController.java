@@ -806,6 +806,7 @@ public class AdminController implements Initializable {
 
     Scene scene = new Scene(vbox, 1000, 400);
     stage.setScene(scene);
+    stage.setResizable(false);
     stage.show();
   }
 
@@ -1084,11 +1085,7 @@ public class AdminController implements Initializable {
 
   @FXML
   void handleLogOut(ActionEvent event) throws IOException {
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-    alert.setTitle("Logout");
-    alert.setHeaderText("Do you want to log out?");
-    Optional<ButtonType> result = alert.showAndWait();
-    if (result.isPresent() && result.get() == ButtonType.OK) {
+    if (showConfirmation("Log Out", "Are you sure you want to log out?")) {
       Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
       // Tải file FXML của dashboard
@@ -1100,6 +1097,7 @@ public class AdminController implements Initializable {
 
       // Chuyển sang Scene của dashboard
       primaryStage.setScene(loginScene);
+      primaryStage.setResizable(false);
     }
   }
 }

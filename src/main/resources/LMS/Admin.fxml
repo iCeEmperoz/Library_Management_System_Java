@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.String?>
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
@@ -308,18 +309,24 @@
                               <RowConstraints maxHeight="439.20000000000005" minHeight="10.0" prefHeight="439.20000000000005" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <TableView fx:id="tableUsers" editable="true" prefHeight="302.0" prefWidth="878.0" styleClass="white-background" stylesheets="@styles.css" GridPane.rowIndex="1">
+                              <TableView fx:id="tableUsers" editable="true" prefHeight="302.0" prefWidth="878.0" GridPane.rowIndex="1">
                                  <columns>
                                     <TableColumn fx:id="userIdColumn" prefWidth="46.40000772476196" text="ID" />
                                     <TableColumn fx:id="userNameColumn" prefWidth="221.5999526977539" text="Name" />
                                     <TableColumn fx:id="userEmailColumn" minWidth="0.0" prefWidth="222.4000244140625" text="Email" />
                                     <TableColumn fx:id="userAddressColumn" minWidth="0.0" prefWidth="143.20001220703125" text="Address" />
                                     <TableColumn fx:id="userPhoneColumn" minWidth="8.800048828125" prefWidth="157.60003662109375" text="Phone" />
-                                    <TableColumn editable="false" minWidth="0.0" prefWidth="36.7999267578125" sortable="false" />
                                  </columns>
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                  </columnResizePolicy>
+                                 <stylesheets>
+                                    <URL value="@styles.css" />
+                                 </stylesheets>
+                                 <styleClass>
+                                    <String fx:value="white-background" />
+                                    <String fx:value="table" />
+                                 </styleClass>
                               </TableView>
                               <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="35.0" prefWidth="200.0" spacing="10.0" styleClass="round-layout">
                                  <children>
@@ -334,15 +341,6 @@
                                           <String fx:value="round-layout" />
                                        </styleClass>
                                     </TextField>
-                                    <Button fx:id="btnAddUser" graphicTextGap="10.0" mnemonicParsing="false" onAction="#handleAddUser" prefHeight="30.0" prefWidth="219.0" style="-fx-background-color: #5dbdb4;" text="Add " textAlignment="CENTER">
-                                       <graphic>
-                                          <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../images/add.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Button>
                                  </children>
                               </HBox>
                            </children>

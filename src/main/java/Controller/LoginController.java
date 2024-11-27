@@ -211,6 +211,8 @@ public class LoginController {
 
         // Chuyển sang Scene của dashboard
         primaryStage.setScene(userScene);
+        primaryStage.setResizable(false);
+
       } else {
         library.setUser(user);
 
@@ -225,6 +227,7 @@ public class LoginController {
 
         // Chuyển sang Scene của dashboard
         primaryStage.setScene(adminScene);
+        primaryStage.setResizable(false);
       }
     } else {
       showAlert("Error", "Invalid username or password.");

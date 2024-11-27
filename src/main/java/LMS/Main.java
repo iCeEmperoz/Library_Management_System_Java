@@ -62,6 +62,7 @@ public class Main extends Application {
 
         primaryStage.setTitle("Login");
         primaryStage.setScene(loginScene);
+        primaryStage.setResizable(false);
 
         // Đảm bảo thoát ứng dụng khi cửa sổ chính bị đóng
         primaryStage.setOnCloseRequest(event -> System.out.println("Application is closing..."));

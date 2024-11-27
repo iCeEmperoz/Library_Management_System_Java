@@ -289,22 +289,37 @@
                         </AnchorPane>
                         <AnchorPane fx:id="paneHistory" prefHeight="590.0" prefWidth="890.0" visible="false">
                            <children>
-                              <VBox layoutX="4.0" prefHeight="591.0" prefWidth="878.0">
-                                 <children>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="49.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/search.png" />
+                                 </image>
+                              </ImageView>
+                              <TextField fx:id="historySearchTextField" layoutX="55.0" layoutY="49.0" prefHeight="30.0" prefWidth="297.0" promptText="Search" stylesheets="@styles.css">
+                                 <styleClass>
+                                    <String fx:value="transparent" />
+                                    <String fx:value="round-layout" />
+                                 </styleClass>
+                              </TextField>
+                              <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="4.0" layoutY="84.0" prefHeight="498.0" prefWidth="878.0">
+                                 <content>
                                     <TableView fx:id="historyTableView" prefHeight="591.0" prefWidth="890.0">
                                       <columns>
+                                          <TableColumn fx:id="noColumn" prefWidth="75.0" text="No." />
                                           <TableColumn fx:id="bookIDColumn" prefWidth="118.4000244140625" text="Book_ID" />
                                           <TableColumn fx:id="titleColumn" prefWidth="390.4000244140625" text="Title" />
-                                        <TableColumn fx:id="librarianIDColumn" prefWidth="89.5999755859375" text="Librarian_ID" />
-                                        <TableColumn fx:id="issuedDateColumn" prefWidth="124.800048828125" text="I_Date" />
-                                          <TableColumn fx:id="returnedDateColumn" prefWidth="123.199951171875" text="R_Date" />
+                                          <TableColumn fx:id="issuerIDColumn" prefWidth="75.0" text="Issuer_ID" />
+                                        <TableColumn fx:id="issuerColumn" prefWidth="89.5999755859375" text="Issuer's Name" />
+                                        <TableColumn fx:id="issuedDateColumn" prefWidth="124.800048828125" text="Issue Date" />
+                                          <TableColumn fx:id="receiverIDColumn" prefWidth="75.0" text="Receiver_ID" />
+                                          <TableColumn fx:id="receiverColumn" prefWidth="75.0" text="Receiver's Name" />
+                                          <TableColumn fx:id="returnedDateColumn" prefWidth="123.199951171875" text="Return Date" />
                                       </columns>
                                     </TableView>
-                                 </children>
+                                 </content>
                                  <padding>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </padding>
-                              </VBox>
+                              </ScrollPane>
                            </children></AnchorPane>
                         <AnchorPane fx:id="paneNotifications" layoutX="4.0" prefHeight="590.0" prefWidth="878.0" visible="false">
                            <children>

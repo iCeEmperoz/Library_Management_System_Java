@@ -1091,7 +1091,7 @@ public class AdminController implements Initializable {
       // Tải file FXML của dashboard
       FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/LMS/Login.fxml"));
 
-      Scene loginScene = new Scene(loginLoader.load(), 372, 594);
+      Scene loginScene = new Scene(loginLoader.load(), 1096, 640);
 
       primaryStage.setTitle("Login");
 

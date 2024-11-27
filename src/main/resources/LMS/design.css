@@ -3,7 +3,7 @@
 }
 
 .btn {
-  -fx-background-color: linear-gradient(to bottom right, #16a47c, #2a827b);
+  -fx-background-color: linear-gradient(to bottom right, #37AEE2, #1E96C8);
   -fx-cursor: hand;
   -fx-text-fill: #fff;
   -fx-font-size: 14px;
@@ -11,7 +11,7 @@
 }
 
 .btn:hover {
-  -fx-background-color: linear-gradient(to bottom right, #1fa492, #0c5d63);
+  -fx-background-color: linear-gradient(to bottom right, #1E96C0, #37AEd0);
 }
 
 .textfield {
@@ -20,7 +20,7 @@
 }
 
 .textfield:focused {
-  -fx-background-color: linear-gradient(to bottom right, #16a47c, #c3d6da);
+  -fx-background-color: linear-gradient(to bottom right, #ddeff1, #98d4e0);
   -fx-border-width: .8px;
 }
 

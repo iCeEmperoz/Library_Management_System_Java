@@ -447,7 +447,7 @@ public class UserController implements Initializable {
   void handleLogOut(ActionEvent event) throws IOException {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
     alert.setTitle("Logout");
-    alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
+    alert.setHeaderText("Do you want to log out?");
     Optional<ButtonType> result = alert.showAndWait();
     if (result.isPresent() && result.get() == ButtonType.OK) {
       Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -455,7 +455,7 @@ public class UserController implements Initializable {
       // Tải file FXML của dashboard
       FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/LMS/Login.fxml"));
 
-      Scene loginScene = new Scene(loginLoader.load(), 372, 594);
+      Scene loginScene = new Scene(loginLoader.load(), 1096, 640);
 
       primaryStage.setTitle("Login");
 

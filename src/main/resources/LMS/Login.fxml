@@ -24,13 +24,6 @@
             </ImageView>
             <AnchorPane fx:id="login_form" layoutX="619.0" layoutY="14.0" prefHeight="594.0" prefWidth="372.0">
                <children>
-                  <ImageView fitHeight="594.0" fitWidth="372.0" opacity="0.66" pickOnBounds="true">
-                     <image>
-                        <Image url="@../images/white.png" />
-                     </image>
-                     <effect>
-                        <ColorAdjust brightness="-0.64" contrast="1.0" hue="1.0" saturation="-1.0" />
-                     </effect></ImageView>
                   <Label layoutX="106.0" layoutY="132.0" text="Sign In Account" textFill="#0c5d63">
                      <font>
                         <Font name="Roboto Condensed Black" size="25.0" />

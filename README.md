@@ -11,6 +11,11 @@
      - Login
      - Create new account
      - Exit
+     - **Interface:**
+       - **Library Portal:**
+         - ![Interface](resources\images\dashboardScene.png)
+       - **Book Scene:**
+         - ![Interface](resources\images\bookScene.png)
 
 2. **Login Session:**
    - **Method:** [`library.Login()`]

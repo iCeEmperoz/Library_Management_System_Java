@@ -670,6 +670,7 @@ public class AdminController implements Initializable {
         loanList.add(newLoan);
       }
       tableBooks.refresh();
+      initializeTableNotifications();
       return;
     }
 
@@ -688,6 +689,7 @@ public class AdminController implements Initializable {
         loanList.add(newLoan);
       }
     }
+    initializeTableNotifications();
     tableBooks.refresh();
   }
 
@@ -706,6 +708,7 @@ public class AdminController implements Initializable {
         showAlert("Check In Operation", message);
 
         initializeTableHistory();
+        initializeTableNotifications();
 
         historyTableView.refresh();
         tableBooks.refresh();

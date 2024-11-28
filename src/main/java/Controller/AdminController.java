@@ -3,7 +3,14 @@ package Controller;
 import static LMS.HandleAlertOperations.showAlert;
 import static LMS.HandleAlertOperations.showConfirmation;
 
-import LMS.*;
+import LMS.API;
+import LMS.Book;
+import LMS.Borrower;
+import LMS.HoldRequest;
+import LMS.Librarian;
+import LMS.Library;
+import LMS.Loan;
+import LMS.Person;
 import com.google.zxing.WriterException;
 import java.io.IOException;
 import java.net.URL;
@@ -11,7 +18,16 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -78,11 +94,11 @@ public class AdminController implements Initializable {
   private final ExecutorService apiExecutor = Executors.newCachedThreadPool();
   private final ArrayList<Book> books = library.getBooks();
   public VBox barChart;
-    public BarChart<String, Number> borrowedBookChart;
-    private ScheduledFuture<?> scheduledFuture;
-    private volatile long lastApiCallTime = 0;
-    private ObservableList<Book> bookList;
-    private ObservableList<Loan> loanList;
+  public BarChart<String, Number> borrowedBookChart;
+  private ScheduledFuture<?> scheduledFuture;
+  private volatile long lastApiCallTime = 0;
+  private ObservableList<Book> bookList;
+  private ObservableList<Loan> loanList;
 
 
   @FXML
@@ -198,13 +214,13 @@ public class AdminController implements Initializable {
     labelTotalBooks.setText(String.valueOf(books.size()));
     labelTotalUsers.setText(String.valueOf(users.size()));
 
-        initializeTableBooks();
-        initializeTableUsers();
-        initializeTableHistory();
-        initializeInformation();
-        initializeTableNotifications();
-        initializeBarChart();
-    }
+    initializeTableBooks();
+    initializeTableUsers();
+    initializeTableHistory();
+    initializeInformation();
+    initializeTableNotifications();
+    initializeBarChart();
+  }
 
   private void showBookDetails(Book selectedBook) {
     try {
@@ -573,82 +589,119 @@ public class AdminController implements Initializable {
   }
 
   private void initializeInformation() {
+    // Lấy thông tin người dùng
     Librarian librarian = (Librarian) library.getUser();
+
+    // Hiển thị thông tin hiện tại
     infoName.setText(librarian.getName());
     infoEmail.setText(librarian.getEmail());
     infoAddress.setText(librarian.getAddress());
     infoPhone.setText(String.valueOf(librarian.getPhoneNo()));
-    labelWelcome.setText("Welcome, " + librarian.getName());
+
+    // Thêm sự kiện lắng nghe cho các TextField
+    addChangeListener(infoName, librarian, "name");
+    addChangeListener(infoEmail, librarian, "email");
+    addChangeListener(infoAddress, librarian, "address");
+    addChangeListener(infoPhone, librarian, "phoneNo");
+  }
+
+  private void addChangeListener(TextField textField, Librarian librarian, String field) {
+    textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+      if (!newValue) { // Khi mất focus (blur)
+        try {
+          switch (field) {
+            case "name":
+              librarian.setName(textField.getText());
+              break;
+            case "email":
+              librarian.setEmail(textField.getText());
+              break;
+            case "address":
+              librarian.setAddress(textField.getText());
+              break;
+            case "phoneNo":
+              librarian.setPhoneNo(Integer.parseInt(textField.getText()));
+              break;
+          }
+        } catch (NumberFormatException e) {
+          labelWelcome.setText("Invalid phone number format!");
+        } catch (Exception e) {
+          e.printStackTrace();
+          labelWelcome.setText("Error updating information!");
+        }
+      }
+    });
   }
 
   private void initializeBarChart() {
-        CompletableFuture.runAsync(() -> {
-            List<Loan> loans = library.getLoans();
-            Map<String, Integer> bookCounts = new HashMap<>();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    CompletableFuture.runAsync(() -> {
+      List<Loan> loans = library.getLoans();
+      Map<String, Integer> bookCounts = new HashMap<>();
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-            // Tạo mảng để lưu số lượng sách cho mượn mỗi ngày trong tuần gần nhất
-            Calendar calendar = Calendar.getInstance();
+      // Tạo mảng để lưu số lượng sách cho mượn mỗi ngày trong tuần gần nhất
+      Calendar calendar = Calendar.getInstance();
 
-            // Lấy ngày hiện tại và lùi lại 7 ngày
-            Date today = new Date();
-            calendar.setTime(today);
-            calendar.add(Calendar.DAY_OF_YEAR, -7);
-            Date weekAgo = calendar.getTime();
+      // Lấy ngày hiện tại và lùi lại 7 ngày
+      Date today = new Date();
+      calendar.setTime(today);
+      calendar.add(Calendar.DAY_OF_YEAR, -7);
+      Date weekAgo = calendar.getTime();
 
-            // Đếm số lượng sách cho mượn mỗi ngày
-            for (Loan loan : loans) {
-                Date issuedDate = loan.getIssuedDate();
-                if (issuedDate.after(weekAgo) && issuedDate.before(today)) {
-                    String dateLabel = dateFormat.format(issuedDate);
-                    bookCounts.put(dateLabel, bookCounts.getOrDefault(dateLabel, 0) + 1);
-                }
-            }
-
-            // Update the UI on the JavaFX Application Thread
-            Platform.runLater(() -> {
-                borrowedBookChart.getData().clear();
-                XYChart.Series<String, Number> series = new XYChart.Series<>();
-                series.setName("Number of books");
-
-                calendar.setTime(weekAgo);
-                List<String> dates = new ArrayList<>();
-                for (int i = 0; i < 7; i++) {
-                    String dateLabel = dateFormat.format(calendar.getTime());
-                    series.getData().add(new XYChart.Data<>(dateLabel, bookCounts.getOrDefault(dateLabel, 0)));
-                    dates.add(dateLabel);
-                    calendar.add(Calendar.DAY_OF_YEAR, 1);
-                }
-
-                // Update CategoryAxis and NumberAxis
-                CategoryAxis xAxis = (CategoryAxis) borrowedBookChart.getXAxis();
-                xAxis.setCategories(FXCollections.observableArrayList(dates));
-                NumberAxis yAxis = (NumberAxis) borrowedBookChart.getYAxis();
-                yAxis.setAutoRanging(false);
-                yAxis.setLowerBound(0);
-                yAxis.setUpperBound(Collections.max(bookCounts.values()) + 1);
-                yAxis.setTickUnit(1);
-                yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis) {
-                    @Override
-                    public String toString(Number object) {
-                        return String.format("%d", object.intValue());
-                    }
-                });
-
-                // Update the BarChart with the series
-                borrowedBookChart.getData().setAll(series);
-            });
-        });
-    }
-
-    @FXML
-    private void handleHoldBookAction(Book book) {
-        // Similar to handleHoldRequest in OnTerminal.java
-        Borrower borrower = handleFindBorrower();
-        if (borrower != null) {
-            showAlert("Place Book on Hold operation", book.makeHoldRequest(borrower));
+      // Đếm số lượng sách cho mượn mỗi ngày
+      for (Loan loan : loans) {
+        Date issuedDate = loan.getIssuedDate();
+        if (issuedDate.after(weekAgo) && issuedDate.before(today)) {
+          String dateLabel = dateFormat.format(issuedDate);
+          bookCounts.put(dateLabel, bookCounts.getOrDefault(dateLabel, 0) + 1);
         }
+      }
+
+      // Update the UI on the JavaFX Application Thread
+      Platform.runLater(() -> {
+        borrowedBookChart.getData().clear();
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Number of books");
+
+        calendar.setTime(weekAgo);
+        List<String> dates = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+          String dateLabel = dateFormat.format(calendar.getTime());
+          series.getData()
+              .add(new XYChart.Data<>(dateLabel, bookCounts.getOrDefault(dateLabel, 0)));
+          dates.add(dateLabel);
+          calendar.add(Calendar.DAY_OF_YEAR, 1);
+        }
+
+        // Update CategoryAxis and NumberAxis
+        CategoryAxis xAxis = (CategoryAxis) borrowedBookChart.getXAxis();
+        xAxis.setCategories(FXCollections.observableArrayList(dates));
+        NumberAxis yAxis = (NumberAxis) borrowedBookChart.getYAxis();
+        yAxis.setAutoRanging(false);
+        yAxis.setLowerBound(0);
+        yAxis.setUpperBound(Collections.max(bookCounts.values()) + 1);
+        yAxis.setTickUnit(1);
+        yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis) {
+          @Override
+          public String toString(Number object) {
+            return String.format("%d", object.intValue());
+          }
+        });
+
+        // Update the BarChart with the series
+        borrowedBookChart.getData().setAll(series);
+      });
+    });
+  }
+
+  @FXML
+  private void handleHoldBookAction(Book book) {
+    // Similar to handleHoldRequest in OnTerminal.java
+    Borrower borrower = handleFindBorrower();
+    if (borrower != null) {
+      showAlert("Place Book on Hold operation", book.makeHoldRequest(borrower));
     }
+  }
 
   @FXML
   private void handleCheckOutBookAction(Book book) {

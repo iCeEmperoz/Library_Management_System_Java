@@ -426,12 +426,48 @@ public class UserController implements Initializable {
     }
 
     private void initializeInformation() {
-        Borrower librarian = (Borrower) library.getUser();
-        infoName.setText(librarian.getName());
-        infoEmail.setText(librarian.getEmail());
-        infoAddress.setText(librarian.getAddress());
-        infoPhone.setText(String.valueOf(librarian.getPhoneNo()));
-        labelWelcome.setText("Welcome, " + librarian.getName());
+        // Lấy thông tin người dùng
+        Borrower borrower = (Borrower) library.getUser();
+
+        // Hiển thị thông tin hiện tại
+        infoName.setText(borrower.getName());
+        infoEmail.setText(borrower.getEmail());
+        infoAddress.setText(borrower.getAddress());
+        infoPhone.setText(String.valueOf(borrower.getPhoneNo()));
+
+        // Thêm sự kiện lắng nghe cho các TextField
+        addChangeListener(infoName, borrower, "name");
+        addChangeListener(infoEmail, borrower, "email");
+        addChangeListener(infoAddress, borrower, "address");
+        addChangeListener(infoPhone, borrower, "phoneNo");
+    }
+
+    private void addChangeListener(TextField textField, Borrower borrower, String field) {
+        textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) { // Khi mất focus (blur)
+                try {
+                    switch (field) {
+                        case "name":
+                            borrower.setName(textField.getText());
+                            break;
+                        case "email":
+                            borrower.setEmail(textField.getText());
+                            break;
+                        case "address":
+                            borrower.setAddress(textField.getText());
+                            break;
+                        case "phoneNo":
+                            borrower.setPhoneNo(Integer.parseInt(textField.getText()));
+                            break;
+                    }
+                } catch (NumberFormatException e) {
+                    labelWelcome.setText("Invalid phone number format!");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    labelWelcome.setText("Error updating information!");
+                }
+            }
+        });
     }
 
     @FXML

@@ -429,12 +429,6 @@ public class UserController implements Initializable {
         infoEmail.setText(borrower.getEmail());
         infoAddress.setText(borrower.getAddress());
         infoPhone.setText(String.valueOf(borrower.getPhoneNo()));
-
-        // Thêm sự kiện lắng nghe cho các TextField
-        addChangeListener(infoName, borrower, "name");
-        addChangeListener(infoEmail, borrower, "email");
-        addChangeListener(infoAddress, borrower, "address");
-        addChangeListener(infoPhone, borrower, "phoneNo");
     }
 
     private void addChangeListener(TextField textField, Borrower borrower, String field) {

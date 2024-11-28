@@ -597,12 +597,6 @@ public class AdminController implements Initializable {
     infoEmail.setText(librarian.getEmail());
     infoAddress.setText(librarian.getAddress());
     infoPhone.setText(String.valueOf(librarian.getPhoneNo()));
-
-    // Thêm sự kiện lắng nghe cho các TextField
-    addChangeListener(infoName, librarian, "name");
-    addChangeListener(infoEmail, librarian, "email");
-    addChangeListener(infoAddress, librarian, "address");
-    addChangeListener(infoPhone, librarian, "phoneNo");
   }
 
   private void addChangeListener(TextField textField, Librarian librarian, String field) {

@@ -597,40 +597,13 @@ public class AdminController implements Initializable {
   private void initializeInformation() {
     // Lấy thông tin người dùng
     Librarian librarian = (Librarian) library.getUser();
-
     // Hiển thị thông tin hiện tại
     infoName.setText(librarian.getName());
     infoEmail.setText(librarian.getEmail());
     infoAddress.setText(librarian.getAddress());
     infoPhone.setText(String.valueOf(librarian.getPhoneNo()));
-  }
 
-  private void addChangeListener(TextField textField, Librarian librarian, String field) {
-    textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-      if (!newValue) {
-        try {
-          switch (field) {
-            case "name":
-              librarian.setName(textField.getText());
-              break;
-            case "email":
-              librarian.setEmail(textField.getText());
-              break;
-            case "address":
-              librarian.setAddress(textField.getText());
-              break;
-            case "phoneNo":
-              librarian.setPhoneNo(Integer.parseInt(textField.getText()));
-              break;
-          }
-        } catch (NumberFormatException e) {
-          labelWelcome.setText("Invalid phone number format!");
-        } catch (Exception e) {
-          e.printStackTrace();
-          labelWelcome.setText("Error updating information!");
-        }
-      }
-    });
+    labelWelcome.setText("Welcome, " + librarian.getName());
   }
 
   private void initializeBarChart() {
@@ -1165,7 +1138,9 @@ public class AdminController implements Initializable {
           librarian.setEmail(newEmail);
           librarian.setAddress(newAddress);
           librarian.setPhoneNo(Integer.parseInt(newPhone));
+          labelWelcome.setText("Welcome ," + newName);
           showAlert("Change Information", "Your information has been changed successfully.");
+          initializeTableUsers();
         } else {
           initializeInformation();
         }

@@ -3,9 +3,12 @@ package Controller;
 import static LMS.HandleAlertOperations.showAlert;
 import static LMS.HandleAlertOperations.showConfirmation;
 
-import LMS.*;
+import LMS.Book;
+import LMS.Borrower;
+import LMS.Librarian;
+import LMS.Library;
+import LMS.Loan;
 import com.google.zxing.WriterException;
-
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
@@ -231,6 +234,11 @@ public class UserController implements Initializable {
             showBookDetails(newValue);
           }
         });
+
+    // Chọn dòng đầu tiên mặc định khi mở ứng dụng
+    if (!tableBooks.getItems().isEmpty()) {
+      tableBooks.getSelectionModel().selectFirst();
+    }
   }
 
   private void initializeTableLoanBooks() {
@@ -429,43 +437,13 @@ public class UserController implements Initializable {
     // Lấy thông tin người dùng
     Borrower borrower = (Borrower) library.getUser();
 
-        // Hiển thị thông tin hiện tại
-        infoName.setText(borrower.getName());
-        infoEmail.setText(borrower.getEmail());
-        infoAddress.setText(borrower.getAddress());
-        infoPhone.setText(String.valueOf(borrower.getPhoneNo()));
-    }
+    // Hiển thị thông tin hiện tại
+    infoName.setText(borrower.getName());
+    infoEmail.setText(borrower.getEmail());
+    infoAddress.setText(borrower.getAddress());
+    infoPhone.setText(String.valueOf(borrower.getPhoneNo()));
 
-  private void addChangeListener(TextField textField, Borrower borrower, String field) {
-    textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-      if (!newValue) { // Khi mất focus (blur)
-        try {
-          switch (field) {
-            case "name":
-              borrower.setName(textField.getText());
-              break;
-            case "email":
-              borrower.setEmail(textField.getText());
-              break;
-            case "address":
-              borrower.setAddress(textField.getText());
-              break;
-            case "phoneNo":
-              borrower.setPhoneNo(Integer.parseInt(textField.getText()));
-              break;
-          }
-        } catch (NumberFormatException e) {
-          labelWelcome.setText("Invalid phone number format!");
-        } catch (Exception e) {
-          e.printStackTrace();
-          labelWelcome.setText("Error updating information!");
-        }
-      }
-    });
-    // Chọn dòng đầu tiên mặc định khi mở ứng dụng
-    if (!tableBooks.getItems().isEmpty()) {
-      tableBooks.getSelectionModel().selectFirst();
-    }
+    labelWelcome.setText("Welcome, " + borrower.getName());
 
   }
 
@@ -510,12 +488,12 @@ public class UserController implements Initializable {
     paneInformation.setVisible(true);
   }
 
-    @FXML
-    void handleBack(ActionEvent event) {
-        handleChangeInfo();
-        paneInformation.setVisible(false);
-        paneHome.setVisible(true);
-    }
+  @FXML
+  void handleBack(ActionEvent event) {
+    handleChangeInfo();
+    paneInformation.setVisible(false);
+    paneHome.setVisible(true);
+  }
 
   @FXML
   void handleHistory(ActionEvent event) {
@@ -553,39 +531,42 @@ public class UserController implements Initializable {
 
       primaryStage.setTitle("Login");
 
-            // Chuyển sang Scene của dashboard
-            primaryStage.setScene(loginScene);
-            primaryStage.setResizable(false);
-        }
+      // Chuyển sang Scene của dashboard
+      primaryStage.setScene(loginScene);
+      primaryStage.setResizable(false);
     }
+  }
 
-    @FXML
-    private void handleChangeInfo() {
-        Borrower borrower = (Borrower) library.getUser();
-        String name = borrower.getName();
-        String email = borrower.getEmail();
-        String address = borrower.getAddress();
-        String phone = String.valueOf(borrower.getPhoneNo());
+  @FXML
+  private void handleChangeInfo() {
+    Borrower borrower = (Borrower) library.getUser();
+    String name = borrower.getName();
+    String email = borrower.getEmail();
+    String address = borrower.getAddress();
+    String phone = String.valueOf(borrower.getPhoneNo());
 
-        String newName = infoName.getText();
-        String newEmail = infoEmail.getText();
-        String newAddress = infoAddress.getText();
-        String newPhone = infoPhone.getText();
+    String newName = infoName.getText();
+    String newEmail = infoEmail.getText();
+    String newAddress = infoAddress.getText();
+    String newPhone = infoPhone.getText();
 
-        if (newName.isEmpty() || newEmail.isEmpty() || newAddress.isEmpty() || phone.isEmpty()) {
-            showAlert("Error", "These info can not be Empty.");
+    if (newName.isEmpty() || newEmail.isEmpty() || newAddress.isEmpty() || phone.isEmpty()) {
+      showAlert("Error", "These info can not be Empty.");
+    } else {
+      if (!newName.equals(name) || !newEmail.equals(email) || !newAddress.equals(address)
+          || !newPhone.equals(phone)) {
+        if (showConfirmation("Change Information",
+            "Are you sure you want to change your information?")) {
+          borrower.setName(newName);
+          borrower.setEmail(newEmail);
+          borrower.setAddress(newAddress);
+          borrower.setPhoneNo(Integer.parseInt(newPhone));
+          labelWelcome.setText("Welcome ," + newName);
+          showAlert("Change Information", "Your information has been changed successfully.");
         } else {
-            if (!newName.equals(name) || !newEmail.equals(email) || !newAddress.equals(address) || !newPhone.equals(phone)) {
-                if (showConfirmation("Change Information", "Are you sure you want to change your information?")) {
-                    borrower.setName(newName);
-                    borrower.setEmail(newEmail);
-                    borrower.setAddress(newAddress);
-                    borrower.setPhoneNo(Integer.parseInt(newPhone));
-                    showAlert("Change Information", "Your information has been changed successfully.");
-                } else {
-                    initializeInformation();
-                }
-            }
+          initializeInformation();
         }
+      }
     }
+  }
 }

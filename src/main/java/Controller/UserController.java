@@ -3,12 +3,9 @@ package Controller;
 import static LMS.HandleAlertOperations.showAlert;
 import static LMS.HandleAlertOperations.showConfirmation;
 
-import LMS.Book;
-import LMS.Borrower;
-import LMS.Librarian;
-import LMS.Library;
-import LMS.Loan;
+import LMS.*;
 import com.google.zxing.WriterException;
+
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
@@ -519,11 +516,12 @@ public class UserController implements Initializable {
     paneInformation.setVisible(true);
   }
 
-  @FXML
-  void handleBack(ActionEvent event) {
-    paneInformation.setVisible(false);
-    paneHome.setVisible(true);
-  }
+    @FXML
+    void handleBack(ActionEvent event) {
+        handleChangeInfo();
+        paneInformation.setVisible(false);
+        paneHome.setVisible(true);
+    }
 
   @FXML
   void handleHistory(ActionEvent event) {
@@ -561,9 +559,39 @@ public class UserController implements Initializable {
 
       primaryStage.setTitle("Login");
 
-      // Chuyển sang Scene của dashboard
-      primaryStage.setScene(loginScene);
-      primaryStage.setResizable(false);
+            // Chuyển sang Scene của dashboard
+            primaryStage.setScene(loginScene);
+            primaryStage.setResizable(false);
+        }
     }
-  }
+
+    @FXML
+    private void handleChangeInfo() {
+        Borrower borrower = (Borrower) library.getUser();
+        String name = borrower.getName();
+        String email = borrower.getEmail();
+        String address = borrower.getAddress();
+        String phone = String.valueOf(borrower.getPhoneNo());
+
+        String newName = infoName.getText();
+        String newEmail = infoEmail.getText();
+        String newAddress = infoAddress.getText();
+        String newPhone = infoPhone.getText();
+
+        if (newName.isEmpty() || newEmail.isEmpty() || newAddress.isEmpty() || phone.isEmpty()) {
+            showAlert("Error", "These info can not be Empty.");
+        } else {
+            if (!newName.equals(name) || !newEmail.equals(email) || !newAddress.equals(address) || !newPhone.equals(phone)) {
+                if (showConfirmation("Change Information", "Are you sure you want to change your information?")) {
+                    borrower.setName(newName);
+                    borrower.setEmail(newEmail);
+                    borrower.setAddress(newAddress);
+                    borrower.setPhoneNo(Integer.parseInt(newPhone));
+                    showAlert("Change Information", "Your information has been changed successfully.");
+                } else {
+                    initializeInformation();
+                }
+            }
+        }
+    }
 }

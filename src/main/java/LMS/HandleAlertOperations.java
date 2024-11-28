@@ -36,7 +36,13 @@ public class HandleAlertOperations {
         }
     }
 
-
+    /**
+     * Displays an error alert with the specified title and content.
+     * @param title the title of the alert dialog
+     * @param content the content text of the alert dialog
+     *
+     * @return true if the user clicks "OK", false otherwise
+     */
     public static boolean showConfirmation(String title, String content) {
         final boolean[] result = {true}; // Default return value is true
 

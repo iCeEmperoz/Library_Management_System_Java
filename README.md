@@ -18,6 +18,7 @@
 
 ## 🏷️Class Diagram
 - The **Class Diagram** of the project is also provided, the class diagram file can be opened using [Draw.io](https://www.drawio.com/).
+- ![Library Management System Class Diagram](src/main/resources/images/classDiagram.png)
 
 ## 🏷️Introduction
 ### Login Scene

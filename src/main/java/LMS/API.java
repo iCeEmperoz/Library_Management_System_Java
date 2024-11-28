@@ -11,7 +11,11 @@ import java.util.ArrayList;
 
 public class API {
 
-    // Phương thức để gửi yêu cầu HTTP và nhận phản hồi
+    /**
+     * Phương thức để lấy phản hồi HTTP từ URL được cung cấp
+     * @param url URL để lấy phản hồi
+     * @return phản hồi HTTP dưới dạng chuỗi
+     */
     public String getHttpResponse(String url) {
         try (HttpClient client = HttpClient.newHttpClient()) {
             System.out.println("Getting " + url);
@@ -28,7 +32,11 @@ public class API {
         }
     }
 
-    // Phương thức để chuyển đổi JSON thành danh sách sách
+    /**
+     * Phương thức để lấy danh sách sách từ JSON được cung cấp
+     * @param json JSON để lấy sách
+     * @return danh sách sách từ JSON
+     */
     public ArrayList<Book> getBooksFromJson(String json) {
         ArrayList<Book> books = new ArrayList<>();
         try {
@@ -69,6 +77,12 @@ public class API {
         return books;
     }
 
+    /**
+     * Phương thức để chuyển đổi previewLink thành định dạng mong muốn
+     * @param previewLink previewLink để chuyển đổi
+     * @param query query để thêm vào previewLink
+     * @return previewLink đã được chuyển đổi
+     */
     private String convertToUpdatedPreviewLink(String previewLink, String query) {
         if (previewLink.contains("books.google.com.vn/books?id=")) {
             // Lấy book ID từ previewLink (từ id= đến &)

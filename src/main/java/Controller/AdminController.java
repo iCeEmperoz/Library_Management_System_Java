@@ -346,6 +346,12 @@ public class AdminController implements Initializable {
             showBookDetails(newValue);
           }
         });
+
+    // Chọn dòng đầu tiên mặc định khi mở ứng dụng
+    if (!tableBooks.getItems().isEmpty()) {
+      tableBooks.getSelectionModel().selectFirst();
+    }
+
   }
 
   private void initializeTableUsers() {
@@ -601,7 +607,7 @@ public class AdminController implements Initializable {
 
   private void addChangeListener(TextField textField, Librarian librarian, String field) {
     textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-      if (!newValue) { // Khi mất focus (blur)
+      if (!newValue) {
         try {
           switch (field) {
             case "name":
@@ -740,7 +746,6 @@ public class AdminController implements Initializable {
     tableBooks.refresh();
   }
 
-
   @FXML
   private void handleCheckInBookAction(Book book) {
     if (!book.getIssuedStatus()) {
@@ -763,7 +768,6 @@ public class AdminController implements Initializable {
     }
   }
 
-
   @FXML
   private void handleDeleteBookAction(Book book) {
     if (showConfirmation("Confirm Delete", "Are you sure you want to delete this book?")) {
@@ -776,7 +780,6 @@ public class AdminController implements Initializable {
       }
     }
   }
-
 
   @FXML
   private void handleShowHoldRequestQueue(Book book) {
@@ -856,7 +859,6 @@ public class AdminController implements Initializable {
     stage.setResizable(false);
     stage.show();
   }
-
 
   @FXML
   private Borrower handleFindBorrower() {
@@ -960,7 +962,6 @@ public class AdminController implements Initializable {
     paneInformation.setVisible(true);
   }
 
-
   private void showPane(AnchorPane paneToShow) {
     paneBooks.setVisible(false);
     paneUsers.setVisible(false);
@@ -970,13 +971,6 @@ public class AdminController implements Initializable {
     paneNotifications.setVisible(false);
     paneToShow.setVisible(true);
   }
-
-  @FXML
-  void handleAddUser(ActionEvent event) {
-
-  }
-
-//
 
   @FXML
   void handleAddBook() {

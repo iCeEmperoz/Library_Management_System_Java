@@ -1049,6 +1049,7 @@ public class AdminController implements Initializable {
 
   @FXML
   void handleBack(ActionEvent event) {
+    handleChangeInfo();
     paneInformation.setVisible(false);
     paneHome.setVisible(true);
   }
@@ -1098,6 +1099,36 @@ public class AdminController implements Initializable {
       // Chuyển sang Scene của dashboard
       primaryStage.setScene(loginScene);
       primaryStage.setResizable(false);
+    }
+  }
+
+  @FXML
+  private void handleChangeInfo() {
+    Librarian librarian = (Librarian) library.getUser();
+    String name = librarian.getName();
+    String email = librarian.getEmail();
+    String address = librarian.getAddress();
+    String phone = String.valueOf(librarian.getPhoneNo());
+
+    String newName = infoName.getText();
+    String newEmail = infoEmail.getText();
+    String newAddress = infoAddress.getText();
+    String newPhone = infoPhone.getText();
+
+    if (newName.isEmpty() || newEmail.isEmpty() || newAddress.isEmpty() || phone.isEmpty()) {
+      showAlert("Error", "These info can not be Empty.");
+    } else {
+      if (!newName.equals(name) || !newEmail.equals(email) || !newAddress.equals(address) || !newPhone.equals(phone)) {
+        if (showConfirmation("Change Information", "Are you sure you want to change your information?")) {
+          librarian.setName(newName);
+          librarian.setEmail(newEmail);
+          librarian.setAddress(newAddress);
+          librarian.setPhoneNo(Integer.parseInt(newPhone));
+          showAlert("Change Information", "Your information has been changed successfully.");
+        } else {
+          initializeInformation();
+        }
+      }
     }
   }
 }

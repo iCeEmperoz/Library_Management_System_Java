@@ -6,7 +6,6 @@ import static LMS.HandleAlertOperations.showConfirmation;
 import LMS.*;
 import com.google.zxing.WriterException;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
@@ -14,7 +13,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.beans.binding.Bindings;
@@ -29,9 +27,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -43,7 +39,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class UserController implements Initializable {
@@ -477,6 +472,7 @@ public class UserController implements Initializable {
 
     @FXML
     void handleBack(ActionEvent event) {
+        handleChangeInfo();
         paneInformation.setVisible(false);
         paneHome.setVisible(true);
     }
@@ -520,6 +516,36 @@ public class UserController implements Initializable {
             // Chuyển sang Scene của dashboard
             primaryStage.setScene(loginScene);
             primaryStage.setResizable(false);
+        }
+    }
+
+    @FXML
+    private void handleChangeInfo() {
+        Borrower borrower = (Borrower) library.getUser();
+        String name = borrower.getName();
+        String email = borrower.getEmail();
+        String address = borrower.getAddress();
+        String phone = String.valueOf(borrower.getPhoneNo());
+
+        String newName = infoName.getText();
+        String newEmail = infoEmail.getText();
+        String newAddress = infoAddress.getText();
+        String newPhone = infoPhone.getText();
+
+        if (newName.isEmpty() || newEmail.isEmpty() || newAddress.isEmpty() || phone.isEmpty()) {
+            showAlert("Error", "These info can not be Empty.");
+        } else {
+            if (!newName.equals(name) || !newEmail.equals(email) || !newAddress.equals(address) || !newPhone.equals(phone)) {
+                if (showConfirmation("Change Information", "Are you sure you want to change your information?")) {
+                    borrower.setName(newName);
+                    borrower.setEmail(newEmail);
+                    borrower.setAddress(newAddress);
+                    borrower.setPhoneNo(Integer.parseInt(newPhone));
+                    showAlert("Change Information", "Your information has been changed successfully.");
+                } else {
+                    initializeInformation();
+                }
+            }
         }
     }
 }
